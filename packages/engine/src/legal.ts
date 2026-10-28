@@ -1,17 +1,24 @@
 import type { Action } from './actions.ts';
 import { ATTRIBUTES, HABITATS, type Attribute } from './domain.ts';
+import { isHabitatBlocked, isTeamAttributeBlocked } from './cooldowns.ts';
 import { isLocked } from './locks.ts';
 import { activeCardsOfPlayer, type CardsSnapshot } from './queries.ts';
-import type { CardId, Phase, PlayerId, Turn } from './state.ts';
+import type { CardId, Phase, PlayerId, TeamCooldowns, TeamId, Turn } from './state.ts';
 
 /**
  * Lo necesario para calcular acciones legales. Lo cumplen `MatchState` y `PlayerView`:
  * la IA y la simulación deciden con la vista, sin acceder al estado completo.
  */
 export interface LegalSnapshot extends CardsSnapshot {
+  readonly players: readonly {
+    readonly id: PlayerId;
+    readonly team: TeamId;
+    readonly cardIds: readonly CardId[] | null;
+  }[];
   readonly phase: Phase;
   readonly turn: Turn | null;
   readonly declaration: { readonly attribute: Attribute } | null;
+  readonly teamCooldowns: Readonly<Record<TeamId, TeamCooldowns>>;
 }
 
 export interface DefenseOptions {
@@ -41,9 +48,16 @@ export function getLegalActions(snapshot: LegalSnapshot, playerId: PlayerId): Ac
   if (turn === null) return [];
 
   if (snapshot.phase === 'declare' && turn.attackerId === playerId) {
+    const team = snapshot.players.find((p) => p.id === playerId)?.team;
+    if (team === undefined) return [];
+    const cooldowns = snapshot.teamCooldowns[team];
+    const habitats = HABITATS.filter((habitat) => !isHabitatBlocked(cooldowns, habitat));
     return activeCardsOfPlayer(snapshot, playerId).flatMap((card) =>
-      HABITATS.flatMap((habitat) =>
-        ATTRIBUTES.filter((attribute) => !isLocked(card, attribute)).map((attribute): Action => ({
+      habitats.flatMap((habitat) =>
+        ATTRIBUTES.filter(
+          (attribute) =>
+            !isLocked(card, attribute) && !isTeamAttributeBlocked(cooldowns, attribute),
+        ).map((attribute): Action => ({
           type: 'declare',
           playerId,
           habitat,

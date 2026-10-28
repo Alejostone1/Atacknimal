@@ -13,6 +13,7 @@ export const RULE_ERROR_CODES = [
   'NOT_YOUR_CARD',
   'CARD_ELIMINATED',
   'ATTRIBUTE_LOCKED',
+  'HABITAT_LOCKED',
 ] as const;
 
 export type RuleErrorCode = (typeof RULE_ERROR_CODES)[number];

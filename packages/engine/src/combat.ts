@@ -11,6 +11,8 @@ export interface ValueBreakdown {
   readonly abilityModifier: number;
   /** Reservado para estados futuros: siempre 0 en v0.1. */
   readonly statusModifier: number;
+  /** Ventaja por el papel en el duelo (`ruleset.defenderBonus` para el defensor). */
+  readonly roleModifier: number;
   readonly effective: number;
 }
 
@@ -21,6 +23,7 @@ export function computeValue(
   attribute: Attribute,
   habitat: Habitat,
   ruleset: Ruleset,
+  roleModifier = 0,
 ): ValueBreakdown {
   const base = profile.stats[attribute];
   const affinity = profile.affinities[habitat];
@@ -33,7 +36,11 @@ export function computeValue(
     habitatModifier,
     abilityModifier,
     statusModifier,
-    effective: Math.max(0, base + habitatModifier + abilityModifier + statusModifier),
+    roleModifier,
+    effective: Math.max(
+      0,
+      base + habitatModifier + abilityModifier + statusModifier + roleModifier,
+    ),
   };
 }
 

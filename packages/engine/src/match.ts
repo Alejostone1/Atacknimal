@@ -1,3 +1,5 @@
+import { NO_COOLDOWNS } from './cooldowns.ts';
+import { ATTRIBUTES, HABITATS } from './domain.ts';
 import type { AnimalProfile } from './roster.ts';
 import { createRng } from './rng.ts';
 import type { Ruleset } from './ruleset.ts';
@@ -33,6 +35,7 @@ export function createMatch(config: MatchConfig): MatchState {
     roster: Object.fromEntries(config.roster.map((profile) => [profile.id, profile])),
     players: config.players.map((player) => ({ ...player, cardIds: null })),
     cards: {},
+    teamCooldowns: { A: NO_COOLDOWNS, B: NO_COOLDOWNS },
     phase: 'setup',
     duelNumber: 0,
     turnOrder: [],
@@ -68,6 +71,20 @@ function validateConfig({ mode, ruleset, roster, players }: MatchConfig): void {
     'lockDuration inválido.',
   );
   check(ruleset.maxDuels >= 1, 'maxDuels debe ser al menos 1.');
+  check(ruleset.defenderBonus >= 0, 'defenderBonus no puede ser negativo.');
+  // Cada carta debe conservar al menos un atributo y un hábitat legales para atacar.
+  check(
+    Number.isInteger(ruleset.teamAttributeLock) &&
+      ruleset.teamAttributeLock >= 0 &&
+      ruleset.teamAttributeLock + ruleset.lockDuration < ATTRIBUTES.length,
+    'teamAttributeLock deja cartas sin atributos legales.',
+  );
+  check(
+    Number.isInteger(ruleset.habitatCooldown) &&
+      ruleset.habitatCooldown >= 0 &&
+      ruleset.habitatCooldown < HABITATS.length,
+    'habitatCooldown deja al equipo sin hábitats legales.',
+  );
   check(
     !ruleset.abilitiesEnabled,
     'Las habilidades aún no están implementadas (docs/GAME_RULES.md §15).',

@@ -60,3 +60,17 @@ Datos en [BALANCE.md](BALANCE.md) §12.
 ### DECISIÓN PENDIENTE #027: orden de ajustes
 
 **Recomendación:** primero #025 (estructura), después #026 (Aire) y por último el ajuste fino de Ballena, Lobo, Tiburón y empates. Cada paso en una versión de balance nueva, con su informe comparativo.
+
+### Resultado de #025: candidatas A, B y C descartadas por datos (2026-10-28)
+
+Ninguna combinación alcanza el criterio acordado. Ver [BALANCE.md](BALANCE.md) §12.5. Los parámetros quedan en el motor **desactivados** (valor 0) por si sirven como ajuste fino más adelante.
+
+### ⚠️ DECISIÓN PENDIENTE #028: cómo resolver el dominio del atacante
+
+**Problema:** el atacante gana porque ve el equipo rival completo (cartas, vitalidad y bloqueos) y apunta siempre a su debilidad. Ocultar solo la carta atacante no compensa esa ventaja.
+
+- **A. Equipo rival oculto hasta que se revela ("niebla").** No ves qué animales tiene el rival hasta que cada uno aparece en un duelo. Desde ese momento es público (vitalidad y bloqueos incluidos). Ambos jugadores juegan con información parcial, lo que refuerza el pilar central sin tocar la regla del turno. El diagnóstico `blind` apunta a un atacante de ~60–70 %. Cambio de interfaz: el HUD muestra siluetas "?" para las cartas rivales no reveladas.
+- **B. Atributos enfrentados** (Ataque contra Defensa, Velocidad contra Percepción…). Cambia la regla central y no ataca la causa: el atacante seguiría buscando la debilidad del rival en el atributo opuesto.
+- **C. Aceptar que el atacante gana casi siempre** y corregir solo el ritmo (B2+C1+A5 deja al primer jugador en 54,7 %). Es lo más simple, pero defender se reduce a elegir qué carta recibe el golpe y el pilar de información parcial pierde peso.
+
+**Recomendación: A.** Es la única opción que ataca la causa medida. Además, hace que la elección secreta de equipo (§3.1 de GAME_RULES) importe durante toda la partida y da sentido a "leer" al rival. Antes de adoptarla la validaría con un bot que **recuerde** solo las cartas reveladas (ni `blind` ni `greedy`), con el mismo criterio: atacante entre 55 % y 62 %. #026 (Aire neutral más ajuste del Águila) se mediría después, sobre la regla elegida.

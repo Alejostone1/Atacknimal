@@ -30,6 +30,9 @@ export const rulesetSchema = z.strictObject({
   lockDuration: nonNegativeInt,
   maxDuels: z.number().int().positive(),
   abilitiesEnabled: z.boolean(),
+  defenderBonus: z.number().nonnegative(),
+  teamAttributeLock: nonNegativeInt,
+  habitatCooldown: nonNegativeInt,
 });
 
 const range = z.strictObject({ min: z.number(), max: z.number() });

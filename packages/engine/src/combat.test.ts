@@ -13,6 +13,7 @@ describe('valor efectivo (GAME_RULES §6)', () => {
       habitatModifier: 10,
       abilityModifier: 0,
       statusModifier: 0,
+      roleModifier: 0,
       effective: 110,
     });
   });

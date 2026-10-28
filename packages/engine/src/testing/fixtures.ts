@@ -15,6 +15,9 @@ export const RULESET_V0_1: Ruleset = {
   lockDuration: 1,
   maxDuels: 30,
   abilitiesEnabled: false,
+  defenderBonus: 0,
+  teamAttributeLock: 0,
+  habitatCooldown: 0,
 };
 
 type Stats = readonly [

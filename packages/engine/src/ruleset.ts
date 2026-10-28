@@ -25,4 +25,13 @@ export interface Ruleset {
   readonly lockDuration: number;
   readonly maxDuels: number;
   readonly abilitiesEnabled: boolean;
+  /** Ventaja fija que suma el defensor (no en defensa forzada). 0 = desactivada (#025 A). */
+  readonly defenderBonus: number;
+  /**
+   * Ataques propios durante los que el atributo usado al atacar queda bloqueado
+   * para todo el equipo atacante. 0 = desactivado (#025 B).
+   */
+  readonly teamAttributeLock: number;
+  /** Ataques propios durante los que el equipo no puede repetir un hábitat. 0 = desactivado (#025 C). */
+  readonly habitatCooldown: number;
 }

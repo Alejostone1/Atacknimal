@@ -8,7 +8,10 @@
     "damage": { "base": 20, "k": 0.5, "min": 20, "max": 45, "counterRatio": 0.5 },
     "lockDuration": 1,
     "maxDuels": 30,
-    "abilitiesEnabled": false
+    "abilitiesEnabled": false,
+    "defenderBonus": 0,
+    "teamAttributeLock": 0,
+    "habitatCooldown": 0
   },
   "budget": {
     "statRange": { "min": 10, "max": 100 },

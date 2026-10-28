@@ -261,3 +261,24 @@ Con decisiones al azar, el 86,7 % de las partidas llega al límite de 30 duelos 
 ### 12.4 Siguiente paso propuesto
 
 Ver las decisiones pendientes **#025–#027** en [DECISIONES.md](DECISIONES.md). Propuesta de método: implementar cada candidata como **parámetro del ruleset desactivado por defecto**, simular cada una y elegir con datos.
+
+### 12.5 Experimento de las candidatas de #025 y #026
+
+Tabla completa: [`packages/sim/reports/experiments/025-026.md`](../packages/sim/reports/experiments/025-026.md). Son 26 variantes de 20 000 partidas cada una (`npm run experiment -- 025-026`).
+
+| Variante | Gana el atacante | Primer jugador | Águila |
+|---|---|---|---|
+| Base 0.1.0 | 92,2 % | 62,8 % | 69,2 % |
+| A+15 (ventaja defensiva) | 83,8 % | 55,0 % | 69,9 % |
+| B3 (bloqueo de atributo de equipo) | 92,3 % | 56,2 % | 76,0 % |
+| C1 (hábitat sin repetir) | 92,6 % | 60,6 % | 70,8 % |
+| B2+C1+A10 (la más fuerte) | 76,4 % | 52,1 % | 75,1 % |
+| Aire neutral | 92,3 % | 62,4 % | 62,7 % |
+
+**Conclusión: ninguna candidata cumple el criterio** (atacante entre 55 % y 62 %).
+
+- **B y C no funcionan:** con unas 112 combinaciones, quitar unas pocas no importa porque el atacante encuentra otra debilidad. Además, B refuerza al Águila, que tiene tres picos y alternativas de sobra.
+- **A funciona de forma lineal pero insuficiente:** haría falta un +30 aproximado, que aplana los perfiles.
+- **Aire neutral** baja al Águila unos 6 puntos, pero no basta. Hay que tocar también su perfil (tres picos).
+
+**Diagnóstico adicional (política `blind`):** un atacante que **no mira** el equipo rival y ataca con su mayor valor propio gana el **62,8 %** de los duelos, y la ventaja del primer jugador baja al **53,7 %**. La causa principal de P-1 es **la información completa del atacante sobre el equipo rival**, no el número de opciones. Este bot sobreestima los empates (36 %), porque siempre usa su número más alto. Un jugador real con información parcial quedaría entre `blind` y `greedy`.

@@ -56,8 +56,9 @@ export function startedMatch(
   mode: MatchMode,
   teams: Readonly<Record<PlayerId, readonly AnimalId[]>> = mode === '1v1' ? TEAMS_1V1 : TEAMS_2V2,
   seed = 1,
+  ruleset: Ruleset = RULESET_V0_1,
 ): MatchState {
-  let state = newMatch(mode, seed);
+  let state = newMatch(mode, seed, ruleset);
   for (const player of PLAYERS[mode]) {
     const animalIds = teams[player.id];
     if (animalIds === undefined) throw new Error(`Falta el equipo de ${player.id}`);
@@ -72,9 +73,10 @@ export function startedMatch(
 export function startedWith(
   attackerId: PlayerId,
   teams: Readonly<Record<PlayerId, readonly AnimalId[]>> = TEAMS_1V1,
+  ruleset: Ruleset = RULESET_V0_1,
 ): MatchState {
   for (let seed = 0; seed < 100; seed++) {
-    const state = startedMatch('1v1', teams, seed);
+    const state = startedMatch('1v1', teams, seed, ruleset);
     if (state.turn?.attackerId === attackerId) return state;
   }
   throw new Error(`Ninguna semilla hace atacar primero a ${attackerId}`);

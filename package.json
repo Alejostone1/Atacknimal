@@ -17,7 +17,8 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "check": "npm run format:check && npm run lint && npm run typecheck && npm run test",
-    "simulate": "npm run simulate --workspace @atacknimal/sim --"
+    "simulate": "npm run simulate --workspace @atacknimal/sim --",
+    "experiment": "npm run experiment --workspace @atacknimal/sim --"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",

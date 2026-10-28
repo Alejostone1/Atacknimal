@@ -15,10 +15,11 @@ import type {
   LockChange,
   Transition,
 } from './events.ts';
+import { cooldownsAfterAttack, isHabitatBlocked, isTeamAttributeBlocked } from './cooldowns.ts';
 import { getDefenseOptions } from './legal.ts';
 import { isLocked, locksAfterDuel } from './locks.ts';
 import { checkOutcome } from './outcome.ts';
-import { getCard, getProfile, isActive } from './queries.ts';
+import { getCard, getPlayer, getProfile, isActive } from './queries.ts';
 import type { CardId, CardState, Declaration, MatchState, PlayerId } from './state.ts';
 import { resolveTurn } from './turns.ts';
 
@@ -37,14 +38,26 @@ export function applyDeclare(state: MatchState, action: DeclareAction): Result<T
   if (isLocked(owned.value, action.attribute)) {
     return fail('ATTRIBUTE_LOCKED', 'Esa carta tiene ese atributo bloqueado.');
   }
+  const team = getPlayer(state, action.playerId).team;
+  const cooldowns = state.teamCooldowns[team];
+  if (isTeamAttributeBlocked(cooldowns, action.attribute)) {
+    return fail('ATTRIBUTE_LOCKED', 'Tu equipo atacó hace poco con ese atributo.');
+  }
+  if (isHabitatBlocked(cooldowns, action.habitat)) {
+    return fail('HABITAT_LOCKED', 'Tu equipo todavía no puede repetir ese hábitat.');
+  }
 
   const declaration: Declaration = {
     habitat: action.habitat,
     attribute: action.attribute,
     cardId: action.cardId,
   };
+  const teamCooldowns = {
+    ...state.teamCooldowns,
+    [team]: cooldownsAfterAttack(cooldowns, action.habitat, action.attribute, state.ruleset),
+  };
   return ok({
-    state: { ...state, phase: 'defend', declaration },
+    state: { ...state, phase: 'defend', declaration, teamCooldowns },
     events: [
       {
         type: 'attackDeclared',
@@ -112,7 +125,13 @@ function resolveDuel(
   );
   const defenderBreakdown: ValueBreakdown | null = forcedDefense
     ? null
-    : computeValue(getProfile(state, defenderCard), attribute, habitat, ruleset);
+    : computeValue(
+        getProfile(state, defenderCard),
+        attribute,
+        habitat,
+        ruleset,
+        ruleset.defenderBonus,
+      );
   const attackerValue = attackerBreakdown.effective;
   const defenderValue = defenderBreakdown?.effective ?? 0;
   const { outcome, margin } = compareValues(attackerValue, defenderValue);

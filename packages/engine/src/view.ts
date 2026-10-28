@@ -17,6 +17,7 @@ import type {
   Phase,
   PlayerId,
   Seat,
+  TeamCooldowns,
   TeamId,
   Turn,
   TurnSlot,
@@ -49,6 +50,7 @@ export interface PlayerView {
   readonly roster: Readonly<Record<AnimalId, AnimalProfile>>;
   readonly players: readonly PlayerSummary[];
   readonly cards: Readonly<Record<CardId, CardState>>;
+  readonly teamCooldowns: Readonly<Record<TeamId, TeamCooldowns>>;
   readonly turnOrder: readonly TurnSlot[];
   readonly turn: Turn | null;
   readonly declaration: DeclarationView | null;
@@ -84,6 +86,7 @@ export function getPlayerView(state: MatchState, viewerId: PlayerId): PlayerView
     cards: Object.fromEntries(
       Object.entries(state.cards).filter(([, card]) => visibleOwners.has(card.ownerId)),
     ),
+    teamCooldowns: state.teamCooldowns,
     turnOrder: state.turnOrder,
     turn,
     declaration:

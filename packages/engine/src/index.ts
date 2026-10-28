@@ -13,6 +13,7 @@ export type {
   CardId,
   CardState,
   Declaration,
+  HabitatCooldown,
   Lock,
   MatchEndReason,
   MatchMode,
@@ -22,6 +23,7 @@ export type {
   PlayerId,
   PlayerState,
   Seat,
+  TeamCooldowns,
   TeamId,
   Turn,
   TurnSlot,
@@ -59,6 +61,7 @@ export type { CardsSnapshot } from './queries.ts';
 export { compareValues, computeCounterDamage, computeDamage, computeValue } from './combat.ts';
 export type { DuelOutcome, ValueBreakdown } from './combat.ts';
 export { isLocked } from './locks.ts';
+export { isHabitatBlocked, isTeamAttributeBlocked } from './cooldowns.ts';
 export { cardIdFor, isActive } from './queries.ts';
 
 // Información visible

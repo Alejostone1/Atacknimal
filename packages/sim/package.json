@@ -9,7 +9,8 @@
   },
   "scripts": {
     "typecheck": "tsc -p tsconfig.json",
-    "simulate": "node src/cli.ts"
+    "simulate": "node src/cli.ts",
+    "experiment": "node src/experiment.ts"
   },
   "dependencies": {
     "@atacknimal/content": "*",

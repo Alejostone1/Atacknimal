@@ -19,6 +19,18 @@ export interface Lock {
   readonly remaining: number;
 }
 
+export interface HabitatCooldown {
+  readonly habitat: Habitat;
+  /** Ataques del equipo que quedan sin poder usar el hábitat. */
+  readonly remaining: number;
+}
+
+/** Restricciones de ataque que afectan a todo un equipo (públicas). */
+export interface TeamCooldowns {
+  readonly attributes: readonly Lock[];
+  readonly habitats: readonly HabitatCooldown[];
+}
+
 /** Una carta está activa mientras `hp > 0`; con `hp === 0` está eliminada. */
 export interface CardState {
   readonly id: CardId;
@@ -71,6 +83,7 @@ export interface MatchState {
   readonly roster: Readonly<Record<AnimalId, AnimalProfile>>;
   readonly players: readonly PlayerState[];
   readonly cards: Readonly<Record<CardId, CardState>>;
+  readonly teamCooldowns: Readonly<Record<TeamId, TeamCooldowns>>;
   readonly phase: Phase;
   /** Número del duelo en curso (1, 2, …). 0 durante la preparación. */
   readonly duelNumber: number;

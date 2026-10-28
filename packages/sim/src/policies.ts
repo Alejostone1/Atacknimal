@@ -70,7 +70,27 @@ export const greedyPolicy: Policy = (view, rng) => {
   );
 };
 
-export const POLICIES = { random: randomPolicy, greedy: greedyPolicy } as const;
+/**
+ * Diagnóstico: ataca con su mayor valor efectivo propio **sin mirar al rival**
+ * (simula no conocer el equipo rival) y defiende como `greedy`.
+ */
+export const blindPolicy: Policy = (view, rng) => {
+  if (view.phase !== 'declare') return greedyPolicy(view, rng);
+  return pickBest(
+    getLegalActions(view, view.viewerId),
+    (action) =>
+      action.type === 'declare'
+        ? valueOf(view, card(view, action.cardId), action.attribute, action.habitat)
+        : 0,
+    rng,
+  );
+};
+
+export const POLICIES = {
+  random: randomPolicy,
+  greedy: greedyPolicy,
+  blind: blindPolicy,
+} as const;
 export type PolicyName = keyof typeof POLICIES;
 
 export function isPolicyName(value: string): value is PolicyName {
