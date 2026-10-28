@@ -1,0 +1,13 @@
+{
+  "name": "@atacknimal/engine",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Motor de reglas de ATACKNIMAL: puro, determinista y sin dependencias de interfaz ni de red.",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json"
+  }
+}
