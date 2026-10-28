@@ -44,7 +44,7 @@ Si el dominio de Vercel **no** es exactamente el que pusiste en el paso 1:
 
 ## Paso 4 (opcional) · Base de datos en Neon
 
-Sin `DATABASE_URL` el servidor usa PGlite en memoria: **el juego funciona igual**, pero el historial de partidas se borra cuando Render reinicia el servidor. Para conservarlo:
+Sin `DATABASE_URL` el servidor guarda en memoria (`DB_DRIVER=memory` en `render.yaml`; PGlite no cabe en los 512 MB del plan gratuito): **el juego funciona igual**, pero el historial de partidas se borra cuando Render reinicia el servidor. Para conservarlo:
 
 1. Entra en **neon.tech**, crea un proyecto (región cercana, por ejemplo São Paulo o EE. UU. Este).
 2. Copia la **connection string** (empieza por `postgresql://` y termina en `?sslmode=require`).
@@ -74,5 +74,6 @@ Las tablas se crean solas al arrancar (migraciones de [DATABASE.md](DATABASE.md)
 | La sala no conecta y la consola del navegador habla de CORS | `CORS_ORIGIN` en Render no coincide exactamente con el dominio de Vercel (incluido `https://`, sin barra final) |
 | Un enlace `/sala/XXXXXX` da 404 | Falta la regla `rewrites` de `vercel.json` (ya incluida) |
 | Render falla al arrancar | Revisa en sus *logs* que use Node 24 (`NODE_VERSION` en `render.yaml`) |
+| Render: "Ran out of memory (used over 512MB)" | Falta `DB_DRIVER=memory` y se está cargando PGlite |
 
 🔒 Pendiente antes de un uso más amplio: ARCHITECTURE §10 (límites de peticiones, sesiones firmadas, límite de tiempo para elegir equipo).

@@ -1,9 +1,7 @@
 import type { Action, MatchResult } from '@atacknimal/engine';
-import { PGlite } from '@electric-sql/pglite';
 import { eq } from 'drizzle-orm';
 import { drizzle as drizzlePg } from 'drizzle-orm/node-postgres';
 import type { PgDatabase, PgQueryResultHKT } from 'drizzle-orm/pg-core';
-import { drizzle as drizzlePglite } from 'drizzle-orm/pglite';
 import pg from 'pg';
 import { migrate } from './migrations.ts';
 import { matchActions, matches, roomPlayers, rooms } from './schema.ts';
@@ -108,13 +106,65 @@ function createRepository<T extends PgQueryResultHKT>(
   };
 }
 
+/** Almacenamiento cuando no hay `DATABASE_URL` (docs/DATABASE.md §1). */
+export const LOCAL_DRIVERS = ['pglite', 'memory'] as const;
+export type LocalDriver = (typeof LOCAL_DRIVERS)[number];
+
 /**
- * Abre la base de datos y aplica las migraciones. Con `databaseUrl`, PostgreSQL de verdad;
- * sin ella, PGlite (PostgreSQL embebido en WebAssembly) en memoria o en `pgliteDir`.
+ * Guarda en estructuras de JavaScript, sin SQL. Pensado para servidores con poca memoria
+ * (PGlite ocupa ~530 MB y no cabe en los 512 MB del plan gratuito de Render). Se pierde al reiniciar.
+ */
+export function createMemoryRepository(): MatchRepository {
+  const stored = new Map<string, StoredMatch & { roomId: string }>();
+  const actions = new Map<string, StoredAction[]>();
+  return {
+    roomCreated: () => Promise.resolve(),
+    playerJoined: () => Promise.resolve(),
+    matchCreated: (match) => {
+      stored.set(match.id, { ...match, winnerTeam: null, endReason: null });
+      actions.set(match.id, []);
+      return Promise.resolve();
+    },
+    actionAccepted: (matchId, entry) => {
+      actions.get(matchId)?.push(entry);
+      return Promise.resolve();
+    },
+    matchFinished: (matchId, result) => {
+      const match = stored.get(matchId);
+      if (match !== undefined) {
+        stored.set(matchId, { ...match, winnerTeam: result.winner, endReason: result.reason });
+      }
+      return Promise.resolve();
+    },
+    roomClosed: () => Promise.resolve(),
+    findMatchByRoom: (roomId) => {
+      const match = [...stored.values()].find((m) => m.roomId === roomId);
+      return Promise.resolve(
+        match === undefined
+          ? null
+          : {
+              id: match.id,
+              rulesetVersion: match.rulesetVersion,
+              seed: match.seed,
+              winnerTeam: match.winnerTeam,
+              endReason: match.endReason,
+            },
+      );
+    },
+    loadActions: (matchId) => Promise.resolve([...(actions.get(matchId) ?? [])]),
+    close: () => Promise.resolve(),
+  };
+}
+
+/**
+ * Abre el almacenamiento y aplica las migraciones. Con `databaseUrl`, PostgreSQL de verdad;
+ * sin ella, `localDriver` elige PGlite (PostgreSQL embebido, en memoria o en `pgliteDir`) o
+ * el almacén en memoria. PGlite se carga solo si se usa.
  */
 export async function openRepository(options: {
   databaseUrl?: string | undefined;
   pgliteDir?: string | undefined;
+  localDriver?: LocalDriver | undefined;
 }): Promise<MatchRepository> {
   if (options.databaseUrl !== undefined) {
     const pool = new pg.Pool({ connectionString: options.databaseUrl });
@@ -126,6 +176,11 @@ export async function openRepository(options: {
     );
     return createRepository(drizzlePg(pool), () => pool.end());
   }
+  if (options.localDriver === 'memory') return createMemoryRepository();
+  const [{ PGlite }, { drizzle: drizzlePglite }] = await Promise.all([
+    import('@electric-sql/pglite'),
+    import('drizzle-orm/pglite'),
+  ]);
   const client = new PGlite(options.pgliteDir);
   await migrate(
     async (sql) => {

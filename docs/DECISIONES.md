@@ -145,3 +145,7 @@ Si alguien sale (o no vuelve a tiempo) mientras se espera rival o se eligen equi
 ### ✅ #035 aceptada: opción A, desplegando antes del 2 vs 2 (2026-10-28)
 
 Vercel (web) + Render (servidor) + Neon (PostgreSQL, opcional al principio). Para la base de datos se elige **Neon** en lugar de Supabase: su conexión directa funciona con el driver `pg` y `sslmode=require` sin configurar certificados, y Render (plan gratuito, solo IPv4) llega a ella sin *pooler*. Guía en [DEPLOY.md](DEPLOY.md). El despliegue completo de producción (entornos, observabilidad, copias de seguridad) sigue en la Fase 14.
+
+### #036 Almacén en memoria en Render (2026-10-28)
+
+El primer despliegue en Render falló por memoria: PGlite ocupa unos 530 MB y el plan gratuito da 512 MB. Sin `DATABASE_URL`, Render usa ahora un almacén en memoria (`DB_DRIVER=memory`, ~126 MB el servidor completo). PGlite sigue siendo lo predeterminado en desarrollo y tests. Al añadir Neon (`DATABASE_URL`), el servidor pasa solo a PostgreSQL.

@@ -11,8 +11,9 @@ PostgreSQL con Drizzle ORM (Fase 8). Esquema en [`apps/server/src/db/schema.ts`]
 | Desarrollo | **PGlite** (PostgreSQL compilado a WebAssembly, dentro del proceso) | Por defecto, en memoria. Con `PGLITE_DIR` guarda los datos en disco |
 | Tests | PGlite en memoria | Cada test parte de una base vacía |
 | Producción | PostgreSQL | `DATABASE_URL=postgres://…` (driver `pg`) |
+| Producción sin base de datos | Almacén en memoria (sin SQL) | `DB_DRIVER=memory`. Lo usa Render mientras no haya `DATABASE_URL` |
 
-El mismo código Drizzle y las mismas migraciones sirven para los dos drivers. PGlite evita instalar PostgreSQL o Docker para desarrollar; antes del despliegue (Fase 14) conviene ejecutar la suite también contra un PostgreSQL real.
+El mismo código Drizzle y las mismas migraciones sirven para los dos drivers de PostgreSQL. **PGlite ocupa unos 530 MB de RAM** y no cabe en los 512 MB del plan gratuito de Render; por eso existe el almacén en memoria (unos 126 MB el servidor completo), que cumple el mismo contrato (`MatchRepository`) y también permite reproducir partidas mientras el proceso vive. PGlite se carga solo cuando se usa. PGlite evita instalar PostgreSQL o Docker para desarrollar; antes del despliegue (Fase 14) conviene ejecutar la suite también contra un PostgreSQL real.
 
 ---
 

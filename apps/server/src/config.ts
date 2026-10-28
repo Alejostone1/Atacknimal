@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { LOCAL_DRIVERS, type LocalDriver } from './db/repository.ts';
 
 /** Una variable definida pero vacía (habitual en paneles de despliegue) cuenta como ausente. */
 const emptyAsMissing = (value: unknown): unknown =>
@@ -13,6 +14,11 @@ const envSchema = z.object({
   HOST: z.string().default('0.0.0.0'),
   /** PostgreSQL de producción. Sin valor, se usa PGlite (PostgreSQL embebido). */
   DATABASE_URL: z.preprocess(emptyAsMissing, z.url().optional()),
+  /**
+   * Almacenamiento sin DATABASE_URL: `pglite` (PostgreSQL embebido, ~530 MB) o `memory`
+   * (ligero, para servidores pequeños). Con DATABASE_URL se ignora.
+   */
+  DB_DRIVER: z.preprocess(emptyAsMissing, z.enum(LOCAL_DRIVERS).default('pglite')),
   /** Carpeta de datos de PGlite. Sin valor, PGlite trabaja en memoria. */
   PGLITE_DIR: z.preprocess(emptyAsMissing, z.string().optional()),
   /**
@@ -31,6 +37,7 @@ export interface ServerConfig {
   readonly host: string;
   readonly databaseUrl: string | undefined;
   readonly pgliteDir: string | undefined;
+  readonly localDriver: LocalDriver;
   readonly corsOrigins: readonly string[];
   readonly timers: TimerConfig;
 }
@@ -48,6 +55,7 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): ServerConfig {
     host: parsed.HOST,
     databaseUrl: parsed.DATABASE_URL,
     pgliteDir: parsed.PGLITE_DIR,
+    localDriver: parsed.DB_DRIVER,
     corsOrigins: parsed.CORS_ORIGIN.split(',')
       .map((origin) => origin.trim())
       .filter((origin) => origin.length > 0),

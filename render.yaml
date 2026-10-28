@@ -13,6 +13,9 @@ services:
       # Dominio de la web en Vercel, por ejemplo https://atacknimal.vercel.app
       - key: CORS_ORIGIN
         sync: false
-      # Opcional: PostgreSQL (Neon). Sin valor, PGlite en memoria (se borra al reiniciar).
+      # Sin DATABASE_URL: almacén en memoria (PGlite no cabe en los 512 MB del plan gratuito).
+      - key: DB_DRIVER
+        value: memory
+      # Opcional: PostgreSQL (Neon). Con valor, se usa en lugar del almacén en memoria.
       - key: DATABASE_URL
         sync: false

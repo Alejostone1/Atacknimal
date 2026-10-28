@@ -8,9 +8,11 @@ const server = buildServer({ config, repository, logger: true });
 
 await server.http.listen({ port: config.port, host: config.host });
 server.http.log.info(
-  config.databaseUrl === undefined
-    ? `Base de datos: PGlite (${config.pgliteDir ?? 'en memoria'})`
-    : 'Base de datos: PostgreSQL (DATABASE_URL)',
+  config.databaseUrl !== undefined
+    ? 'Base de datos: PostgreSQL (DATABASE_URL)'
+    : config.localDriver === 'memory'
+      ? 'Almacenamiento: en memoria (sin base de datos)'
+      : `Base de datos: PGlite (${config.pgliteDir ?? 'en memoria'})`,
 );
 
 const shutdown = async (): Promise<void> => {

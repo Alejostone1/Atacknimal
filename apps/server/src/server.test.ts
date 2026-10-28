@@ -18,7 +18,7 @@ import type { AddressInfo } from 'node:net';
 import { io as connect, type Socket } from 'socket.io-client';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import type { ServerConfig } from './config.ts';
-import { openRepository, type MatchRepository } from './db/repository.ts';
+import { openRepository, type LocalDriver, type MatchRepository } from './db/repository.ts';
 import { buildServer, type GameServerHandle } from './server.ts';
 
 const BALANCE = getBalanceSet();
@@ -51,13 +51,17 @@ function config(overrides: Partial<ServerConfig['timers']> = {}): ServerConfig {
     host: '127.0.0.1',
     databaseUrl: undefined,
     pgliteDir: undefined,
+    localDriver: 'pglite',
     corsOrigins: ['http://localhost:5173'],
     timers: { declareMs: 30_000, defendMs: 20_000, reconnectGraceMs: 60_000, ...overrides },
   };
 }
 
-async function start(timers: Partial<ServerConfig['timers']> = {}): Promise<void> {
-  repository = await openRepository({});
+async function start(
+  timers: Partial<ServerConfig['timers']> = {},
+  localDriver: LocalDriver = 'pglite',
+): Promise<void> {
+  repository = await openRepository({ localDriver });
   server = buildServer({ config: config(timers), repository });
   await server.http.listen({ port: 0, host: '127.0.0.1' });
   const { port } = server.http.server.address() as AddressInfo;
@@ -245,41 +249,49 @@ describe('salas', () => {
 });
 
 describe('partida autoritativa', () => {
-  it('juega una partida completa y la guarda de forma reproducible', async () => {
-    const { a, b, code } = await pair();
-    await pickTeams(a, b);
-    await playToEnd(a, b);
+  it.each(['pglite', 'memory'] as const)(
+    'juega una partida completa y la guarda de forma reproducible (%s)',
+    async (driver) => {
+      if (driver !== 'pglite') {
+        await server.close();
+        await repository.close();
+        await start({}, driver);
+      }
+      const { a, b, code } = await pair();
+      await pickTeams(a, b);
+      await playToEnd(a, b);
 
-    expect(a.view()?.result).not.toBeNull();
-    expect(a.view()?.result).toEqual(b.view()?.result);
-    await b.waitFor(() => b.room?.status === 'finished');
+      expect(a.view()?.result).not.toBeNull();
+      expect(a.view()?.result).toEqual(b.view()?.result);
+      await b.waitFor(() => b.room?.status === 'finished');
 
-    // Semilla + acciones guardadas reproducen exactamente la partida del servidor.
-    const room = server.rooms.get(code);
-    if (room === undefined) throw new Error('Sala no encontrada');
-    await room.flush();
-    const stored = await repository.findMatchByRoom(room.id);
-    if (stored === null) throw new Error('Partida no guardada');
-    expect(stored.endReason).toBe(a.view()?.result?.reason);
+      // Semilla + acciones guardadas reproducen exactamente la partida del servidor.
+      const room = server.rooms.get(code);
+      if (room === undefined) throw new Error('Sala no encontrada');
+      await room.flush();
+      const stored = await repository.findMatchByRoom(room.id);
+      if (stored === null) throw new Error('Partida no guardada');
+      expect(stored.endReason).toBe(a.view()?.result?.reason);
 
-    let replay: MatchState = createMatch({
-      id: stored.id,
-      mode: '1v1',
-      ruleset: BALANCE.ruleset,
-      roster: BALANCE.roster,
-      players: [
-        { id: 'A1', team: 'A', seat: 1 },
-        { id: 'B1', team: 'B', seat: 1 },
-      ],
-      seed: stored.seed,
-    });
-    for (const { action } of await repository.loadActions(stored.id)) {
-      const result = applyAction(replay, action);
-      if (!result.ok) throw new Error(result.error.message);
-      replay = result.value.state;
-    }
-    expect(replay).toEqual(room.matchState);
-  });
+      let replay: MatchState = createMatch({
+        id: stored.id,
+        mode: '1v1',
+        ruleset: BALANCE.ruleset,
+        roster: BALANCE.roster,
+        players: [
+          { id: 'A1', team: 'A', seat: 1 },
+          { id: 'B1', team: 'B', seat: 1 },
+        ],
+        seed: stored.seed,
+      });
+      for (const { action } of await repository.loadActions(stored.id)) {
+        const result = applyAction(replay, action);
+        if (!result.ok) throw new Error(result.error.message);
+        replay = result.value.state;
+      }
+      expect(replay).toEqual(room.matchState);
+    },
+  );
 
   it('nunca envía a un jugador información oculta del rival', async () => {
     const { a, b } = await pair();
