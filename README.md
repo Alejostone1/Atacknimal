@@ -2,6 +2,14 @@
 
 *El instinto decide.*
 
+## Estado del proyecto
+
+| Fase | Estado | Documento |
+|---|---|---|
+| 0 · Análisis | ✅ Cerrada | [`docs/00-ANALISIS-FASE-0.md`](docs/00-ANALISIS-FASE-0.md) |
+| 1 · Game design | 📝 En revisión | [`docs/GAME_RULES.md`](docs/GAME_RULES.md) · [`docs/BALANCE.md`](docs/BALANCE.md) · [`docs/DECISIONES.md`](docs/DECISIONES.md) |
+| 2 · Arquitectura | ⏳ Siguiente | — |
+
 ## Documentación de diseño
 
 Todo el material de referencia está en [`docs/diseno/`](docs/diseno/):
