@@ -23,3 +23,11 @@ export type Habitat = (typeof HABITATS)[number];
 export const AFFINITIES = ['native', 'adapted', 'neutral', 'hostile'] as const;
 
 export type Affinity = (typeof AFFINITIES)[number];
+
+export function isAttribute(value: unknown): value is Attribute {
+  return typeof value === 'string' && (ATTRIBUTES as readonly string[]).includes(value);
+}
+
+export function isHabitat(value: unknown): value is Habitat {
+  return typeof value === 'string' && (HABITATS as readonly string[]).includes(value);
+}

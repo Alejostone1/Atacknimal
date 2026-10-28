@@ -45,7 +45,7 @@
 
 | Paquete | Estado | Rol | Puede depender de |
 |---|---|---|---|
-| `@atacknimal/engine` | ✅ esqueleto (Fase 2) · ⏳ reglas (Fase 3) | Reglas puras y deterministas | **Nada** (solo TypeScript) |
+| `@atacknimal/engine` | ✅ reglas completas sin IA (Fase 3) | Reglas puras y deterministas | **Nada** (solo TypeScript) |
 | `@atacknimal/content` | ⏳ Fase 4 | Animales, perfiles, afinidades, rulesets, imágenes; validado con Zod | engine (tipos) |
 | `@atacknimal/sim` | ⏳ Fase 4 | Simulación masiva y reportes de balance (CLI) | engine, content |
 | `@atacknimal/protocol` | ⏳ Fase 8 | Contratos de eventos WebSocket y DTO REST (Zod) | engine (tipos) |
@@ -81,19 +81,23 @@ Al crear `apps/web` se añadirá la regla equivalente: **Phaser no puede importa
 
 ## 4. Motor de reglas
 
-### 4.1 Contrato (se implementa en la Fase 3)
+### 4.1 Contrato
 
-| Función | Descripción |
-|---|---|
-| `createMatch(config, seed) → MatchState` | Estado inicial a partir de modo, equipos, ruleset y semilla |
-| `getLegalActions(state, playerId) → Action[]` | Acciones válidas ahora para ese jugador (lo usan la IA y la interfaz) |
-| `applyAction(state, action) → Result<{ state, events }, RuleError>` | Función **pura**: valida, aplica y devuelve un estado nuevo y los eventos de dominio. Nunca muta |
-| `getPlayerView(state, playerId) → PlayerView` | Vista **redactada**: elimina la carta atacante para el defensor, el equipo rival durante `SETUP`, la semilla, etc. ([GAME_RULES.md](GAME_RULES.md) §11) |
-| `decideAI(view, difficulty, rng) → Action` | La IA recibe una `PlayerView`, **no** el `MatchState`: es imposible que haga trampa por construcción |
+| Función | Estado | Descripción |
+|---|---|---|
+| `createMatch(config) → MatchState` | ✅ | Estado inicial a partir de modo, jugadores, roster, ruleset y semilla. Lanza `MatchConfigError` si la configuración es imposible |
+| `applyAction(state, action) → Result<Transition>` | ✅ | Función **pura**: valida, aplica y devuelve un estado nuevo y los eventos de dominio, o un `RuleError`. Nunca muta |
+| `getLegalActions(state, playerId) → Action[]` | ✅ | Ataques o defensas válidos ahora para ese jugador (no enumera equipos ni la rendición) |
+| `getDefenseOptions(state, playerId, attribute)` | ✅ | Cartas legales para defender y si la defensa es forzada |
+| `getPlayerView(state, playerId) → PlayerView` | ✅ | Vista **redactada**: oculta la carta atacante al equipo defensor, el equipo rival durante la preparación y el estado del RNG ([GAME_RULES.md](GAME_RULES.md) §11) |
+| `redactEvent(event, state, playerId) → PlayerEvent` | ✅ | Versión de un evento que puede enviarse a ese jugador |
+| `decideAI(view, difficulty, rng) → Action` | ⏳ Fase 7 | La IA recibe una `PlayerView`, **no** el `MatchState`: es imposible que haga trampa por construcción |
+
+**Acciones:** `selectTeam`, `declare` (hábitat + carta + atributo), `defend`, `concede`.
 
 ### 4.2 Eventos de dominio
 
-`MatchCreated`, `TeamConfirmed`, `AttackDeclared`, `DefenseChosen`, `CombatResolved` (con el `CombatResolution` completo, [GAME_RULES.md](GAME_RULES.md) §13), `CardEliminated`, `MatchFinished`.
+`teamConfirmed`, `matchStarted` (sorteo, orden de turnos y equipos ya públicos), `turnStarted`, `attackDeclared`, `combatResolved` (con el `CombatResolution` completo, [GAME_RULES.md](GAME_RULES.md) §13), `conceded`, `matchFinished`.
 
 - Son la **fuente de verdad** persistida (registro de eventos).
 - Reproducir los eventos con la misma semilla reconstruye la partida exacta: sirve para la reconexión, las repeticiones, la depuración y como anti-trampas.
@@ -101,10 +105,31 @@ Al crear `apps/web` se añadirá la regla equivalente: **Phaser no puede importa
 
 ### 4.3 Determinismo
 
-- RNG con semilla implementado dentro del motor (sin dependencias), con su estado guardado en el `MatchState`.
-- Mismo estado + misma acción = mismo resultado, en navegador y servidor. Habrá un test que lo verifique.
+- RNG con semilla (mulberry32) implementado dentro del motor, sin dependencias, con su estado guardado en el `MatchState`.
+- Mismo estado + misma acción = mismo resultado, en navegador y servidor. Lo verifica `playout.test.ts`.
 
-### 4.4 Errores
+### 4.4 Organización del código (`packages/engine/src`)
+
+| Archivo | Responsabilidad |
+|---|---|
+| `domain.ts` | Atributos, hábitats y afinidades |
+| `ruleset.ts`, `roster.ts` | Tipos de parámetros y perfiles de animal |
+| `state.ts`, `actions.ts`, `events.ts`, `errors.ts` | Tipos de estado, acciones, eventos y errores |
+| `match.ts` | Creación y validación de la partida |
+| `setup.ts` | Confirmación de equipos y sorteo inicial |
+| `duel.ts` | Declaración, defensa y resolución del duelo |
+| `combat.ts` | Valor efectivo, comparación y daño |
+| `locks.ts` | Bloqueos de atributo |
+| `turns.ts` | Orden de turnos, saltos y relevo |
+| `outcome.ts` | Victoria, límite de duelos y desempates |
+| `legal.ts` | Acciones legales y opciones de defensa |
+| `view.ts` | Vistas y eventos redactados por jugador |
+| `apply.ts` | Punto de entrada `applyAction` y rendición |
+| `rng.ts` | Aleatoriedad determinista |
+| `queries.ts` | Consultas internas sobre el estado |
+| `testing/` | Datos y utilidades **solo para tests** (copia del ruleset y los perfiles v0.1) |
+
+### 4.5 Errores
 
 Las reglas no lanzan excepciones para acciones ilegales: devuelven un `RuleError` tipado (`NOT_YOUR_TURN`, `CARD_ELIMINATED`, `ATTRIBUTE_LOCKED`, `WRONG_PHASE`…). Las excepciones quedan para errores de programación (estado imposible).
 

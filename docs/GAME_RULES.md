@@ -75,6 +75,8 @@ Estados del motor (amplía la máquina de estados del documento maestro):
 SETUP ──► DECLARE ──► DEFEND ──► RESOLVE ──► (FINISHED | DECLARE del siguiente duelo)
 ```
 
+En el motor, `RESOLVE` no es un estado de espera: se ejecuta dentro de la acción de defensa, que devuelve directamente el duelo resuelto. Las fases del estado son `setup`, `declare`, `defend` y `finished`.
+
 | Fase | Quién actúa | Acción válida | Información nueva para el defensor |
 |---|---|---|---|
 | `SETUP` | Todos | Confirmar equipo | — |
@@ -335,7 +337,7 @@ Cada duelo produce un `CombatResolution` (datos puros) que consumen Phaser, Reac
 | `hpAfter` | Vitalidad resultante de ambas cartas |
 | `locksApplied`, `locksExpired` | Bloqueos aplicados y expirados |
 | `eliminated` | Carta eliminada o `null` |
-| `next` | Siguiente atacante y defensor, o resultado final |
+| *(siguiente turno)* | No va en la resolución: lo anuncia el evento `turnStarted` o `matchFinished` que la sigue |
 
 Con estos datos, la pantalla de resultado y el **registro del combate** pueden explicar siempre **por qué** ganó una carta (pilar "Transparencia").
 

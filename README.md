@@ -8,8 +8,9 @@
 |---|---|---|
 | 0 · Análisis | ✅ Cerrada | [`docs/00-ANALISIS-FASE-0.md`](docs/00-ANALISIS-FASE-0.md) |
 | 1 · Game design | ✅ Cerrada | [`docs/GAME_RULES.md`](docs/GAME_RULES.md) · [`docs/BALANCE.md`](docs/BALANCE.md) · [`docs/DECISIONES.md`](docs/DECISIONES.md) |
-| 2 · Arquitectura | 🚧 En revisión | [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) · [`CONTRIBUTING.md`](CONTRIBUTING.md) |
-| 3 · Motor de reglas | ⏳ Siguiente | — |
+| 2 · Arquitectura | ✅ Cerrada | [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) · [`CONTRIBUTING.md`](CONTRIBUTING.md) |
+| 3 · Motor de reglas | 🚧 En revisión | [`packages/engine`](packages/engine/src) · 68 tests |
+| 4 · Datos y balance inicial | ⏳ Siguiente | — |
 
 Hoja de ruta completa: [`docs/ROADMAP.md`](docs/ROADMAP.md).
 
