@@ -24,7 +24,7 @@ Variables de entorno del servidor: [`apps/server/.env.example`](../apps/server/.
 ### `GET /health`
 
 ```json
-{ "status": "ok", "rooms": 3 }
+{ "status": "ok", "rooms": 3, "storage": "postgres" }
 ```
 
 ### `GET /api/rooms/:code`

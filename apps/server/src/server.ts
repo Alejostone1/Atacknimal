@@ -106,7 +106,10 @@ export function buildServer(options: BuildOptions): GameServerHandle {
 
   /* ---------- HTTP ---------- */
 
-  http.get('/health', () => ({ status: 'ok', rooms: rooms.size }));
+  // Qué almacenamiento usa (nunca la cadena de conexión). Con `postgres`, las migraciones ya
+  // se aplicaron al arrancar: si la base de datos no respondiera, el servidor no habría arrancado.
+  const storage = config.databaseUrl === undefined ? config.localDriver : 'postgres';
+  http.get('/health', () => ({ status: 'ok', rooms: rooms.size, storage }));
 
   http.get<{ Params: { code: string } }>('/api/rooms/:code', async (request, reply) => {
     const code = roomCodeSchema.safeParse(request.params.code);

@@ -222,6 +222,11 @@ describe('salas', () => {
       joinable: true,
     });
     expect((await fetch(`${url}/api/rooms/ZZZZZZ`)).status).toBe(404);
+    expect(await fetch(`${url}/health`).then((r) => r.json())).toEqual({
+      status: 'ok',
+      rooms: 1,
+      storage: 'pglite',
+    });
     expect((await fetch(`${url}/api/rooms/x`)).status).toBe(400);
   });
 
