@@ -2,6 +2,14 @@
 
 Cómo publicar el juego para compartir el enlace de una sala con cualquiera (decisión #035, opción A). Se puede seguir desde el celular.
 
+**Estado (2026-10-28): ✅ desplegado.**
+
+| | Dirección |
+|---|---|
+| Juego | https://atacknimal.vercel.app |
+| Servidor | https://atacknimal-server.onrender.com (`/health`) |
+| Base de datos | Sin conectar todavía (almacén en memoria) |
+
 | Pieza | Servicio | Plan | Archivo de configuración |
 |---|---|---|---|
 | Web (React) | **Vercel** | Gratis | [`vercel.json`](../vercel.json) |
