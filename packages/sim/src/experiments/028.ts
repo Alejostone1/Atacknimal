@@ -2,7 +2,9 @@
  * Decisión #028 A: equipos ocultos hasta que se revelan, solos o con ajustes de #025 y #026.
  * Criterio acordado: atacante entre el 55 % y el 62 % y primer jugador sin alerta.
  */
+import type { Experiment } from '../experiment.ts';
 import { combineVariants, type Variant } from '../variants.ts';
+import { ATTACKER_RANGE } from './criteria.ts';
 
 const RULES: readonly Variant[] = [
   { name: 'públicos' },
@@ -24,10 +26,11 @@ const CONTENT: readonly Variant[] = [
   },
 ];
 
-export const EXPERIMENT = {
+export const EXPERIMENT: Experiment = {
   title: 'Decisión #028: equipos ocultos',
   baseVersion: '0.1.0',
   sample: 20_000,
   seed: 1,
+  criterion: ATTACKER_RANGE,
   variants: combineVariants(RULES, CONTENT),
 };

@@ -1,6 +1,7 @@
 # ATACKNIMAL · Reglas del juego
 
-> **Ruleset v0.1** · Estado: especificación cerrada de la Fase 1 (pendiente de validar por simulación en la Fase 4).
+> **Ruleset vigente: 0.2.0** (equipos ocultos, ventaja defensiva +5, Hostil −10; decisiones #028 y #029). Validado por simulación: [BALANCE.md](BALANCE.md) §13.
+> El ruleset 0.1.0 se conserva para comparar. Los ejemplos de §18 y los tests del motor usan 0.1.0.
 > Este documento es la **fuente de verdad** del motor de reglas (`packages/engine`). Si el código y este documento no coinciden, es un error de uno de los dos y se corrige explícitamente.
 > Los valores numéricos no se escriben en el código: viven en el *ruleset* versionado (ver §14 y [BALANCE.md](BALANCE.md)).
 > Las decisiones que originan cada regla se citan como `#NNN` (ver [DECISIONES.md](DECISIONES.md)).
@@ -138,24 +139,26 @@ Para cada carta del duelo, en este **orden fijo**:
 valorEfectivo = max(0,
     valorBase(atributo)
   + modHábitat(afinidad del animal con el hábitat)
-  + modHabilidad          // 0 en v0.1: habilidades desactivadas (#010)
-  + modEstado             // 0 en v0.1: reservado para estados futuros
+  + modHabilidad          // 0: habilidades desactivadas (#010)
+  + modEstado             // 0: reservado para estados futuros
+  + modDefensor           // solo la carta defensora: ruleset.defenderBonus (+5 en 0.2.0, 0 en 0.1.0)
 )
 ```
 
 - Los modificadores son **enteros** y se suman: nunca se multiplican (#006).
 - **El modificador de hábitat se aplica a ambas cartas**, cada una según su propia afinidad (#006).
 - Ambos valores pueden superar 100 (#021). La interfaz muestra el desglose, por ejemplo `110 = 100 + 10 (Tierra · Nativo)`.
-- En una defensa forzada, el valor efectivo de la carta defensora es 0 y no se calculan sus modificadores.
+- En una defensa forzada, el valor efectivo de la carta defensora es 0 y no se calculan sus modificadores (tampoco la ventaja del defensor).
+- La ventaja del defensor (`roleModifier` en el desglose) compensa en parte que el atacante elija el eje del duelo (#025, #029).
 
-### 6.1 Modificador de hábitat (ruleset v0.1)
+### 6.1 Modificador de hábitat
 
-| Afinidad | Modificador |
-|---|---|
-| Nativo | **+10** |
-| Adaptado | **+4** |
-| Neutral | **0** |
-| Hostil | **−15** |
+| Afinidad | 0.2.0 (vigente) | 0.1.0 |
+|---|---|---|
+| Nativo | **+10** | +10 |
+| Adaptado | **+4** | +4 |
+| Neutral | **0** | 0 |
+| Hostil | **−10** | −15 |
 
 La tabla de afinidades por animal está en [BALANCE.md](BALANCE.md) §4.
 
@@ -289,9 +292,10 @@ Un jugador que abandona voluntariamente pierde. En 2v2 pierde todo su equipo.
 
 | Información | Jugador propio | Compañero (2v2) | Rival | Cuándo |
 |---|---|---|---|---|
-| Animales del equipo, vitalidad y eliminadas | ✅ | ✅ | ✅ | Desde el fin de `SETUP` |
+| Animales del equipo, vitalidad y eliminadas | ✅ | ✅ | **Solo las cartas reveladas** (0.2.0) | Una carta se revela al participar en su primer duelo. En 0.1.0, todas desde el fin de `SETUP` |
+| Número de cartas rivales aún ocultas | ✅ | ✅ | ✅ | Siempre (`hiddenCards` en la vista) |
 | Atributos base y afinidades de cada animal | ✅ | ✅ | ✅ | Siempre (son datos públicos del roster) |
-| Bloqueos de cada carta | ✅ | ✅ | ✅ | Siempre (#014) |
+| Bloqueos de cada carta | ✅ | ✅ | ✅ (de las cartas reveladas) | Siempre (#014) |
 | Equipo durante `SETUP` | ✅ | ✅ | ❌ | Hasta que ambos confirman |
 | Hábitat + atributo declarados | ✅ | ✅ | ✅ | Desde la declaración |
 | **Carta atacante** | ✅ | ✅ (compañero del atacante) | ❌ | Hasta que se acepta la defensa |
@@ -299,7 +303,9 @@ Un jugador que abandona voluntariamente pierde. En 2v2 pierde todo su equipo.
 | Resolución completa (§13) | ✅ | ✅ | ✅ | Tras `RESOLVE` |
 | Semilla de la partida y estado del RNG | ❌ | ❌ | ❌ | Nunca (hasta el final, si se habilita una repetición) |
 
-**Implementación obligatoria:** el motor expone `getPlayerView(estado, jugador)`, que **elimina** los datos ocultos. El servidor solo envía vistas por jugador, nunca el estado completo. Habrá un test que verifique que la vista del defensor durante `DEFEND` no contiene la carta atacante.
+**Implementación obligatoria:** el motor expone `getPlayerView(estado, jugador)`, que **elimina** los datos ocultos. El servidor solo envía vistas por jugador, nunca el estado completo. Hay tests que verifican que la vista del defensor durante `DEFEND` no contiene la carta atacante y que, con equipos ocultos, la vista del rival es idéntica elijas los animales que elijas.
+
+**Equipos ocultos (0.2.0):** el evento `matchStarted` llega a cada jugador sin los equipos rivales. Las cartas ocultas del rival no aparecen en la vista, ni siquiera sus ids: un id como `p2/wolf` delataría al animal. La interfaz muestra siluetas "?" por cada carta oculta.
 
 ---
 
@@ -330,7 +336,7 @@ Cada duelo produce un `CombatResolution` (datos puros) que consumen Phaser, Reac
 | `attacker`, `defender` | Jugador y carta de cada rol |
 | `habitat`, `attribute` | Declaración |
 | `forcedDefense` | `true` / `false` |
-| `attackerBreakdown`, `defenderBreakdown` | `{ base, habitat: { affinity, mod }, ability, status, effective }` |
+| `attackerBreakdown`, `defenderBreakdown` | `{ base, affinity, habitatModifier, abilityModifier, statusModifier, roleModifier, effective }` (`null` en defensa forzada) |
 | `outcome` | `ATTACKER_WINS` / `DEFENDER_WINS` / `TIE` |
 | `margin` | Diferencia de valores efectivos |
 | `damage` | `{ target, amount, isCounter }` o `null` |
@@ -343,13 +349,15 @@ Con estos datos, la pantalla de resultado y el **registro del combate** pueden e
 
 ---
 
-## 14. Parámetros del ruleset v0.1
+## 14. Parámetros del ruleset
+
+Valores de la versión vigente **0.2.0**. Las diferencias con 0.1.0 se indican entre paréntesis.
 
 | Parámetro | Valor | Regla |
 |---|---|---|
 | `teamSize` | 4 | §3.1 |
 | `baseHp` | 100 | §3.2 |
-| `habitatModifiers` | Nativo +10, Adaptado +4, Neutral 0, Hostil −15 | §6.1 |
+| `habitatModifiers` | Nativo +10, Adaptado +4, Neutral 0, Hostil **−10** (0.1.0: −15) | §6.1 |
 | `damage.base` | 20 | §7.2 |
 | `damage.k` | 0.5 | §7.2 |
 | `damage.min` | 20 | §7.2 |
@@ -358,10 +366,10 @@ Con estos datos, la pantalla de resultado y el **registro del combate** pueden e
 | `lockDuration` | 1 (participaciones) | §8 |
 | `maxDuels` | 30 | §10.2 |
 | `abilitiesEnabled` | `false` | §15 |
-| `defenderBonus` | 0 (*experimental, desactivado*: ventaja fija del defensor fuera de defensa forzada) | #025 A |
-| `teamAttributeLock` | 0 (*experimental, desactivado*: ataques propios en que el atributo usado queda bloqueado para todo el equipo) | #025 B |
-| `habitatCooldown` | 0 (*experimental, desactivado*: ataques propios en que el equipo no puede repetir hábitat; error `HABITAT_LOCKED`) | #025 C |
-| `hiddenTeams` | `false` (*experimental, desactivado*: las cartas rivales no se ven hasta que participan en un duelo; la vista muestra solo cuántas quedan ocultas) | #028 A |
+| `defenderBonus` | **5** (0.1.0: 0): ventaja fija del defensor fuera de defensa forzada | §6, #029 |
+| `hiddenTeams` | **`true`** (0.1.0: `false`): las cartas rivales no se ven hasta que participan en un duelo | §11, #028 |
+| `teamAttributeLock` | 0 (*disponible, sin usar*: ataques propios en que el atributo usado queda bloqueado para todo el equipo) | #025 B |
+| `habitatCooldown` | 0 (*disponible, sin usar*: ataques propios en que el equipo no puede repetir hábitat; error `HABITAT_LOCKED`) | #025 C |
 | `turnTimers.declareSeconds` | 30 (solo online) | §16 |
 | `turnTimers.defendSeconds` | 20 (solo online) | §16 |
 | `reconnectGraceSeconds` | 60 (solo online) | §16 |
@@ -413,7 +421,9 @@ Estas reglas no afectan al motor; las aplica el servidor alrededor de él:
 
 ---
 
-## 18. Ejemplos resueltos (ruleset v0.1, estadísticas de [BALANCE.md](BALANCE.md))
+## 18. Ejemplos resueltos (ruleset 0.1.0 y perfiles de [BALANCE.md](BALANCE.md) §3)
+
+> Estos ejemplos documentan la mecánica con 0.1.0 y son los que comprueban los tests del motor. Con 0.2.0 cambian los números (por ejemplo, el defensor suma +5 y algunos perfiles cambian), pero no el procedimiento.
 
 ### Ejemplo 1: gana el atacante
 

@@ -141,7 +141,8 @@ Las reglas no lanzan excepciones para acciones ilegales: devuelven un `RuleError
   - `data/animals.json`: identidad de cada animal (nombre, especie, rol). Sin números de balance.
   - `data/balance/<versión>.json`: una **versión de balance** = ruleset + reglas de presupuesto + métricas objetivo + perfiles de los 11 animales. Todo lo que se equilibra junto se versiona junto.
   - Al importarse, el paquete valida todo con Zod y comprueba que cada animal tenga exactamente un perfil. Los tests verifican el presupuesto de [BALANCE.md](BALANCE.md) §2 en cada versión.
-- **Simulación:** `npm run simulate -- --policy greedy|random [--sample N]` escribe `packages/sim/reports/<versión>/<política>/summary.md` y `animals.csv`. Los bots deciden con la `PlayerView`, igual que un humano.
+- **Simulación:** `npm run simulate -- --version 0.2.0 --policy greedy|random|blind [--sample N]` escribe `packages/sim/reports/<versión>/<política>/summary.md` y `animals.csv`. Los bots deciden con la `PlayerView`, igual que un humano: con equipos ocultos, `greedy` estima las cartas rivales no reveladas.
+- **Experimentos:** `npm run experiment -- <nombre>` simula en paralelo (worker threads) las variantes de `packages/sim/src/experiments/<nombre>.ts`. Una variante cambia parámetros del ruleset, afinidades o perfiles sin publicar una versión. El resultado es una tabla comparativa en `packages/sim/reports/experiments/` que comprueba el presupuesto de cada variante.
 - Cada partida guarda `rulesetVersion` y `contentVersion`. Una versión publicada nunca se edita (ver [BALANCE.md](BALANCE.md) §9).
 - **Datos reales (`facts`)** y **perfil de juego** son estructuras separadas. El motor solo recibe el perfil de juego.
 - Modelo de datos conceptual: [00-ANALISIS-FASE-0.md](00-ANALISIS-FASE-0.md) §G.5. El esquema físico se documentará en `DATABASE.md` (Fase 8).

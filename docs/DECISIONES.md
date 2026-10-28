@@ -88,3 +88,18 @@ Corrige la ventaja del primer jugador (62,8 % → 51,4 % con A5) pero no el éxi
 - **C. Ventaja defensiva grande (~+30) o perfiles más planos.** Cumple el objetivo numérico, pero los animales pierden identidad. No lo recomiendo.
 
 **Recomendación: A.** Respeta tu regla del turno y la identidad de los animales, y los datos muestran una partida justa entre jugadores. Si quieres explorar B, se puede medir como experimento sin adoptarla.
+
+### ✅ #029 aceptada: opción A (2026-10-28)
+
+- La base de la versión de balance **0.2.0** es: equipos ocultos (`hiddenTeams`), ventaja defensiva +5 (`defenderBonus`) y Aire neutral para los no voladores (resuelve también **#026**, opción A).
+- **Nuevo objetivo de balance:** que atacar gane la mayoría de los duelos se considera parte de la identidad del juego. El indicador "win rate del atacante por duelo" pasa a ser **solo informativo**, con alerta únicamente si supera el 95 %. El equilibrio se mide con: primer jugador 48–52 %, animales 45–55 %, duración, empates y partidas que llegan al límite.
+- **#027** queda resuelta: después de la estructura se ajustan el Águila y los animales débiles, en 0.2.0.
+
+### ✅ Versión de balance 0.2.0 publicada (2026-10-28)
+
+Composición final, elegida con el criterio de #029 (ninguna métrica que decide partidas en alerta, con la variante más simple que lo cumple):
+
+- **Reglas:** equipos ocultos, ventaja defensiva +5, Aire neutral para no voladores y Hostil −10.
+- **Perfiles:** ajustes de Águila, Guepardo, Lobo, Tiburón y Cocodrilo.
+
+Detalle y resultados en [BALANCE.md](BALANCE.md) §13. GAME_RULES.md describe 0.2.0 como ruleset vigente.

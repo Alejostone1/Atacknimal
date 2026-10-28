@@ -2,7 +2,9 @@
  * Candidatas de las decisiones #025 (dominio del atacante) y #026 (Águila en Aire).
  * Criterio acordado: la combinación más simple que deje al atacante entre el 55 % y el 62 %.
  */
+import type { Experiment } from '../experiment.ts';
 import { combineVariants, type Variant } from '../variants.ts';
+import { ATTACKER_RANGE } from './criteria.ts';
 
 const RULES: readonly Variant[] = [
   { name: '' },
@@ -28,10 +30,11 @@ const CONTENT: readonly Variant[] = [
   },
 ];
 
-export const EXPERIMENT = {
+export const EXPERIMENT: Experiment = {
   title: 'Decisiones #025 y #026',
   baseVersion: '0.1.0',
   sample: 20_000,
   seed: 1,
+  criterion: ATTACKER_RANGE,
   variants: combineVariants(RULES, CONTENT),
 };

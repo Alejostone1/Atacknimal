@@ -1,6 +1,7 @@
 import type { AnimalProfile, Ruleset } from '@atacknimal/engine';
 import animalsData from '../data/animals.json' with { type: 'json' };
 import balance010 from '../data/balance/0.1.0.json' with { type: 'json' };
+import balance020 from '../data/balance/0.2.0.json' with { type: 'json' };
 import {
   animalSchema,
   balanceSetSchema,
@@ -28,14 +29,14 @@ export class ContentError extends Error {
 export const ANIMALS: readonly Animal[] = animalSchema.array().parse(animalsData);
 
 const BALANCE_SETS: Readonly<Record<string, BalanceSet>> = Object.fromEntries(
-  [balance010].map((data) => {
+  [balance010, balance020].map((data) => {
     const set = toBalanceSet(data);
     return [set.version, set];
   }),
 );
 
 export const BALANCE_VERSIONS: readonly string[] = Object.keys(BALANCE_SETS);
-export const LATEST_BALANCE_VERSION = '0.1.0';
+export const LATEST_BALANCE_VERSION = '0.2.0';
 
 export function getBalanceSet(version: string = LATEST_BALANCE_VERSION): BalanceSet {
   const set = BALANCE_SETS[version];

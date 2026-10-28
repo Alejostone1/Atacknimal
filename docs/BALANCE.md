@@ -33,7 +33,9 @@ Todo perfil de animal publicado debe cumplir **todas** estas reglas. Un test aut
 
 ---
 
-## 3. Perfiles v0.1
+## 3. Perfiles v0.1 (históricos)
+
+> Los perfiles **vigentes** son los de la versión 0.2.0 (§13). Esta tabla se conserva como referencia de la primera iteración.
 
 Abreviaturas: PE Peso · FU Fuerza · AG Agilidad · AT Ataque · RE Resistencia · VE Velocidad · DE Defensa · PC Percepción. Los **picos** (≥ 88) van en negrita y los *valles* (≤ 50) en cursiva.
 
@@ -303,3 +305,49 @@ Tabla completa: [`packages/sim/reports/experiments/028.md`](../packages/sim/repo
 3. Cambiando qué información recibe el defensor, lo que toca la regla fundamental del turno.
 
 Con equipos ocultos, la partida es una **carrera simétrica**: los dos jugadores golpean por turnos y el primero ya no tiene ventaja relevante (51,4 % con A5). La estrategia está en **qué revelas y cuándo**, en **cuánto daño haces** (depende del margen) y en **qué carta absorbe** cada golpe.
+
+---
+
+## 13. Versión de balance 0.2.0 (vigente)
+
+Datos: [`packages/content/data/balance/0.2.0.json`](../packages/content/data/balance/0.2.0.json). Informe completo: [`packages/sim/reports/0.2.0/greedy/summary.md`](../packages/sim/reports/0.2.0/greedy/summary.md). Ajuste en cuatro rondas: [`packages/sim/reports/experiments/020-ajuste.md`](../packages/sim/reports/experiments/020-ajuste.md).
+
+### 13.1 Cambios de reglas respecto a 0.1.0
+
+| Cambio | Motivo |
+|---|---|
+| **Equipos ocultos** hasta que cada carta participa en un duelo | Ventaja del primer jugador: 62,8 % → ~52 % (#028) |
+| **Ventaja defensiva +5** | Elimina los empates (7,7 % → 0,1 %) y reduce las partidas que llegan al límite |
+| **Aire: los no voladores pasan de Hostil a Neutral** | El Águila tenía +25 relativos contra todos en Aire (#026) |
+| **Hostil −15 → −10** | Árboles se había convertido en la arena de los pocos adaptados (Águila, Guepardo, Tigre), con +19 relativos |
+
+### 13.2 Cambios de perfiles
+
+| Animal | Cambio | Motivo |
+|---|---|---|
+| Águila real | VE 88→80, AG 90→88, PC 100→92, AT 84→78, RE 70→76, DE 66→76; Árboles Adaptado→Neutral | Era la única nativa de Aire y su +10 nunca se compensaba. Pierde su tercer pico y su segunda arena |
+| Guepardo | VE 100→96, AG 92→88, RE 62→66, PC 82→84; Árboles Adaptado→Neutral | Sus márgenes enormes en Tierra y Árboles maximizaban el daño. Biología: el guepardo apenas trepa |
+| Lobo | FU 62→56, AG 78→72, AT 76→82, RE 90→95, VE 80→76, PC 88→94; Agua Neutral→Adaptado | Era "bueno en todo y mejor en nada": ahora tiene picos claros y una segunda arena |
+| Tiburón blanco | AT 96→98, VE 88→92 | Solo es fuerte en Agua, donde comparte arena con otros tres nativos |
+| Cocodrilo | DE 90→94 | Por debajo del 45 % |
+
+Todos los perfiles siguen cumpliendo el presupuesto de §2 (los tests de `packages/content` lo comprueban). Ya no hay ningún 100 en Velocidad ni en Percepción.
+
+### 13.3 Resultado (108 900 partidas, bots `greedy`)
+
+| Métrica | 0.1.0 | **0.2.0** | Objetivo |
+|---|---|---|---|
+| Primer jugador | 62,3 % 🔴 | **52,3 %** ⚠️ | 48–52 % (alerta > 54 %) |
+| Rango de los animales | 42,4–69,6 % 🔴 | **45,0–56,4 %** ⚠️ | 45–55 % (alerta fuera de 42–58 %) |
+| Duelos por partida | 24,7 | **25,8** ⚠️ | 16–24 (alerta > 28) |
+| Partidas que llegan al límite | 11,5 % 🔴 | **4,8 %** ✅ | ≤ 10 % |
+| Duelos empatados | 7,8 % ⚠️ | **0,1 %** ✅ | < 5 % |
+| Defensas forzadas por partida | 1,0 | **1,0** ✅ | 0,5–2 |
+| Gana el atacante (solo informativo, #029) | 92,2 % | 90,5 % | Alerta > 95 % |
+
+**Ninguna métrica que decide partidas está en alerta.** Quedan pendientes para 0.2.x:
+
+- 🔴 **El Águila aparece en el 80 % de los 20 mejores equipos** (alerta > 70 %), aunque su win rate global (56,2 %) ya no está en alerta. Es una carta que encaja en muchos equipos, lo que también es una señal de poder.
+- ⚠️ **Guepardo, Águila y Tigre** rondan el 56 %, y **Lobo y Cocodrilo** el 45 %.
+- ⚠️ **Duración de 25,8 duelos**, por encima del objetivo de 24. Subir el daño base acortaría las partidas, pero en la ronda 3 movía el equilibrio de animales. Conviene revisarlo cuando la IA sea más lista que `greedy`.
+- Los bots `greedy` son una aproximación. Cuando exista la IA Difícil (Fase 7), el balance debe volver a medirse con ella.
