@@ -1,0 +1,11 @@
+.stage {
+  width: 100%;
+  height: clamp(320px, 62vw, 460px);
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--c-night);
+}
+
+.stage canvas {
+  display: block;
+}

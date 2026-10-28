@@ -50,7 +50,7 @@
 | `@atacknimal/sim` | ✅ Fase 4a | Simulación masiva e informes de balance (`npm run simulate`) | engine, content |
 | `@atacknimal/protocol` | ⏳ Fase 8 | Contratos de eventos WebSocket y DTO REST (Zod) | engine (tipos) |
 | `tools/curator` | ✅ Fase 4b | Herramienta de desarrollo: fotos con licencia abierta y datos de Wikidata ([ASSETS.md](ASSETS.md)) | content |
-| `apps/web` | ✅ Fase 5 (interfaz) · ⏳ combate (Fase 6) | React + Vite; Phaser solo en `src/phaser/` | engine, content (protocol en la Fase 8) |
+| `apps/web` | ✅ Fase 5 (interfaz) · ✅ Fase 6 (combate) | React + Vite; Phaser solo en `src/phaser/` | engine, content (protocol en la Fase 8) |
 | `apps/server` | ⏳ Fase 8 | Fastify + Socket.IO + Drizzle | engine, content, protocol |
 
 ```text
@@ -170,7 +170,28 @@ Las reglas no lanzan excepciones para acciones ilegales: devuelven un `RuleError
 
 **Regla de ESLint:** fuera de `src/phaser/` no se puede importar Phaser.
 
-### 6.2 Combate (Fase 6, ⏳)
+### 6.2 Combate (Fase 6, ✅)
+
+| Carpeta (`apps/web/src`) | Contenido |
+|---|---|
+| `game/localMatch.ts` | Crea la partida local (motor en el navegador): jugador `jugador` contra `rival`, con el equipo del rival al azar |
+| `game/matchStore.ts` | Estado de la partida. **Guarda el estado del motor fuera del store** y solo expone la `PlayerView` del jugador, el duelo que se está mostrando y el registro. Mientras se muestra un duelo, el rival espera |
+| `game/opponent.ts` | **Rival provisional:** acción legal al azar desde su vista. Lo sustituye la IA de la Fase 7 |
+| `game/present.ts` | Traduce cada `CombatResolution` en datos para Phaser y en un **texto equivalente** (accesible y para movimiento reducido) que explica por qué ganó una carta |
+| `match/` | Pantalla `/partida`: tiras de equipo (las rivales sin revelar como "?"), ataque en tres pasos (hábitat → animal → atributo, con el valor real de cada opción), defensa (con aviso de defensa forzada), resultado, registro, fin de partida y abandono |
+| `phaser/` | `CombatStage.tsx` (único puente React ↔ Phaser), `DuelScene.ts` (animación) y `presentation.ts` (contrato de datos) |
+
+**Flujo de un duelo:** acción del jugador → `applyAction` (motor) → el store guarda la vista nueva y el duelo resuelto → `CombatStage` entrega la presentación a Phaser por el registro del juego → Phaser anima → "Continuar" → el rival actúa si le toca.
+
+**Phaser 4.2.1:** se carga en un archivo aparte (`React.lazy`) que solo se descarga al entrar en `/partida` (≈ 365 KB comprimidos). El audio está desactivado porque todavía no hay sonido. Las fotos se cargan como texturas con CORS anónimo, que Commons e iNaturalist permiten.
+
+**Qué decide cada capa:** las opciones legales y los valores que se muestran antes de confirmar los calcula el motor (`getLegalActions`, `getDefenseOptions`, `computeValue`). React solo los presenta. Phaser no importa nada del motor salvo tipos.
+
+### 6.3 Pendiente para fases siguientes
+
+- Una partida en curso no sobrevive a recargar la página (el estado vive en memoria).
+- Las tiras de equipo se actualizan antes de que termine la animación: se ve la vitalidad nueva mientras Phaser todavía la está bajando.
+- Las cartas de combate aún no muestran el icono ⓘ con el crédito de la foto: el crédito está en la ficha y en Créditos.
 
 - Un único componente `CombatStage` crea y destruye la instancia de `Phaser.Game`. Ningún otro componente toca Phaser.
 - Comunicación por un **bus de eventos tipado** en un solo sentido para los datos: React → Phaser envía `CombatResolution`; Phaser → React solo devuelve señales de presentación (`animationComplete`).
@@ -236,7 +257,7 @@ Las reglas no lanzan excepciones para acciones ilegales: devuelven un `RuleError
 | Zustand | 5.0.16 | Fase 5 |
 | lucide-react | 1.63.0 | Fase 5 |
 | Testing Library (React) / jsdom | 16.3.3 / 30.1.3 | Fase 5 |
-| Phaser | ⏳ (evaluar Phaser 4) | Fase 6 |
+| Phaser | 4.2.1 | Fase 6 |
 | Fastify, Socket.IO, Drizzle, PostgreSQL | ⏳ | Fase 8 |
 
 Las dependencias se instalan con versión exacta (`--save-exact`) y el `package-lock.json` se versiona.

@@ -12,7 +12,7 @@ Cada fase sigue el ciclo: explicar → arquitectura → archivos → implementar
 | **4a · Contenido + simulación** | ✅ balance 0.2.0 | Contenido real y medido | `content` (11 perfiles, afinidades, ruleset v0.1, Zod), `sim` (bots `random` y `greedy`, informes) | Test de presupuesto de perfiles; informe de 108 900 partidas |
 | **4b · Imágenes y datos reales** | ✅ 11 fotos aprobadas · ⏳ masa/longitud/velocidad manuales | Fotos con licencia y ficha zoológica | Curador de imágenes, `ASSETS.md`, `facts` con fuentes | 11 fotos con licencia verificada |
 | **5 · Frontend** | ✅ | Navegación | `apps/web`: Inicio, Selección de equipo, Colección, Créditos, Ajustes; móvil primero | Recorrido manual en 375 px y escritorio |
-| **6 · Combate (Phaser)** | ⏳ | Escena de duelo | `CombatStage`: revelación, VS, desglose, daño, eliminación; reducir movimiento | La escena consume `CombatResolution` sin lógica propia |
+| **6 · Combate (Phaser)** | ✅ (rival provisional al azar) | Escena de duelo | `CombatStage`: revelación, VS, desglose, daño, eliminación; reducir movimiento | La escena consume `CombatResolution` sin lógica propia |
 | **7 · IA** 🎯 **MVP** | ⏳ | **1 vs IA jugable** | IA Fácil, Normal y Difícil (ataque y defensa) | Partida completa en el móvil de principio a fin |
 | **8 · Servidor + 1v1** | ⏳ | Online | `apps/server`, `protocol`, PostgreSQL, salas por código, autoridad del servidor, reconexión, `API.md`, `DATABASE.md` | Dos navegadores juegan; test de redacción en red; reconexión sin duplicar acciones |
 | **9 · 2v2** | ⏳ | Equipos | Asientos, orden de turnos, relevo, marcadores rápidos | Cuatro clientes completan una partida |

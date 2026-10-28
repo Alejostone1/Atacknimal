@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { lazy, Suspense, useEffect } from 'react';
 import { createBrowserRouter, Outlet, RouterProvider, ScrollRestoration } from 'react-router';
 import { AnimalScreen } from '../screens/AnimalScreen.tsx';
 import { CollectionScreen } from '../screens/CollectionScreen.tsx';
@@ -10,6 +10,19 @@ import { ReadyScreen } from '../screens/ReadyScreen.tsx';
 import { SettingsScreen } from '../screens/SettingsScreen.tsx';
 import { TeamSelectScreen } from '../screens/TeamSelectScreen.tsx';
 import { useSettings } from '../state/stores.ts';
+
+/** La partida incluye Phaser: se descarga solo al entrar en ella. */
+const MatchScreen = lazy(() => import('../match/MatchScreen.tsx'));
+
+function MatchRoute() {
+  return (
+    <Suspense
+      fallback={<p style={{ padding: 'var(--s-6) var(--gutter)' }}>Preparando el duelo…</p>}
+    >
+      <MatchScreen />
+    </Suspense>
+  );
+}
 
 /** Raíz común: restaura el scroll y aplica la preferencia de animaciones al documento. */
 function Root() {
@@ -33,6 +46,7 @@ const router = createBrowserRouter([
       { path: '/jugar', element: <PlayScreen /> },
       { path: '/jugar/equipo', element: <TeamSelectScreen /> },
       { path: '/jugar/listo', element: <ReadyScreen /> },
+      { path: '/partida', element: <MatchRoute /> },
       { path: '/coleccion', element: <CollectionScreen /> },
       { path: '/coleccion/:animalId', element: <AnimalScreen /> },
       { path: '/creditos', element: <CreditsScreen /> },

@@ -1,19 +1,23 @@
-import { Hammer } from 'lucide-react';
-import { Link, Navigate } from 'react-router';
+import { Info } from 'lucide-react';
+import { Link, Navigate, useNavigate } from 'react-router';
 import { Screen } from '../components/Screen.tsx';
 import { TeamSlots } from '../components/TeamSlots.tsx';
 import { BALANCE } from '../content/catalog.ts';
+import { useMatch } from '../game/matchStore.ts';
 import { useMatchSetup } from '../state/stores.ts';
 import { isTeamComplete } from '../state/team.ts';
 import styles from './ReadyScreen.module.css';
 
 const DIFFICULTY_LABEL = { easy: 'Fácil', normal: 'Normal', hard: 'Difícil' } as const;
 
-/** Resumen previo a la partida. El combate (Phaser + IA) llega en las fases 6 y 7. */
+/** Resumen previo a la partida: equipo, dificultad y entrada al combate. */
 export function ReadyScreen() {
   const { team, difficulty } = useMatchSetup();
-  if (!isTeamComplete(team, BALANCE.ruleset.teamSize))
+  const start = useMatch((s) => s.start);
+  const navigate = useNavigate();
+  if (!isTeamComplete(team, BALANCE.ruleset.teamSize)) {
     return <Navigate to="/jugar/equipo" replace />;
+  }
 
   return (
     <Screen
@@ -22,7 +26,14 @@ export function ReadyScreen() {
       back="/jugar/equipo"
       footer={
         <div className={styles.actions}>
-          <button type="button" className="btn btn--primary btn--block" disabled>
+          <button
+            type="button"
+            className="btn btn--primary btn--block"
+            onClick={() => {
+              start(team, difficulty);
+              void navigate('/partida');
+            }}
+          >
             Empezar partida
           </button>
           <Link to="/jugar/equipo" className="btn btn--ghost btn--block">
@@ -32,11 +43,11 @@ export function ReadyScreen() {
       }
     >
       <TeamSlots team={team} size={BALANCE.ruleset.teamSize} />
-      <div className={styles.notice} role="status">
-        <Hammer size={20} aria-hidden="true" />
+      <div className={styles.notice} role="note">
+        <Info size={20} aria-hidden="true" />
         <p>
-          El combate todavía se está construyendo. Tu equipo y la dificultad quedan guardados en
-          este navegador para cuando esté listo.
+          En esta versión la IA todavía elige sus jugadas al azar, sea cual sea la dificultad. Los
+          niveles Fácil, Normal y Difícil llegan en la próxima versión.
         </p>
       </div>
     </Screen>

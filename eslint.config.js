@@ -68,7 +68,8 @@ export default tseslint.config(
         {
           patterns: [
             {
-              group: ['phaser', 'phaser/*'],
+              // Solo el paquete "phaser" (no la carpeta local ../phaser/, que es el puente permitido).
+              regex: '^phaser(/.*)?$',
               message: 'Solo src/phaser/ puede usar Phaser: React gestiona, Phaser representa.',
             },
           ],
