@@ -1,0 +1,18 @@
+# Servidor de juego en Render (docs/DEPLOY.md). La web va en Vercel (vercel.json).
+services:
+  - type: web
+    name: atacknimal-server
+    runtime: node
+    plan: free
+    buildCommand: npm ci
+    startCommand: npm run start --workspace @atacknimal/server
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_VERSION
+        value: '24'
+      # Dominio de la web en Vercel, por ejemplo https://atacknimal.vercel.app
+      - key: CORS_ORIGIN
+        sync: false
+      # Opcional: PostgreSQL (Neon). Sin valor, PGlite en memoria (se borra al reiniciar).
+      - key: DATABASE_URL
+        sync: false

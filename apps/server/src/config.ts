@@ -11,7 +11,10 @@ const envSchema = z.object({
   DATABASE_URL: z.url().optional(),
   /** Carpeta de datos de PGlite. Sin valor, PGlite trabaja en memoria. */
   PGLITE_DIR: z.string().optional(),
-  /** Origen permitido para Socket.IO cuando el cliente no pasa por el proxy de Vite. */
+  /**
+   * Orígenes permitidos para Socket.IO, separados por comas (por ejemplo, el dominio de Vercel).
+   * En desarrollo no hace falta: el cliente pasa por el proxy de Vite.
+   */
   CORS_ORIGIN: z.string().default('http://localhost:5173'),
   /** Tiempos de turno online (docs/GAME_RULES.md §16). */
   DECLARE_SECONDS: z.coerce.number().positive().default(30),
@@ -24,7 +27,7 @@ export interface ServerConfig {
   readonly host: string;
   readonly databaseUrl: string | undefined;
   readonly pgliteDir: string | undefined;
-  readonly corsOrigin: string;
+  readonly corsOrigins: readonly string[];
   readonly timers: TimerConfig;
 }
 
@@ -41,7 +44,9 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): ServerConfig {
     host: parsed.HOST,
     databaseUrl: parsed.DATABASE_URL,
     pgliteDir: parsed.PGLITE_DIR,
-    corsOrigin: parsed.CORS_ORIGIN,
+    corsOrigins: parsed.CORS_ORIGIN.split(',')
+      .map((origin) => origin.trim())
+      .filter((origin) => origin.length > 0),
     timers: {
       declareMs: parsed.DECLARE_SECONDS * 1000,
       defendMs: parsed.DEFEND_SECONDS * 1000,

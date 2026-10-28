@@ -129,3 +129,19 @@ El token de sesión se guarda en `sessionStorage`: cada pestaña es un jugador (
 ### #034 Antes de empezar, abandonar cierra la sala
 
 Si alguien sale (o no vuelve a tiempo) mientras se espera rival o se eligen equipos, la sala pasa a `closed` sin resultado. Durante la partida, salir cuenta como abandono (GAME_RULES §10.3).
+
+### ⚠️ DECISIÓN PENDIENTE #035: dónde y cuándo desplegar (enlace público)
+
+**Objetivo del usuario:** compartir el enlace de una sala con amigos fuera de casa. Hoy solo funciona en la red local.
+
+**Problema:** Vercel ejecuta funciones *serverless* de corta duración y no puede mantener conexiones WebSocket. Sirve para la web, pero **no para el servidor de juego**.
+
+- **A. Vercel (web) + Render (servidor) + Supabase o Neon (PostgreSQL), todo en planes gratuitos.** Render mantiene el proceso Node con WebSockets. Contrapartida: en el plan gratuito el servidor se duerme sin tráfico y tarda alrededor de un minuto en despertar.
+- **B. Vercel + Railway o Fly.io.** No se duerme, pero normalmente pide tarjeta o un pago pequeño mensual.
+- **C. Todo en un solo servicio (Render sirve también la web).** Un despliegue menos, sin CDN de Vercel.
+
+**Recomendación: A**, y **adelantar el despliegue antes del 2 vs 2**: el 1 vs 1 online ya funciona y compartir el enlace es el objetivo. Cambios de código necesarios: URL del servidor configurable en la web (`VITE_GAME_SERVER_URL`), CORS con el dominio de Vercel y un `Dockerfile` o comando de arranque para el servidor. Las cuentas de Vercel, Render y la base de datos las crea el usuario.
+
+### ✅ #035 aceptada: opción A, desplegando antes del 2 vs 2 (2026-10-28)
+
+Vercel (web) + Render (servidor) + Neon (PostgreSQL, opcional al principio). Para la base de datos se elige **Neon** en lugar de Supabase: su conexión directa funciona con el driver `pg` y `sslmode=require` sin configurar certificados, y Render (plan gratuito, solo IPv4) llega a ella sin *pooler*. Guía en [DEPLOY.md](DEPLOY.md). El despliegue completo de producción (entornos, observabilidad, copias de seguridad) sigue en la Fase 14.

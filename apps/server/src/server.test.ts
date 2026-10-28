@@ -51,7 +51,7 @@ function config(overrides: Partial<ServerConfig['timers']> = {}): ServerConfig {
     host: '127.0.0.1',
     databaseUrl: undefined,
     pgliteDir: undefined,
-    corsOrigin: '*',
+    corsOrigins: ['http://localhost:5173'],
     timers: { declareMs: 30_000, defendMs: 20_000, reconnectGraceMs: 60_000, ...overrides },
   };
 }

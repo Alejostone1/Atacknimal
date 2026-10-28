@@ -72,7 +72,7 @@ export function buildServer(options: BuildOptions): GameServerHandle {
   const balance = options.balance ?? getBalanceSet();
   const http = Fastify({ logger: options.logger ?? false });
   const io: GameServer = new Server(http.server, {
-    cors: { origin: config.corsOrigin },
+    cors: { origin: [...config.corsOrigins] },
     // 🔒 Límite de tamaño de mensaje; el rate limiting por socket sigue pendiente.
     maxHttpBufferSize: 16 * 1024,
   });

@@ -20,6 +20,13 @@ import {
   writeSession as write,
 } from './session.ts';
 
+/**
+ * Servidor de juego. En producción la web (Vercel) y el servidor (Render) están en dominios
+ * distintos; en desarrollo se usa el mismo origen y Vite reenvía /socket.io (vite.config.ts).
+ */
+const configuredUrl = import.meta.env.VITE_GAME_SERVER_URL?.trim() ?? '';
+const SERVER_URL = configuredUrl === '' ? undefined : configuredUrl;
+
 /** Espera máxima de una respuesta del servidor. */
 const ACK_TIMEOUT_MS = 8000;
 
@@ -38,13 +45,13 @@ let socket: GameSocket | null = null;
 function connect(): GameSocket {
   if (socket !== null) return socket;
   useRoom.setState({ connection: 'connecting' });
-  // Mismo origen: en desarrollo Vite reenvía /socket.io al servidor (vite.config.ts).
-  const created: GameSocket = io({
-    auth: (send) => {
+  const options = {
+    auth: (send: (data: object) => void) => {
       const token = read(TOKEN_KEY);
       send(token === null ? {} : { token });
     },
-  });
+  };
+  const created: GameSocket = SERVER_URL === undefined ? io(options) : io(SERVER_URL, options);
   created.on('connect', () => {
     useRoom.setState({ connection: 'online' });
   });

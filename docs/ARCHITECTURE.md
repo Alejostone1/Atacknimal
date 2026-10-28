@@ -218,6 +218,7 @@ Contrato completo en [API.md](API.md); persistencia en [DATABASE.md](DATABASE.md
 - **Una sola puerta al motor:** `Room.apply` aplica, guarda la acción, programa el turno y difunde. Las acciones por tiempo agotado (IA Fácil) y por abandono pasan por la misma puerta.
 - **Idempotencia:** cada acción lleva un id; los duplicados se responden sin aplicarse ([GAME_RULES.md](GAME_RULES.md) §16).
 - **Salas en memoria** (un solo proceso). La base de datos guarda la historia, no el estado vivo.
+- **Despliegue** ([DEPLOY.md](DEPLOY.md)): web en Vercel y servidor en Render. La web conoce el servidor por `VITE_GAME_SERVER_URL` (se incrusta al compilar) y el servidor acepta solo los orígenes de `CORS_ORIGIN`.
 - Pendiente para la Fase 10: QR generado en el cliente desde el enlace `/sala/:codigo` y `PUBLIC_APP_URL` para que funcione desde el móvil en la red local.
 
 ---
