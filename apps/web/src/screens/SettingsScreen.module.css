@@ -1,0 +1,85 @@
+.form {
+  display: grid;
+  gap: var(--s-6);
+  max-width: 560px;
+}
+
+.field {
+  display: grid;
+  gap: var(--s-2);
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.label {
+  font: 800 20px/1 var(--f-display);
+  text-transform: uppercase;
+  padding: 0;
+  margin-bottom: var(--s-1);
+}
+
+.input {
+  min-height: 48px;
+  padding: 0 var(--s-3);
+  border: 1px solid var(--c-moss-hi);
+  border-radius: var(--radius);
+  background: var(--c-moss);
+}
+
+.input:focus {
+  border-color: var(--c-amber);
+  outline: none;
+}
+
+.help {
+  font-size: 14px;
+  color: var(--c-lichen);
+}
+
+.segmented {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border: 1px solid var(--c-moss-hi);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.segment {
+  position: relative;
+}
+
+.segment input {
+  position: absolute;
+  opacity: 0;
+}
+
+.segment span {
+  display: grid;
+  place-items: center;
+  min-height: 48px;
+  padding: 0 var(--s-2);
+  text-align: center;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.segment + .segment span {
+  border-left: 1px solid var(--c-moss-hi);
+}
+
+.segment input:checked + span {
+  background: var(--c-bone);
+  color: var(--c-night);
+}
+
+.segment input:focus-visible + span {
+  outline: 3px solid var(--c-amber);
+  outline-offset: -3px;
+}
+
+.version {
+  font-size: 14px;
+  color: var(--c-lichen);
+}

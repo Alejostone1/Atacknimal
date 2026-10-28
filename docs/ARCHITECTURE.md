@@ -50,7 +50,7 @@
 | `@atacknimal/sim` | ✅ Fase 4a | Simulación masiva e informes de balance (`npm run simulate`) | engine, content |
 | `@atacknimal/protocol` | ⏳ Fase 8 | Contratos de eventos WebSocket y DTO REST (Zod) | engine (tipos) |
 | `tools/curator` | ✅ Fase 4b | Herramienta de desarrollo: fotos con licencia abierta y datos de Wikidata ([ASSETS.md](ASSETS.md)) | content |
-| `apps/web` | ⏳ Fase 5–6 | React + Vite + Phaser | engine, content, protocol |
+| `apps/web` | ✅ Fase 5 (interfaz) · ⏳ combate (Fase 6) | React + Vite; Phaser solo en `src/phaser/` | engine, content (protocol en la Fase 8) |
 | `apps/server` | ⏳ Fase 8 | Fastify + Socket.IO + Drizzle | engine, content, protocol |
 
 ```text
@@ -152,6 +152,26 @@ Las reglas no lanzan excepciones para acciones ilegales: devuelven un `RuleError
 
 ## 6. React y Phaser (Fases 5–6)
 
+### 6.1 Aplicación web (Fase 5, ✅)
+
+| Carpeta (`apps/web/src`) | Contenido |
+|---|---|
+| `app/App.tsx` | Rutas (React Router) y raíz común: restauración del scroll y preferencia de animaciones |
+| `screens/` | Inicio `/`, Jugar `/jugar`, Equipo `/jugar/equipo`, Listo `/jugar/listo`, Colección `/coleccion`, Ficha `/coleccion/:id`, Créditos `/creditos`, Ajustes `/ajustes` |
+| `components/` | Carta de animal, foto con crédito, atributos, hábitats y filtro, puestos de equipo, buscador, marca (zarpazo) |
+| `content/catalog.ts` | **Único** punto de acceso al contenido: une animales, perfiles de la versión de balance vigente, fotos y datos. Picos y valles salen del presupuesto, no de números escritos a mano |
+| `state/` | Zustand con persistencia segura en `localStorage` (si no hay almacenamiento, la app funciona sin recordar): ajustes y preparación de partida |
+| `i18n/es.ts` | Vocabulario de interfaz (atributos, hábitats, afinidades, UICN, licencias) |
+| `styles/global.css` | Tokens del sistema visual y estilos base; cada componente usa su módulo CSS |
+
+**Sistema visual:** guía de campo con alma de carta de combate. Fondo verde noche, texto hueso, ámbar para acciones y picos, y el **zarpazo** rojo como firma, que solo aparece en la marca y en la selección de equipo. Tipografías Big Shoulders Display (nombres y cifras), Barlow (texto) e IBM Plex Mono (datos), autoalojadas con fontsource y solo con el subconjunto latino.
+
+**Calidad mínima:** primero móvil (375 px), con cuadrícula de 2 → 3 → 4 columnas. Foco visible, áreas táctiles ≥ 44 px y acciones principales fijas abajo (zona del pulgar). Iconos siempre con texto o etiqueta accesible. Las animaciones respetan `prefers-reduced-motion` y el ajuste del jugador.
+
+**Regla de ESLint:** fuera de `src/phaser/` no se puede importar Phaser.
+
+### 6.2 Combate (Fase 6, ⏳)
+
 - Un único componente `CombatStage` crea y destruye la instancia de `Phaser.Game`. Ningún otro componente toca Phaser.
 - Comunicación por un **bus de eventos tipado** en un solo sentido para los datos: React → Phaser envía `CombatResolution`; Phaser → React solo devuelve señales de presentación (`animationComplete`).
 - Phaser importa únicamente **tipos** del motor.
@@ -210,7 +230,12 @@ Las reglas no lanzan excepciones para acciones ilegales: devuelven un `RuleError
 | Prettier | 3.9.10 | Fase 2 |
 | Zod | 4.6.7 | Fase 4 |
 | @types/node | 26.6.5 (solo `sim`) | Fase 4 |
-| React, Vite, React Router, Zustand | ⏳ | Fase 5 |
+| React / React DOM | 19.3.1 | Fase 5 |
+| Vite / @vitejs/plugin-react | 8.3.5 / 6.1.2 | Fase 5 |
+| React Router | 8.5.1 | Fase 5 |
+| Zustand | 5.0.16 | Fase 5 |
+| lucide-react | 1.63.0 | Fase 5 |
+| Testing Library (React) / jsdom | 16.3.3 / 30.1.3 | Fase 5 |
 | Phaser | ⏳ (evaluar Phaser 4) | Fase 6 |
 | Fastify, Socket.IO, Drizzle, PostgreSQL | ⏳ | Fase 8 |
 

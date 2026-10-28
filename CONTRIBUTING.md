@@ -21,6 +21,8 @@ npm run check
 
 | Script | Qué hace |
 |---|---|
+| `npm run dev` | Aplicación web en modo desarrollo (http://localhost:5173) |
+| `npm run build` | Build de producción de la aplicación web (también lo ejecuta la CI) |
 | `npm run check` | Todo lo siguiente, en orden |
 | `npm run format:check` / `npm run format` | Comprueba o aplica Prettier |
 | `npm run lint` | ESLint, incluidas las reglas de arquitectura del motor |

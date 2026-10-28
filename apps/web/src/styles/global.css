@@ -1,0 +1,219 @@
+/*
+ * ATACKNIMAL · sistema visual
+ * Guía de campo con alma de carta de combate: fotos reales, taxonomía en cursiva,
+ * cifras condensadas. Un solo gesto atrevido: el zarpazo rojo (marca y selección).
+ */
+:root {
+  color-scheme: dark;
+
+  /* Paleta */
+  --c-night: #0e1411; /* Selva nocturna: fondo */
+  --c-moss: #17221c; /* Musgo: paneles */
+  --c-moss-hi: #213028; /* Musgo claro: paneles elevados, bordes */
+  --c-bone: #ece6d6; /* Hueso: texto */
+  --c-lichen: #8fa597; /* Liquen: texto secundario */
+  --c-amber: #e8a33d; /* Ámbar: acciones y picos */
+  --c-amber-ink: #1d1407; /* Texto sobre ámbar */
+  --c-slash: #d9432b; /* Zarpazo: solo marca y selección */
+
+  /* Hábitats (siempre acompañados de icono y texto) */
+  --h-air: #9cc3e4;
+  --h-water: #2f8fb8;
+  --h-land: #b07a3b;
+  --h-trees: #4e9a5b;
+
+  /* Tipografía */
+  --f-display: 'Big Shoulders Display', 'Arial Narrow', sans-serif;
+  --f-body: 'Barlow', system-ui, sans-serif;
+  --f-mono: 'IBM Plex Mono', ui-monospace, monospace;
+
+  /* Espaciado y forma */
+  --s-1: 4px;
+  --s-2: 8px;
+  --s-3: 12px;
+  --s-4: 16px;
+  --s-5: 24px;
+  --s-6: 32px;
+  --s-7: 48px;
+  --radius: 10px;
+  --radius-sm: 6px;
+  --page-max: 1120px;
+  --gutter: 16px;
+  --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  min-height: 100%;
+}
+
+body {
+  background: var(--c-night);
+  color: var(--c-bone);
+  font: 400 16px/1.45 var(--f-body);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--f-display);
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  line-height: 0.95;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+p {
+  margin: 0;
+}
+
+a {
+  color: inherit;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+button,
+input {
+  font: inherit;
+  color: inherit;
+}
+
+:focus-visible {
+  outline: 3px solid var(--c-amber);
+  outline-offset: 2px;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* Nombre científico: convención taxonómica, siempre en cursiva */
+.binomial {
+  font-style: italic;
+  color: var(--c-lichen);
+}
+
+.eyebrow {
+  font: 500 12px/1 var(--f-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--c-lichen);
+}
+
+.mono {
+  font-family: var(--f-mono);
+}
+
+/* Botones */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s-2);
+  min-height: 48px;
+  padding: 0 var(--s-5);
+  border: 1px solid var(--c-moss-hi);
+  border-radius: var(--radius);
+  background: var(--c-moss);
+  font: 700 18px/1 var(--f-display);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    transform 160ms var(--ease),
+    background-color 160ms var(--ease),
+    border-color 160ms var(--ease);
+}
+
+.btn:hover {
+  border-color: var(--c-lichen);
+}
+
+.btn:active {
+  transform: translateY(1px);
+}
+
+.btn--primary {
+  background: var(--c-amber);
+  border-color: var(--c-amber);
+  color: var(--c-amber-ink);
+}
+
+.btn--primary:hover {
+  background: #f0b453;
+  border-color: #f0b453;
+}
+
+.btn--ghost {
+  background: transparent;
+}
+
+.btn--block {
+  width: 100%;
+}
+
+.btn[disabled],
+.btn[aria-disabled='true'] {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Chips (filtros y etiquetas) */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 36px;
+  padding: 0 var(--s-3);
+  border: 1px solid var(--c-moss-hi);
+  border-radius: 999px;
+  background: transparent;
+  font: 500 14px/1 var(--f-body);
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.chip[aria-pressed='true'] {
+  background: var(--c-bone);
+  border-color: var(--c-bone);
+  color: var(--c-night);
+}
+
+/* Movimiento: el sistema operativo manda salvo que el jugador elija otra cosa en Ajustes */
+@media (prefers-reduced-motion: reduce) {
+  :root:not([data-motion='full']) *,
+  :root:not([data-motion='full']) *::before,
+  :root:not([data-motion='full']) *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+:root[data-motion='reduce'] *,
+:root[data-motion='reduce'] *::before,
+:root[data-motion='reduce'] *::after {
+  animation-duration: 0.01ms !important;
+  transition-duration: 0.01ms !important;
+}

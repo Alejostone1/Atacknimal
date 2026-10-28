@@ -1,0 +1,69 @@
+.browser {
+  display: grid;
+  gap: var(--s-3);
+}
+
+.controls {
+  display: grid;
+  gap: var(--s-3);
+}
+
+.search {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  min-height: 48px;
+  padding: 0 var(--s-3);
+  border: 1px solid var(--c-moss-hi);
+  border-radius: var(--radius);
+  background: var(--c-moss);
+  color: var(--c-lichen);
+}
+
+.search:focus-within {
+  border-color: var(--c-amber);
+}
+
+.search input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  outline: none;
+  color: var(--c-bone);
+}
+
+.count {
+  font: 400 13px/1 var(--f-mono);
+  color: var(--c-lichen);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--s-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 720px) {
+  .grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--s-4);
+  }
+}
+
+@media (min-width: 1024px) {
+  .grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.empty {
+  display: grid;
+  justify-items: start;
+  gap: var(--s-3);
+  padding: var(--s-5) 0;
+  color: var(--c-lichen);
+}

@@ -42,7 +42,7 @@ Fuentes consultadas: [Pexels API](https://www.pexels.com/api/documentation/), [P
 
 - **Hotlink:** la carta usa `imageUrl`, una miniatura de 1280 px servida por el proveedor. No descargamos ni redistribuimos archivos.
 - **Recorte por CSS:** `object-fit: cover` más `object-position` según `focalPoint`. No generamos archivos recortados, así que una imagen CC BY-SA no produce obras derivadas distribuidas.
-- **Atribución visible:** icono ⓘ en la carta con `attribution` y enlace a `sourceUrl`, más una pantalla de **Créditos** con todas las imágenes (Fase 5).
+- **Atribución visible (Fase 5, ✅):** debajo de la foto en la ficha de cada animal (autor, licencia y enlace al original), en la portada para la foto de fondo y en la pantalla **Créditos** con todas las imágenes. Las cartas de la cuadrícula no llevan crédito propio porque son botones o enlaces y no pueden contener otros. Las cartas de combate (Fase 6) lo mostrarán con un icono ⓘ.
 
 ## 5. Datos reales (`facts.json`)
 

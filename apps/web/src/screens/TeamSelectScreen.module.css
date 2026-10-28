@@ -1,0 +1,18 @@
+.layout {
+  display: grid;
+  gap: var(--s-5);
+}
+
+.team {
+  display: grid;
+  gap: var(--s-3);
+  max-width: 520px;
+}
+
+.hint {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  font-size: 14px;
+  color: var(--c-lichen);
+}

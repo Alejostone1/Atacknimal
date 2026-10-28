@@ -1,0 +1,103 @@
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding: 0;
+  overflow: hidden;
+  border: 2px solid var(--c-moss-hi);
+  border-radius: var(--radius);
+  background: var(--c-moss);
+  color: inherit;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    transform 180ms var(--ease),
+    border-color 180ms var(--ease),
+    opacity 180ms var(--ease);
+}
+
+.card:hover {
+  border-color: var(--c-lichen);
+  transform: translateY(-2px);
+}
+
+.selected,
+.selected:hover {
+  border-color: var(--c-slash);
+}
+
+.blocked {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.blocked:hover {
+  border-color: var(--c-moss-hi);
+  transform: none;
+}
+
+.info {
+  display: grid;
+  gap: 6px;
+  padding: var(--s-3);
+}
+
+.name {
+  font-size: 24px;
+}
+
+.binomial {
+  font-size: 13px;
+  line-height: 1.2;
+}
+
+.peaks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 2px 0 4px;
+  padding: 0;
+  list-style: none;
+}
+
+.peak {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 7px;
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--c-amber) 16%, transparent);
+  color: var(--c-amber);
+  font-size: 13px;
+}
+
+/* El zarpazo marca la carta elegida y su puesto en el equipo */
+.slot {
+  position: absolute;
+  top: var(--s-2);
+  right: var(--s-2);
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--c-night);
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.slot > span {
+  position: relative;
+  text-shadow: 0 1px 3px var(--c-night);
+}
+
+.claw {
+  position: absolute;
+  inset: 6px 8px;
+  width: auto;
+  height: auto;
+  fill: var(--c-slash);
+  opacity: 0.6;
+}

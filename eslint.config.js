@@ -1,5 +1,6 @@
 // @ts-check
 import js from '@eslint/js';
+import reactHooks from 'eslint-plugin-react-hooks';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
 
@@ -51,6 +52,29 @@ export default tseslint.config(
     files: ['**/*.js'],
     ...tseslint.configs.disableTypeChecked,
     languageOptions: { globals: globals.node },
+  },
+  {
+    files: ['apps/web/src/**/*.{ts,tsx}'],
+    ...reactHooks.configs.flat.recommended,
+    languageOptions: { globals: globals.browser },
+  },
+  {
+    // React gestiona: las pantallas no importan Phaser ni calculan reglas (ARCHITECTURE §1).
+    files: ['apps/web/src/**/*.{ts,tsx}'],
+    ignores: ['apps/web/src/phaser/**'],
+    rules: {
+      '@typescript-eslint/no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: ['phaser', 'phaser/*'],
+              message: 'Solo src/phaser/ puede usar Phaser: React gestiona, Phaser representa.',
+            },
+          ],
+        },
+      ],
+    },
   },
   {
     files: ['packages/engine/src/**/*.ts'],

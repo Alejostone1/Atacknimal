@@ -1,0 +1,19 @@
+.notice {
+  display: flex;
+  gap: var(--s-3);
+  margin-top: var(--s-5);
+  padding: var(--s-4);
+  border-radius: var(--radius);
+  background: var(--c-moss);
+  color: var(--c-lichen);
+}
+
+.notice svg {
+  flex: none;
+  color: var(--c-amber);
+}
+
+.actions {
+  display: grid;
+  gap: var(--s-2);
+}

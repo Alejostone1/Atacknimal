@@ -1,0 +1,90 @@
+.layout {
+  display: grid;
+  gap: var(--s-5);
+}
+
+@media (min-width: 900px) {
+  .layout {
+    grid-template-columns: 1.1fr 1fr;
+    align-items: start;
+    gap: var(--s-6);
+  }
+
+  .figure {
+    position: sticky;
+    top: 88px;
+  }
+}
+
+.figure {
+  display: grid;
+  gap: var(--s-2);
+  margin: 0;
+}
+
+.details {
+  display: grid;
+  gap: var(--s-6);
+}
+
+.identity {
+  display: grid;
+  gap: var(--s-3);
+}
+
+.binomial {
+  font-size: 20px;
+}
+
+.iucn {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  text-decoration: none;
+}
+
+.code {
+  display: grid;
+  place-items: center;
+  min-width: 44px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  background: var(--c-bone);
+  color: var(--c-night);
+  font-weight: 500;
+}
+
+.iucnSource {
+  color: var(--c-lichen);
+  font-size: 13px;
+}
+
+.section {
+  display: grid;
+  gap: var(--s-3);
+}
+
+.heading {
+  font-size: 22px;
+}
+
+.note {
+  font-size: 14px;
+  color: var(--c-lichen);
+}
+
+.links {
+  display: flex;
+  gap: var(--s-5);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.links a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  font-weight: 600;
+}

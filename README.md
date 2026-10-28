@@ -12,7 +12,8 @@
 | 3 · Motor de reglas | ✅ Cerrada | [`packages/engine`](packages/engine/src) |
 | 4a · Contenido y simulación | ✅ Cerrada | [`packages/content`](packages/content) · [`packages/sim`](packages/sim) · [informe del balance 0.2.0](packages/sim/reports/0.2.0/greedy/summary.md) |
 | 4b · Imágenes y datos reales | ✅ Cerrada | [`docs/ASSETS.md`](docs/ASSETS.md) · [`tools/curator`](tools/curator) |
-| 5 · Frontend (React) | ⏳ Siguiente | — |
+| 5 · Frontend (React) | ✅ Cerrada | [`apps/web`](apps/web/src) |
+| 6 · Combate (Phaser) | ⏳ Siguiente | — |
 
 Hoja de ruta completa: [`docs/ROADMAP.md`](docs/ROADMAP.md).
 
@@ -22,6 +23,12 @@ Requiere Node.js 24 o superior.
 
 ```bash
 npm install
+npm run dev
+```
+
+La aplicación se abre en http://localhost:5173. Para comprobar todo el proyecto:
+
+```bash
 npm run check
 ```
 
