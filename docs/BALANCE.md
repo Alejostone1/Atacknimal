@@ -229,7 +229,7 @@ No hay rareza en el MVP. El modelo de datos incluye un campo `complexity` (1–3
 
 ## 11. Datos reales (`facts`)
 
-Cada animal tendrá una ficha de datos reales **separada** de su perfil de juego: masa típica, velocidad máxima, distribución, estado de conservación y la **fuente de cada dato**. Se rellenará en la Fase 4 con fuentes citables, no de memoria. Sirve para la pantalla de Colección y para justificar la identidad del animal; **el motor nunca la lee**.
+Cada animal tendrá una ficha de datos reales **separada** de su perfil de juego: masa típica, velocidad máxima, distribución, estado de conservación y la **fuente de cada dato**. Se rellena con fuentes citables, no de memoria (estado actual en [ASSETS.md](ASSETS.md) §5). Sirve para la pantalla de Colección y para justificar la identidad del animal; **el motor nunca la lee**.
 
 ---
 

@@ -1,0 +1,123 @@
+[
+  {
+    "animalId": "cheetah",
+    "wikidataId": "Q23907",
+    "wikidataUrl": "https://www.wikidata.org/wiki/Q23907",
+    "wikipediaUrl": "https://es.wikipedia.org/wiki/Acinonyx_jubatus",
+    "conservationStatus": {
+      "value": "VU",
+      "source": "https://www.wikidata.org/wiki/Q23907"
+    },
+    "retrievedAt": "2026-10-28"
+  },
+  {
+    "animalId": "golden-eagle",
+    "wikidataId": "Q41181",
+    "wikidataUrl": "https://www.wikidata.org/wiki/Q41181",
+    "wikipediaUrl": "https://es.wikipedia.org/wiki/Aquila_chrysaetos",
+    "conservationStatus": {
+      "value": "LC",
+      "source": "https://www.wikidata.org/wiki/Q41181"
+    },
+    "retrievedAt": "2026-10-28"
+  },
+  {
+    "animalId": "brown-bear",
+    "wikidataId": "Q36341",
+    "wikidataUrl": "https://www.wikidata.org/wiki/Q36341",
+    "wikipediaUrl": "https://es.wikipedia.org/wiki/Ursus_arctos",
+    "conservationStatus": {
+      "value": "LC",
+      "source": "https://www.wikidata.org/wiki/Q36341"
+    },
+    "retrievedAt": "2026-10-28"
+  },
+  {
+    "animalId": "great-white-shark",
+    "wikidataId": "Q129026",
+    "wikidataUrl": "https://www.wikidata.org/wiki/Q129026",
+    "wikipediaUrl": "https://es.wikipedia.org/wiki/Carcharodon_carcharias",
+    "conservationStatus": {
+      "value": "VU",
+      "source": "https://www.wikidata.org/wiki/Q129026"
+    },
+    "retrievedAt": "2026-10-28"
+  },
+  {
+    "animalId": "wolf",
+    "wikidataId": "Q18498",
+    "wikidataUrl": "https://www.wikidata.org/wiki/Q18498",
+    "wikipediaUrl": "https://es.wikipedia.org/wiki/Canis_lupus",
+    "conservationStatus": {
+      "value": "LC",
+      "source": "https://www.wikidata.org/wiki/Q18498"
+    },
+    "retrievedAt": "2026-10-28"
+  },
+  {
+    "animalId": "elephant",
+    "wikidataId": "Q36557",
+    "wikidataUrl": "https://www.wikidata.org/wiki/Q36557",
+    "wikipediaUrl": "https://es.wikipedia.org/wiki/Loxodonta_africana",
+    "conservationStatus": {
+      "value": "EN",
+      "source": "https://www.wikidata.org/wiki/Q36557"
+    },
+    "retrievedAt": "2026-10-28"
+  },
+  {
+    "animalId": "rhinoceros",
+    "wikidataId": "Q159918",
+    "wikidataUrl": "https://www.wikidata.org/wiki/Q159918",
+    "wikipediaUrl": "https://es.wikipedia.org/wiki/Ceratotherium_simum",
+    "conservationStatus": {
+      "value": "NT",
+      "source": "https://www.wikidata.org/wiki/Q159918"
+    },
+    "retrievedAt": "2026-10-28"
+  },
+  {
+    "animalId": "crocodile",
+    "wikidataId": "Q168745",
+    "wikidataUrl": "https://www.wikidata.org/wiki/Q168745",
+    "wikipediaUrl": "https://es.wikipedia.org/wiki/Crocodylus_niloticus",
+    "conservationStatus": {
+      "value": "LC",
+      "source": "https://www.wikidata.org/wiki/Q168745"
+    },
+    "retrievedAt": "2026-10-28"
+  },
+  {
+    "animalId": "tiger",
+    "wikidataId": "Q19939",
+    "wikidataUrl": "https://www.wikidata.org/wiki/Q19939",
+    "wikipediaUrl": "https://es.wikipedia.org/wiki/Panthera_tigris",
+    "conservationStatus": {
+      "value": "EN",
+      "source": "https://www.wikidata.org/wiki/Q19939"
+    },
+    "retrievedAt": "2026-10-28"
+  },
+  {
+    "animalId": "penguin",
+    "wikidataId": "Q161829",
+    "wikidataUrl": "https://www.wikidata.org/wiki/Q161829",
+    "wikipediaUrl": "https://es.wikipedia.org/wiki/Aptenodytes_forsteri",
+    "conservationStatus": {
+      "value": "NT",
+      "source": "https://www.wikidata.org/wiki/Q161829"
+    },
+    "retrievedAt": "2026-10-28"
+  },
+  {
+    "animalId": "blue-whale",
+    "wikidataId": "Q42196",
+    "wikidataUrl": "https://www.wikidata.org/wiki/Q42196",
+    "wikipediaUrl": "https://es.wikipedia.org/wiki/Balaenoptera_musculus",
+    "conservationStatus": {
+      "value": "EN",
+      "source": "https://www.wikidata.org/wiki/Q42196"
+    },
+    "retrievedAt": "2026-10-28"
+  }
+]

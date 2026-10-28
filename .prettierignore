@@ -5,3 +5,4 @@ package-lock.json
 docs/diseno/
 # La documentación se escribe a mano (tablas en español con emojis).
 *.md
+tools/curator/out/

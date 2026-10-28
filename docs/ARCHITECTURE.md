@@ -49,6 +49,7 @@
 | `@atacknimal/content` | ✅ Fase 4a · ⏳ imágenes y datos reales (4b) | Animales, perfiles, afinidades y versiones de balance en JSON, validados con Zod | engine (tipos) |
 | `@atacknimal/sim` | ✅ Fase 4a | Simulación masiva e informes de balance (`npm run simulate`) | engine, content |
 | `@atacknimal/protocol` | ⏳ Fase 8 | Contratos de eventos WebSocket y DTO REST (Zod) | engine (tipos) |
+| `tools/curator` | ✅ Fase 4b | Herramienta de desarrollo: fotos con licencia abierta y datos de Wikidata ([ASSETS.md](ASSETS.md)) | content |
 | `apps/web` | ⏳ Fase 5–6 | React + Vite + Phaser | engine, content, protocol |
 | `apps/server` | ⏳ Fase 8 | Fastify + Socket.IO + Drizzle | engine, content, protocol |
 

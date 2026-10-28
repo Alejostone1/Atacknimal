@@ -2,6 +2,14 @@ import type { AnimalProfile, Ruleset } from '@atacknimal/engine';
 import animalsData from '../data/animals.json' with { type: 'json' };
 import balance010 from '../data/balance/0.1.0.json' with { type: 'json' };
 import balance020 from '../data/balance/0.2.0.json' with { type: 'json' };
+import factsData from '../data/facts.json' with { type: 'json' };
+import imagesData from '../data/images.json' with { type: 'json' };
+import {
+  animalFactsSchema,
+  animalImageSchema,
+  type AnimalFacts,
+  type AnimalImage,
+} from './media.ts';
 import {
   animalSchema,
   balanceSetSchema,
@@ -12,6 +20,15 @@ import {
 
 export { checkProfileBudget, checkRosterCoverage } from './budget.ts';
 export type { Animal, Budget, Target, Targets } from './schema.ts';
+export {
+  animalFactsSchema,
+  animalImageSchema,
+  IMAGE_PROVIDERS,
+  IMAGE_STATUSES,
+  IUCN_CATEGORIES,
+  LICENSE_IDS,
+} from './media.ts';
+export type { AnimalFacts, AnimalImage, ImageStatus, IucnCategory, LicenseId } from './media.ts';
 
 /** Versión de balance lista para jugar o simular. */
 export interface BalanceSet {
@@ -27,6 +44,30 @@ export class ContentError extends Error {
 }
 
 export const ANIMALS: readonly Animal[] = animalSchema.array().parse(animalsData);
+
+const animalIds = new Set(ANIMALS.map((animal) => animal.id));
+
+export const IMAGES: readonly AnimalImage[] = animalImageSchema.array().parse(imagesData);
+export const FACTS: readonly AnimalFacts[] = animalFactsSchema.array().parse(factsData);
+
+for (const { animalId } of [...IMAGES, ...FACTS]) {
+  if (!animalIds.has(animalId))
+    throw new ContentError(`Imagen o dato de un animal desconocido: ${animalId}`);
+}
+for (const id of animalIds) {
+  if (IMAGES.filter((i) => i.animalId === id && i.status !== 'retired').length > 1) {
+    throw new ContentError(`${id} tiene más de una imagen activa.`);
+  }
+}
+
+/** Imagen activa (aprobada o propuesta) de un animal, o `undefined` si aún no tiene. */
+export function getImage(animalId: string): AnimalImage | undefined {
+  return IMAGES.find((image) => image.animalId === animalId && image.status !== 'retired');
+}
+
+export function getFacts(animalId: string): AnimalFacts | undefined {
+  return FACTS.find((facts) => facts.animalId === animalId);
+}
 
 const BALANCE_SETS: Readonly<Record<string, BalanceSet>> = Object.fromEntries(
   [balance010, balance020].map((data) => {

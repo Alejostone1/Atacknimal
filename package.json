@@ -7,7 +7,8 @@
     "node": ">=24"
   },
   "workspaces": [
-    "packages/*"
+    "packages/*",
+    "tools/*"
   ],
   "scripts": {
     "typecheck": "npm run typecheck --workspaces --if-present",
@@ -18,7 +19,8 @@
     "format:check": "prettier --check .",
     "check": "npm run format:check && npm run lint && npm run typecheck && npm run test",
     "simulate": "npm run simulate --workspace @atacknimal/sim --",
-    "experiment": "npm run experiment --workspace @atacknimal/sim --"
+    "experiment": "npm run experiment --workspace @atacknimal/sim --",
+    "curate": "npm run curate --workspace @atacknimal/curator --"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",

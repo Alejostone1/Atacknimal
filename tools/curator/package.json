@@ -1,0 +1,14 @@
+{
+  "name": "@atacknimal/curator",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Herramienta de desarrollo: busca fotos con licencia abierta y datos de Wikidata para el contenido de ATACKNIMAL.",
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json",
+    "curate": "node src/cli.ts"
+  },
+  "dependencies": {
+    "@atacknimal/content": "*"
+  }
+}

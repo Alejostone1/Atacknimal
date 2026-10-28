@@ -4,10 +4,14 @@ import {
   ANIMALS,
   BALANCE_VERSIONS,
   ContentError,
+  IMAGES,
+  LICENSE_IDS,
   checkProfileBudget,
   checkRosterCoverage,
   getAnimal,
   getBalanceSet,
+  getFacts,
+  getImage,
 } from './index.ts';
 
 describe('animales', () => {
@@ -59,6 +63,33 @@ describe.each(BALANCE_VERSIONS)('balance %s', (version) => {
         seed: 1,
       }),
     ).not.toThrow();
+  });
+});
+
+describe('fotografías (docs/ASSETS.md)', () => {
+  it.each(ANIMALS.map((a) => [a.id] as const))(
+    '%s tiene una foto activa con licencia permitida',
+    (id) => {
+      const image = getImage(id);
+      expect(image).toBeDefined();
+      expect(LICENSE_IDS).toContain(image?.licenseId);
+      expect(image?.attribution).toContain(image?.author ?? '∅');
+    },
+  );
+
+  it('las fotos usan URLs del proveedor (hotlink) y no archivos locales', () => {
+    for (const image of IMAGES) {
+      expect(image.imageUrl).toMatch(/^https:\/\//);
+      expect(image.sourceUrl).toMatch(/^https:\/\//);
+    }
+  });
+});
+
+describe('datos reales', () => {
+  it.each(ANIMALS.map((a) => [a.id] as const))('%s tiene ficha de Wikidata con fuente', (id) => {
+    const facts = getFacts(id);
+    expect(facts?.wikidataUrl).toMatch(/^https:\/\/www\.wikidata\.org\/wiki\/Q\d+$/);
+    expect(facts?.conservationStatus?.source).toBe(facts?.wikidataUrl);
   });
 });
 

@@ -7,3 +7,6 @@ build/
 .DS_Store
 Thumbs.db
 *.log
+
+# Salidas locales de la herramienta de curación (se regeneran)
+tools/curator/out/
