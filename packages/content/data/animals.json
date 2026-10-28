@@ -1,0 +1,68 @@
+[
+  {
+    "id": "cheetah",
+    "name": "Guepardo",
+    "scientificName": "Acinonyx jubatus",
+    "role": "Especialista veloz"
+  },
+  {
+    "id": "golden-eagle",
+    "name": "Águila real",
+    "scientificName": "Aquila chrysaetos",
+    "role": "Dominio aéreo"
+  },
+  {
+    "id": "brown-bear",
+    "name": "Oso pardo",
+    "scientificName": "Ursus arctos",
+    "role": "Tanque"
+  },
+  {
+    "id": "great-white-shark",
+    "name": "Tiburón blanco",
+    "scientificName": "Carcharodon carcharias",
+    "role": "Depredador acuático"
+  },
+  {
+    "id": "wolf",
+    "name": "Lobo",
+    "scientificName": "Canis lupus",
+    "role": "Versátil"
+  },
+  {
+    "id": "elephant",
+    "name": "Elefante",
+    "scientificName": "Loxodonta africana",
+    "role": "Coloso"
+  },
+  {
+    "id": "rhinoceros",
+    "name": "Rinoceronte",
+    "scientificName": "Ceratotherium simum",
+    "role": "Muralla"
+  },
+  {
+    "id": "crocodile",
+    "name": "Cocodrilo",
+    "scientificName": "Crocodylus niloticus",
+    "role": "Emboscador"
+  },
+  {
+    "id": "tiger",
+    "name": "Tigre",
+    "scientificName": "Panthera tigris",
+    "role": "Duelista ofensivo"
+  },
+  {
+    "id": "penguin",
+    "name": "Pingüino",
+    "scientificName": "Aptenodytes forsteri",
+    "role": "Resistencia acuática"
+  },
+  {
+    "id": "blue-whale",
+    "name": "Ballena",
+    "scientificName": "Balaenoptera musculus",
+    "role": "Coloso acuático"
+  }
+]

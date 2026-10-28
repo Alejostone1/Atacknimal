@@ -7,6 +7,7 @@ import type { CombatResolvedEvent } from './events.ts';
 import { getLegalActions } from './legal.ts';
 import type { MatchMode, MatchState } from './state.ts';
 import { randomPlayout, startedMatch } from './testing/helpers.ts';
+import { getPlayerView } from './view.ts';
 
 function checkInvariants(state: MatchState): void {
   for (const card of Object.values(state.cards)) {
@@ -46,6 +47,16 @@ describe.each<[MatchMode, number]>([
   it('es determinista: misma semilla, misma partida', () => {
     const run = () => randomPlayout(startedMatch(mode, undefined, 42), 42);
     expect(JSON.stringify(run())).toBe(JSON.stringify(run()));
+  });
+
+  it('las acciones legales son las mismas calculadas desde la vista del jugador', () => {
+    randomPlayout(startedMatch(mode, undefined, 9), 9, (state) => {
+      for (const player of state.players) {
+        expect(getLegalActions(getPlayerView(state, player.id), player.id)).toEqual(
+          getLegalActions(state, player.id),
+        );
+      }
+    });
   });
 
   it('la partida acabada no ofrece acciones', () => {

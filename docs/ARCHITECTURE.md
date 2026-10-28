@@ -46,8 +46,8 @@
 | Paquete | Estado | Rol | Puede depender de |
 |---|---|---|---|
 | `@atacknimal/engine` | ✅ reglas completas sin IA (Fase 3) | Reglas puras y deterministas | **Nada** (solo TypeScript) |
-| `@atacknimal/content` | ⏳ Fase 4 | Animales, perfiles, afinidades, rulesets, imágenes; validado con Zod | engine (tipos) |
-| `@atacknimal/sim` | ⏳ Fase 4 | Simulación masiva y reportes de balance (CLI) | engine, content |
+| `@atacknimal/content` | ✅ Fase 4a · ⏳ imágenes y datos reales (4b) | Animales, perfiles, afinidades y versiones de balance en JSON, validados con Zod | engine (tipos) |
+| `@atacknimal/sim` | ✅ Fase 4a | Simulación masiva e informes de balance (`npm run simulate`) | engine, content |
 | `@atacknimal/protocol` | ⏳ Fase 8 | Contratos de eventos WebSocket y DTO REST (Zod) | engine (tipos) |
 | `apps/web` | ⏳ Fase 5–6 | React + Vite + Phaser | engine, content, protocol |
 | `apps/server` | ⏳ Fase 8 | Fastify + Socket.IO + Drizzle | engine, content, protocol |
@@ -137,7 +137,11 @@ Las reglas no lanzan excepciones para acciones ilegales: devuelven un `RuleError
 
 ## 5. Datos y versiones
 
-- **Contenido** (animales, perfiles, afinidades, imágenes) y **rulesets** viven en `packages/content` como datos validados con Zod, no en el código.
+- **Contenido** (animales, perfiles, afinidades, imágenes) y **rulesets** viven en `packages/content` como datos validados con Zod, no en el código:
+  - `data/animals.json`: identidad de cada animal (nombre, especie, rol). Sin números de balance.
+  - `data/balance/<versión>.json`: una **versión de balance** = ruleset + reglas de presupuesto + métricas objetivo + perfiles de los 11 animales. Todo lo que se equilibra junto se versiona junto.
+  - Al importarse, el paquete valida todo con Zod y comprueba que cada animal tenga exactamente un perfil. Los tests verifican el presupuesto de [BALANCE.md](BALANCE.md) §2 en cada versión.
+- **Simulación:** `npm run simulate -- --policy greedy|random [--sample N]` escribe `packages/sim/reports/<versión>/<política>/summary.md` y `animals.csv`. Los bots deciden con la `PlayerView`, igual que un humano.
 - Cada partida guarda `rulesetVersion` y `contentVersion`. Una versión publicada nunca se edita (ver [BALANCE.md](BALANCE.md) §9).
 - **Datos reales (`facts`)** y **perfil de juego** son estructuras separadas. El motor solo recibe el perfil de juego.
 - Modelo de datos conceptual: [00-ANALISIS-FASE-0.md](00-ANALISIS-FASE-0.md) §G.5. El esquema físico se documentará en `DATABASE.md` (Fase 8).
@@ -202,7 +206,8 @@ Las reglas no lanzan excepciones para acciones ilegales: devuelven un `RuleError
 | Vitest | 5.0.5 | Fase 2 |
 | ESLint / typescript-eslint | 10.13.0 / 8.72.1 | Fase 2 |
 | Prettier | 3.9.10 | Fase 2 |
-| Zod | ⏳ | Fase 4 |
+| Zod | 4.6.7 | Fase 4 |
+| @types/node | 26.6.5 (solo `sim`) | Fase 4 |
 | React, Vite, React Router, Zustand | ⏳ | Fase 5 |
 | Phaser | ⏳ (evaluar Phaser 4) | Fase 6 |
 | Fastify, Socket.IO, Drizzle, PostgreSQL | ⏳ | Fase 8 |

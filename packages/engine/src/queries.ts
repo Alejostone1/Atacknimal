@@ -48,12 +48,27 @@ export function isActive(card: CardState): boolean {
   return card.hp > 0;
 }
 
-export function cardsOfPlayer(state: MatchState, playerId: PlayerId): CardState[] {
-  return (getPlayer(state, playerId).cardIds ?? []).map((cardId) => getCard(state, cardId));
+/** Lo mínimo para consultar cartas: lo cumplen tanto `MatchState` como `PlayerView`. */
+export interface CardsSnapshot {
+  readonly players: readonly {
+    readonly id: PlayerId;
+    readonly cardIds: readonly CardId[] | null;
+  }[];
+  readonly cards: Readonly<Record<CardId, CardState>>;
 }
 
-export function activeCardsOfPlayer(state: MatchState, playerId: PlayerId): CardState[] {
-  return cardsOfPlayer(state, playerId).filter(isActive);
+export function cardsOfPlayer(snapshot: CardsSnapshot, playerId: PlayerId): CardState[] {
+  const player = snapshot.players.find((p) => p.id === playerId);
+  invariant(player, `Jugador inexistente: ${playerId}`);
+  return (player.cardIds ?? []).map((cardId) => {
+    const card = snapshot.cards[cardId];
+    invariant(card, `Carta inexistente: ${cardId}`);
+    return card;
+  });
+}
+
+export function activeCardsOfPlayer(snapshot: CardsSnapshot, playerId: PlayerId): CardState[] {
+  return cardsOfPlayer(snapshot, playerId).filter(isActive);
 }
 
 export function activeCardsOfTeam(state: MatchState, team: TeamId): CardState[] {

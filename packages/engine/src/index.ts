@@ -54,7 +54,8 @@ export type { Result, RuleError, RuleErrorCode } from './errors.ts';
 // Reglas
 export { applyAction } from './apply.ts';
 export { getDefenseOptions, getLegalActions } from './legal.ts';
-export type { DefenseOptions } from './legal.ts';
+export type { DefenseOptions, LegalSnapshot } from './legal.ts';
+export type { CardsSnapshot } from './queries.ts';
 export { compareValues, computeCounterDamage, computeDamage, computeValue } from './combat.ts';
 export type { DuelOutcome, ValueBreakdown } from './combat.ts';
 export { isLocked } from './locks.ts';

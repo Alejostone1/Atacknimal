@@ -228,3 +228,36 @@ No hay rareza en el MVP. El modelo de datos incluye un campo `complexity` (1–3
 ## 11. Datos reales (`facts`)
 
 Cada animal tendrá una ficha de datos reales **separada** de su perfil de juego: masa típica, velocidad máxima, distribución, estado de conservación y la **fuente de cada dato**. Se rellenará en la Fase 4 con fuentes citables, no de memoria. Sirve para la pantalla de Colección y para justificar la identidad del animal; **el motor nunca la lee**.
+
+---
+
+## 12. Resultados de la primera simulación (ruleset 0.1.0)
+
+Informes completos: [`packages/sim/reports/0.1.0/greedy/summary.md`](../packages/sim/reports/0.1.0/greedy/summary.md) y [`.../random/summary.md`](../packages/sim/reports/0.1.0/random/summary.md). Son 108 900 partidas por política (*round-robin* de los 330 equipos posibles).
+
+### 12.1 Lo que funciona
+
+- **Los perfiles por presupuesto funcionan:** 8 de 11 animales quedan entre 46 % y 54 % de victorias con bots `greedy`.
+- **Uso equilibrado de atributos** (9–16 % cada uno) **y de hábitats** (19–32 %): ninguno está muerto.
+- **Daño medio de 33,9 por duelo**, justo el objetivo de unas 3 derrotas por carta.
+- **Defensas forzadas: 1 por partida**, dentro del objetivo. La mecánica aparece sin dominar.
+
+### 12.2 Problemas detectados
+
+| # | Problema | Dato | Causa |
+|---|---|---|---|
+| P-1 | **El atacante gana casi siempre** | 92,2 % de duelos (objetivo 50–62 %) | El atacante elige entre ~112 combinaciones (hábitat × carta × atributo) **conociendo el equipo rival entero**, así que casi siempre encuentra un atributo donde el rival es débil. La mejor defensa no depende de qué carta ataque, de modo que ocultarla no protege al defensor. Es el riesgo **R-01 confirmado** |
+| P-2 | **Ventaja del primer jugador** | 62,3 % (alerta > 54 %) | Consecuencia de P-1: la partida es una carrera de golpes y quien golpea primero va delante |
+| P-3 | **Águila en Aire** | 69,6 % de victorias, en el 100 % de los 20 mejores equipos; el 96 % de sus ataques son en Aire, con un 97,8 % de éxito | Es el único animal sin penalización en Aire: tiene +25 relativos en **todos** sus atributos. Era el primer punto de la lista de vigilancia (§8) |
+| P-4 | **Animales débiles** | Ballena 42,4 %, Lobo 43,7 %, Tiburón 43,9 % | Ballena y Tiburón dependen de Agua. Al Lobo le faltan picos absolutos. Revisar **después** de resolver P-1 y P-3, porque cambian todo el contexto |
+| P-5 | **Empates y partidas largas** | 7,8 % de duelos empatados (objetivo < 5 %); 24,7 duelos de media; 11,5 % llegan al límite | Muchos valores efectivos coinciden (100, 110…). La duración mejorará sola si baja P-1 |
+
+**Por qué el resultado es fiable aunque los bots sean simples:** el defensor `greedy` ya responde con su mejor carta posible, así que el 92 % es contra la **mejor defensa**. Un atacante más listo ganaría todavía más. Lo confirma la tabla de márgenes: haría falta una ventaja fija de **+25 para el defensor** para bajar el atacante a ~60 %. Es una cifra tan grande que indica un problema de **estructura**, no de números.
+
+### 12.3 Línea base `random`
+
+Con decisiones al azar, el 86,7 % de las partidas llega al límite de 30 duelos y el primer jugador gana el 50,2 %. Esto sirve como control: las reglas no tienen sesgos ocultos de turno, y el desequilibrio de `greedy` viene de **cómo se elige**, no de errores del motor. Aun al azar, Águila (57,7 %) y Oso (56,0 %) destacan, lo que confirma su fuerza estadística.
+
+### 12.4 Siguiente paso propuesto
+
+Ver las decisiones pendientes **#025–#027** en [DECISIONES.md](DECISIONES.md). Propuesta de método: implementar cada candidata como **parámetro del ruleset desactivado por defecto**, simular cada una y elegir con datos.

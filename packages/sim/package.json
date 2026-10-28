@@ -1,0 +1,18 @@
+{
+  "name": "@atacknimal/sim",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Simulación masiva de partidas e informes de balance de ATACKNIMAL.",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json",
+    "simulate": "node src/cli.ts"
+  },
+  "dependencies": {
+    "@atacknimal/content": "*",
+    "@atacknimal/engine": "*"
+  }
+}

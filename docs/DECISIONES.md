@@ -33,3 +33,30 @@ Cambiar una decisión aceptada exige una entrada nueva aquí que la sustituya; n
 ## Detalles derivados pendientes de revisión
 
 Decisiones menores tomadas al cerrar la especificación de la Fase 1. Se consideran vigentes salvo objeción: ver [GAME_RULES.md](GAME_RULES.md) §19 (D-01 a D-09) y la corrección del objetivo de duración en [BALANCE.md](BALANCE.md) §5.2.
+
+## ⚠️ Decisiones pendientes tras la primera simulación (Fase 4a)
+
+Datos en [BALANCE.md](BALANCE.md) §12.
+
+### DECISIÓN PENDIENTE #025: el atacante gana el 92 % de los duelos
+
+**Problema:** el atacante elige hábitat, carta y atributo viendo el equipo rival completo, y casi siempre encuentra una debilidad. La información oculta pierde su función y el primer jugador gana el 62 %.
+
+- **A. Ventaja defensiva fija** (+X al valor del defensor). Es simple, pero según la tabla de márgenes necesita un +25 para llegar al objetivo. Eso aplana los perfiles: un defensor mediocre ganaría a picos.
+- **B. Agotamiento de atributos del atacante:** el atributo con el que ataca un jugador queda bloqueado **para todo su equipo** durante sus próximos N ataques. No toca la regla central y obliga a salir de las combinaciones óptimas.
+- **C. Hábitat sin repetir:** un jugador no puede declarar el mismo hábitat en dos ataques seguidos. Recorta las opciones de los especialistas de un hábitat (también ayuda con P-3).
+- **D. Atributos enfrentados:** el defensor compara un atributo **opuesto** (Ataque contra Defensa, Velocidad contra Percepción…). Cambia la regla central y la información oculta pasaría a importar, pero es un rediseño grande.
+
+**Recomendación:** implementar A, B y C como parámetros desactivados por defecto, simular combinaciones (por ejemplo, B + C + A con +5 o +10) y elegir la más simple que deje al atacante entre el 55 % y el 62 %. D queda en reserva si B y C no bastan. Ninguna opción cambia la regla fundamental (hábitat → carta → atributo; el defensor solo conoce hábitat y atributo).
+
+### DECISIÓN PENDIENTE #026: Águila en Aire
+
+- **A.** Que los animales no voladores pasen de Hostil a **Neutral** en Aire. El Águila queda con +10 relativos, como cualquier nativo en su hábitat.
+- **B.** Rebajar el modificador Hostil global de −15 a −10. Afecta a todos los hábitats.
+- **C.** Mantener el Aire y bajar las estadísticas del Águila. No ataca la causa.
+
+**Recomendación: A**, en una versión de balance 0.2.0. Es coherente con "Aire = altura y espacio abierto", donde un mamífero no está en su elemento pero tampoco es imposible.
+
+### DECISIÓN PENDIENTE #027: orden de ajustes
+
+**Recomendación:** primero #025 (estructura), después #026 (Aire) y por último el ajuste fino de Ballena, Lobo, Tiburón y empates. Cada paso en una versión de balance nueva, con su informe comparativo.

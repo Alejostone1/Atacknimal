@@ -1,0 +1,17 @@
+{
+  "name": "@atacknimal/content",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Contenido de ATACKNIMAL: animales, perfiles de juego y rulesets versionados, validados con Zod.",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "@atacknimal/engine": "*",
+    "zod": "4.6.7"
+  }
+}

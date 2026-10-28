@@ -1,0 +1,195 @@
+{
+  "version": "0.1.0",
+  "ruleset": {
+    "version": "0.1.0",
+    "teamSize": 4,
+    "baseHp": 100,
+    "habitatModifiers": { "native": 10, "adapted": 4, "neutral": 0, "hostile": -15 },
+    "damage": { "base": 20, "k": 0.5, "min": 20, "max": 45, "counterRatio": 0.5 },
+    "lockDuration": 1,
+    "maxDuels": 30,
+    "abilitiesEnabled": false
+  },
+  "budget": {
+    "statRange": { "min": 10, "max": 100 },
+    "sum": { "min": 545, "max": 575 },
+    "peak": 88,
+    "peaks": { "min": 2, "max": 3 },
+    "deepValleyForThirdPeak": 35,
+    "valley": 50,
+    "minValleys": 2,
+    "forbiddenRange": { "min": 85, "max": 87 },
+    "specialist": 85,
+    "specialistsPerAttribute": { "min": 2, "max": 3 },
+    "perfect": 100,
+    "maxPerfectPerAttribute": 1
+  },
+  "targets": {
+    "animalWinRate": { "min": 0.45, "max": 0.55, "alertMin": 0.42, "alertMax": 0.58 },
+    "topTeamPresence": { "max": 0.5, "alertMax": 0.7 },
+    "firstPlayerWinRate": { "min": 0.48, "max": 0.52, "alertMax": 0.54 },
+    "attributeUsage": { "min": 0.06, "max": 0.22, "alertMin": 0.04, "alertMax": 0.3 },
+    "habitatUsage": { "min": 0.1, "max": 0.4, "alertMin": 0.06 },
+    "attackerDuelWinRate": { "min": 0.5, "max": 0.62, "alertMax": 0.68 },
+    "tieRate": { "max": 0.05, "alertMax": 0.08 },
+    "matchDuels": { "min": 16, "max": 24, "alertMax": 28 },
+    "duelLimitRate": { "max": 0.1, "alertMax": 0.1 },
+    "forcedDefensesPerMatch": { "min": 0.5, "max": 2, "alertMax": 4 }
+  },
+  "profiles": [
+    {
+      "animalId": "cheetah",
+      "stats": {
+        "weight": 35,
+        "strength": 58,
+        "agility": 92,
+        "attack": 82,
+        "endurance": 62,
+        "speed": 100,
+        "defense": 45,
+        "perception": 82
+      },
+      "affinities": { "air": "hostile", "water": "hostile", "land": "native", "trees": "adapted" }
+    },
+    {
+      "animalId": "golden-eagle",
+      "stats": {
+        "weight": 15,
+        "strength": 45,
+        "agility": 90,
+        "attack": 84,
+        "endurance": 70,
+        "speed": 88,
+        "defense": 66,
+        "perception": 100
+      },
+      "affinities": { "air": "native", "water": "neutral", "land": "neutral", "trees": "adapted" }
+    },
+    {
+      "animalId": "brown-bear",
+      "stats": {
+        "weight": 84,
+        "strength": 92,
+        "agility": 45,
+        "attack": 80,
+        "endurance": 80,
+        "speed": 40,
+        "defense": 88,
+        "perception": 60
+      },
+      "affinities": { "air": "hostile", "water": "adapted", "land": "native", "trees": "neutral" }
+    },
+    {
+      "animalId": "great-white-shark",
+      "stats": {
+        "weight": 80,
+        "strength": 82,
+        "agility": 45,
+        "attack": 96,
+        "endurance": 62,
+        "speed": 88,
+        "defense": 50,
+        "perception": 62
+      },
+      "affinities": { "air": "hostile", "water": "native", "land": "hostile", "trees": "hostile" }
+    },
+    {
+      "animalId": "wolf",
+      "stats": {
+        "weight": 45,
+        "strength": 62,
+        "agility": 78,
+        "attack": 76,
+        "endurance": 90,
+        "speed": 80,
+        "defense": 50,
+        "perception": 88
+      },
+      "affinities": { "air": "hostile", "water": "neutral", "land": "native", "trees": "hostile" }
+    },
+    {
+      "animalId": "elephant",
+      "stats": {
+        "weight": 100,
+        "strength": 94,
+        "agility": 30,
+        "attack": 72,
+        "endurance": 82,
+        "speed": 40,
+        "defense": 80,
+        "perception": 70
+      },
+      "affinities": { "air": "hostile", "water": "adapted", "land": "native", "trees": "hostile" }
+    },
+    {
+      "animalId": "rhinoceros",
+      "stats": {
+        "weight": 90,
+        "strength": 84,
+        "agility": 35,
+        "attack": 80,
+        "endurance": 78,
+        "speed": 45,
+        "defense": 100,
+        "perception": 45
+      },
+      "affinities": { "air": "hostile", "water": "neutral", "land": "native", "trees": "hostile" }
+    },
+    {
+      "animalId": "crocodile",
+      "stats": {
+        "weight": 78,
+        "strength": 84,
+        "agility": 40,
+        "attack": 90,
+        "endurance": 75,
+        "speed": 45,
+        "defense": 90,
+        "perception": 60
+      },
+      "affinities": { "air": "hostile", "water": "native", "land": "adapted", "trees": "hostile" }
+    },
+    {
+      "animalId": "tiger",
+      "stats": {
+        "weight": 65,
+        "strength": 82,
+        "agility": 88,
+        "attack": 94,
+        "endurance": 48,
+        "speed": 80,
+        "defense": 48,
+        "perception": 60
+      },
+      "affinities": { "air": "hostile", "water": "adapted", "land": "native", "trees": "adapted" }
+    },
+    {
+      "animalId": "penguin",
+      "stats": {
+        "weight": 35,
+        "strength": 40,
+        "agility": 82,
+        "attack": 49,
+        "endurance": 92,
+        "speed": 82,
+        "defense": 80,
+        "perception": 90
+      },
+      "affinities": { "air": "hostile", "water": "native", "land": "adapted", "trees": "hostile" }
+    },
+    {
+      "animalId": "blue-whale",
+      "stats": {
+        "weight": 96,
+        "strength": 84,
+        "agility": 25,
+        "attack": 40,
+        "endurance": 100,
+        "speed": 70,
+        "defense": 76,
+        "perception": 75
+      },
+      "affinities": { "air": "hostile", "water": "native", "land": "hostile", "trees": "hostile" }
+    }
+  ]
+}

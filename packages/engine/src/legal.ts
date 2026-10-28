@@ -1,8 +1,18 @@
 import type { Action } from './actions.ts';
 import { ATTRIBUTES, HABITATS, type Attribute } from './domain.ts';
 import { isLocked } from './locks.ts';
-import { activeCardsOfPlayer } from './queries.ts';
-import type { CardId, MatchState, PlayerId } from './state.ts';
+import { activeCardsOfPlayer, type CardsSnapshot } from './queries.ts';
+import type { CardId, Phase, PlayerId, Turn } from './state.ts';
+
+/**
+ * Lo necesario para calcular acciones legales. Lo cumplen `MatchState` y `PlayerView`:
+ * la IA y la simulación deciden con la vista, sin acceder al estado completo.
+ */
+export interface LegalSnapshot extends CardsSnapshot {
+  readonly phase: Phase;
+  readonly turn: Turn | null;
+  readonly declaration: { readonly attribute: Attribute } | null;
+}
 
 export interface DefenseOptions {
   readonly cardIds: readonly CardId[];
@@ -11,11 +21,11 @@ export interface DefenseOptions {
 }
 
 export function getDefenseOptions(
-  state: MatchState,
+  snapshot: CardsSnapshot,
   playerId: PlayerId,
   attribute: Attribute,
 ): DefenseOptions {
-  const active = activeCardsOfPlayer(state, playerId);
+  const active = activeCardsOfPlayer(snapshot, playerId);
   const free = active.filter((card) => !isLocked(card, attribute));
   return free.length > 0
     ? { cardIds: free.map((card) => card.id), forced: false }
@@ -26,12 +36,12 @@ export function getDefenseOptions(
  * Acciones de juego legales ahora para un jugador (las usan la IA, la simulación y la interfaz).
  * No enumera equipos posibles ni la rendición.
  */
-export function getLegalActions(state: MatchState, playerId: PlayerId): Action[] {
-  const { turn } = state;
+export function getLegalActions(snapshot: LegalSnapshot, playerId: PlayerId): Action[] {
+  const { turn } = snapshot;
   if (turn === null) return [];
 
-  if (state.phase === 'declare' && turn.attackerId === playerId) {
-    return activeCardsOfPlayer(state, playerId).flatMap((card) =>
+  if (snapshot.phase === 'declare' && turn.attackerId === playerId) {
+    return activeCardsOfPlayer(snapshot, playerId).flatMap((card) =>
       HABITATS.flatMap((habitat) =>
         ATTRIBUTES.filter((attribute) => !isLocked(card, attribute)).map((attribute): Action => ({
           type: 'declare',
@@ -44,8 +54,12 @@ export function getLegalActions(state: MatchState, playerId: PlayerId): Action[]
     );
   }
 
-  if (state.phase === 'defend' && turn.defenderId === playerId && state.declaration !== null) {
-    return getDefenseOptions(state, playerId, state.declaration.attribute).cardIds.map(
+  if (
+    snapshot.phase === 'defend' &&
+    turn.defenderId === playerId &&
+    snapshot.declaration !== null
+  ) {
+    return getDefenseOptions(snapshot, playerId, snapshot.declaration.attribute).cardIds.map(
       (cardId): Action => ({ type: 'defend', playerId, cardId }),
     );
   }
