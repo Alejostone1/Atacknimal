@@ -1,5 +1,9 @@
 import { z } from 'zod';
 
+/** Una variable definida pero vacía (habitual en paneles de despliegue) cuenta como ausente. */
+const emptyAsMissing = (value: unknown): unknown =>
+  typeof value === 'string' && value.trim() === '' ? undefined : value;
+
 /**
  * Configuración por variables de entorno, validada al arrancar (ver .env.example).
  * 🔒 SEGURIDAD PENDIENTE: autenticación, rate limiting y orígenes estrictos (ARCHITECTURE §10).
@@ -8,9 +12,9 @@ const envSchema = z.object({
   PORT: z.coerce.number().int().positive().default(3001),
   HOST: z.string().default('0.0.0.0'),
   /** PostgreSQL de producción. Sin valor, se usa PGlite (PostgreSQL embebido). */
-  DATABASE_URL: z.url().optional(),
+  DATABASE_URL: z.preprocess(emptyAsMissing, z.url().optional()),
   /** Carpeta de datos de PGlite. Sin valor, PGlite trabaja en memoria. */
-  PGLITE_DIR: z.string().optional(),
+  PGLITE_DIR: z.preprocess(emptyAsMissing, z.string().optional()),
   /**
    * Orígenes permitidos para Socket.IO, separados por comas (por ejemplo, el dominio de Vercel).
    * En desarrollo no hace falta: el cliente pasa por el proxy de Vite.
