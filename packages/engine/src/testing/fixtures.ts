@@ -18,6 +18,7 @@ export const RULESET_V0_1: Ruleset = {
   defenderBonus: 0,
   teamAttributeLock: 0,
   habitatCooldown: 0,
+  hiddenTeams: false,
 };
 
 type Stats = readonly [

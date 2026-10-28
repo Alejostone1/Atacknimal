@@ -7,7 +7,7 @@ import {
   type MatchState,
 } from '@atacknimal/engine';
 import { describe, expect, it } from 'vitest';
-import { greedyPolicy, randomPolicy } from './policies.ts';
+import { expectedMax, greedyPolicy, randomPolicy } from './policies.ts';
 import { evaluate, marginSplit } from './report.ts';
 import { playMatch } from './runner.ts';
 import { allTeams, simulate } from './simulate.ts';
@@ -102,6 +102,15 @@ describe('simulación', () => {
     expect(stats.attackerWins + stats.ties).toBeLessThanOrEqual(stats.duels);
     const appearances = [...stats.animals.values()].reduce((sum, t) => sum + t.matches, 0);
     expect(appearances).toBe(30 * 2 * 4);
+  });
+});
+
+describe('estimación de cartas ocultas', () => {
+  it('calcula el máximo esperado sin reemplazo', () => {
+    expect(expectedMax([10, 20, 30], 1)).toBeCloseTo(20);
+    expect(expectedMax([10, 20, 30], 2)).toBeCloseTo((20 + 30 + 30) / 3);
+    expect(expectedMax([10, 20, 30], 3)).toBe(30);
+    expect(expectedMax([], 2)).toBe(0);
   });
 });
 

@@ -34,4 +34,9 @@ export interface Ruleset {
   readonly teamAttributeLock: number;
   /** Ataques propios durante los que el equipo no puede repetir un hábitat. 0 = desactivado (#025 C). */
   readonly habitatCooldown: number;
+  /**
+   * Las cartas rivales permanecen ocultas hasta que participan en un duelo (#028 A).
+   * `false` = equipos públicos desde el inicio de la partida.
+   */
+  readonly hiddenTeams: boolean;
 }

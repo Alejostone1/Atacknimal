@@ -282,3 +282,24 @@ Tabla completa: [`packages/sim/reports/experiments/025-026.md`](../packages/sim/
 - **Aire neutral** baja al Águila unos 6 puntos, pero no basta. Hay que tocar también su perfil (tres picos).
 
 **Diagnóstico adicional (política `blind`):** un atacante que **no mira** el equipo rival y ataca con su mayor valor propio gana el **62,8 %** de los duelos, y la ventaja del primer jugador baja al **53,7 %**. La causa principal de P-1 es **la información completa del atacante sobre el equipo rival**, no el número de opciones. Este bot sobreestima los empates (36 %), porque siempre usa su número más alto. Un jugador real con información parcial quedaría entre `blind` y `greedy`.
+
+### 12.6 Experimento de equipos ocultos (#028 A)
+
+Tabla completa: [`packages/sim/reports/experiments/028.md`](../packages/sim/reports/experiments/028.md). El bot `greedy` ahora estima las cartas ocultas con el máximo esperado entre los animales que podrían ser.
+
+| Variante | Gana el atacante | Primer jugador | Duelos | Llegan al límite | Empates | Águila |
+|---|---|---|---|---|---|---|
+| Públicos (0.1.0) | 92,2 % | 62,8 % | 24,7 | 11,6 % | 7,7 % | 69,2 % |
+| Ocultos | 90,0 % | 54,7 % | 24,9 | 8,4 % | 9,7 % | 75,5 % |
+| **Ocultos + A5** | 90,5 % | **51,4 %** | 24,1 | **2,4 %** | **0,1 %** | 77,0 % |
+| Ocultos + A5 + aire neutral | 90,5 % | 52,8 % | 25,0 | 3,0 % | 0,1 % | 66,0 % |
+
+**Corrección de un diagnóstico anterior:** el 62,8 % de la política `blind` (§12.5) era sobre todo un efecto de sus 36 % de empates. La información completa del equipo rival **sí explica la ventaja del primer jugador**: con equipos ocultos baja de 62,8 % a 54,7 %. Pero **no explica el éxito del atacante en cada duelo**. Un atacante que solo conoce el roster sigue eligiendo el eje (hábitat + atributo) donde su pico supera a casi cualquier defensor.
+
+**Lectura:** en un juego donde el atacante elige el eje de comparación y los animales son especialistas, que el atacante gane la mayoría de sus duelos es **estructural**. Solo bajaría al 55–62 % de tres maneras:
+
+1. Aplanando los perfiles, lo que va contra la identidad de los animales.
+2. Con una ventaja defensiva de unos +30, que tiene el mismo efecto.
+3. Cambiando qué información recibe el defensor, lo que toca la regla fundamental del turno.
+
+Con equipos ocultos, la partida es una **carrera simétrica**: los dos jugadores golpean por turnos y el primero ya no tiene ventaja relevante (51,4 % con A5). La estrategia está en **qué revelas y cuándo**, en **cuánto daño haces** (depende del margen) y en **qué carta absorbe** cada golpe.

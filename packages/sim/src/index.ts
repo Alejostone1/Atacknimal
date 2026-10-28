@@ -1,4 +1,11 @@
-export { greedyPolicy, isPolicyName, POLICIES, randomPolicy } from './policies.ts';
+export {
+  blindPolicy,
+  expectedMax,
+  greedyPolicy,
+  isPolicyName,
+  POLICIES,
+  randomPolicy,
+} from './policies.ts';
 export type { Policy, PolicyName } from './policies.ts';
 export { playMatch } from './runner.ts';
 export type { DuelRecord, MatchOptions, MatchRecord } from './runner.ts';

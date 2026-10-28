@@ -6,6 +6,7 @@ import {
   getLegalActions,
   nextInt,
   type Action,
+  type AnimalProfile,
   type CardState,
   type PlayerView,
   type RngState,
@@ -23,7 +24,8 @@ export const randomPolicy: Policy = (view, rng) =>
 
 /**
  * Maximiza el margen inmediato.
- * Al atacar, supone que el rival responderá con su mejor defensa legal.
+ * Al atacar, supone que el rival responderá con su mejor defensa legal. Si el rival tiene
+ * cartas ocultas, las estima con el valor máximo esperado entre los animales que podrían ser.
  * Al defender, elige el mayor valor efectivo; en defensa forzada, la carta con más vitalidad.
  */
 export const greedyPolicy: Policy = (view, rng) => {
@@ -32,16 +34,27 @@ export const greedyPolicy: Policy = (view, rng) => {
   if (turn === null) throw new Error('El bot no tiene turno');
 
   if (view.phase === 'declare') {
+    const hidden = hiddenRivals(view, turn.defenderId);
     const rivalBest = new Map<string, number>();
     for (const habitat of HABITATS) {
       for (const attribute of ATTRIBUTES) {
         const options = getDefenseOptions(view, turn.defenderId, attribute);
-        const best = options.forced
-          ? 0
-          : Math.max(
-              ...options.cardIds.map((id) => valueOf(view, card(view, id), attribute, habitat)),
-            );
-        rivalBest.set(`${habitat}/${attribute}`, best);
+        const known =
+          options.forced || options.cardIds.length === 0
+            ? 0
+            : Math.max(
+                ...options.cardIds.map((id) => valueOf(view, card(view, id), attribute, habitat)),
+              );
+        const guessed =
+          hidden.count === 0
+            ? 0
+            : expectedMax(
+                hidden.candidates.map(
+                  (profile) => computeValue(profile, attribute, habitat, view.ruleset).effective,
+                ),
+                hidden.count,
+              );
+        rivalBest.set(`${habitat}/${attribute}`, Math.max(known, guessed));
       }
     }
     return pickBest(
@@ -95,6 +108,43 @@ export type PolicyName = keyof typeof POLICIES;
 
 export function isPolicyName(value: string): value is PolicyName {
   return Object.hasOwn(POLICIES, value);
+}
+
+/** Cartas ocultas del defensor y animales que podrían ser (los no revelados en su equipo). */
+function hiddenRivals(
+  view: PlayerView,
+  defenderId: string,
+): { count: number; candidates: AnimalProfile[] } {
+  const defender = view.players.find((p) => p.id === defenderId);
+  const count = defender?.hiddenCards ?? 0;
+  if (defender === undefined || count === 0) return { count: 0, candidates: [] };
+  const teamRevealed = new Set(
+    view.players
+      .filter((p) => p.team === defender.team)
+      .flatMap((p) => p.cardIds ?? [])
+      .map((id) => card(view, id).animalId),
+  );
+  return {
+    count,
+    candidates: Object.values(view.roster).filter((profile) => !teamRevealed.has(profile.id)),
+  };
+}
+
+/** Valor esperado del máximo de `k` valores elegidos al azar, sin reemplazo, de `values`. */
+export function expectedMax(values: readonly number[], k: number): number {
+  const sorted = [...values].sort((a, b) => a - b);
+  const n = sorted.length;
+  if (k <= 0 || n === 0) return 0;
+  if (k >= n) return sorted[n - 1] ?? 0;
+  const total = binomial(n, k);
+  return sorted.reduce((sum, value, i) => sum + (value * binomial(i, k - 1)) / total, 0);
+}
+
+function binomial(n: number, k: number): number {
+  if (k < 0 || k > n) return 0;
+  let result = 1;
+  for (let i = 1; i <= k; i++) result = (result * (n - k + i)) / i;
+  return result;
 }
 
 function card(view: PlayerView, cardId: string): CardState {

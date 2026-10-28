@@ -33,6 +33,7 @@ export const rulesetSchema = z.strictObject({
   defenderBonus: z.number().nonnegative(),
   teamAttributeLock: nonNegativeInt,
   habitatCooldown: nonNegativeInt,
+  hiddenTeams: z.boolean(),
 });
 
 const range = z.strictObject({ min: z.number(), max: z.number() });

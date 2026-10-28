@@ -74,3 +74,17 @@ Ninguna combinación alcanza el criterio acordado. Ver [BALANCE.md](BALANCE.md) 
 - **C. Aceptar que el atacante gana casi siempre** y corregir solo el ritmo (B2+C1+A5 deja al primer jugador en 54,7 %). Es lo más simple, pero defender se reduce a elegir qué carta recibe el golpe y el pilar de información parcial pierde peso.
 
 **Recomendación: A.** Es la única opción que ataca la causa medida. Además, hace que la elección secreta de equipo (§3.1 de GAME_RULES) importe durante toda la partida y da sentido a "leer" al rival. Antes de adoptarla la validaría con un bot que **recuerde** solo las cartas reveladas (ni `blind` ni `greedy`), con el mismo criterio: atacante entre 55 % y 62 %. #026 (Aire neutral más ajuste del Águila) se mediría después, sobre la regla elegida.
+
+### Resultado de #028 A: equipos ocultos (2026-10-28)
+
+Corrige la ventaja del primer jugador (62,8 % → 51,4 % con A5) pero no el éxito del atacante por duelo (~90 %). Ver [BALANCE.md](BALANCE.md) §12.6. El parámetro `hiddenTeams` queda implementado y probado, desactivado en 0.1.0.
+
+### ⚠️ DECISIÓN PENDIENTE #029: qué objetivo de balance usamos
+
+**Problema:** el objetivo "atacante entre 55 % y 62 % por duelo" lo propuse yo en el análisis (§J.8). Los datos indican que no es alcanzable sin romper uno de los pilares del juego.
+
+- **A. Cambiar el objetivo y adoptar "ocultos + A5 + aire neutral" como base de 0.2.0.** Se acepta que atacar suele ganar el duelo (identidad: "golpeas en tu turno") y el equilibrio se mide con lo que decide partidas: primer jugador 48–52 %, animales 45–55 %, duración, empates y límite de duelos. La información oculta da sentido a revelar cartas y a "leer" al rival. Después se ajustan el Águila (sigue en 66 %) y los animales débiles.
+- **B. Revisar la regla fundamental:** el defensor conocería el **hábitat y la carta atacante, pero no el atributo**. Defender pasaría a ser una apuesta real: eliges una carta robusta frente a los picos del atacante. Probablemente acercaría el duelo al 50–65 %, pero **no está medido** y cambia el paso 4 de tu regla principal.
+- **C. Ventaja defensiva grande (~+30) o perfiles más planos.** Cumple el objetivo numérico, pero los animales pierden identidad. No lo recomiendo.
+
+**Recomendación: A.** Respeta tu regla del turno y la identidad de los animales, y los datos muestran una partida justa entre jugadores. Si quieres explorar B, se puede medir como experimento sin adoptarla.

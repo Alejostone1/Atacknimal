@@ -3,6 +3,7 @@ import type {
   AttackDeclaredEvent,
   CombatResolution,
   DomainEvent,
+  MatchStartedEvent,
   TeamConfirmedEvent,
 } from './events.ts';
 import { getPlayer } from './queries.ts';
@@ -28,8 +29,13 @@ export interface PlayerSummary {
   readonly team: TeamId;
   readonly seat: Seat;
   readonly confirmed: boolean;
-  /** `null` si aún no confirmó o si su equipo todavía es secreto para quien mira. */
+  /**
+   * Cartas que quien mira puede ver: `null` si aún no confirmó o si su equipo todavía es secreto.
+   * Con `hiddenTeams`, las cartas rivales aparecen solo cuando se revelan.
+   */
   readonly cardIds: readonly CardId[] | null;
+  /** Cartas de este jugador que existen pero todavía no se han revelado a quien mira. */
+  readonly hiddenCards: number;
 }
 
 export interface DeclarationView {
@@ -64,8 +70,14 @@ export interface PlayerView {
  */
 export function getPlayerView(state: MatchState, viewerId: PlayerId): PlayerView {
   const viewerTeam = getPlayer(state, viewerId).team;
-  const teamVisible = (team: TeamId): boolean => team === viewerTeam || state.phase !== 'setup';
-  const visibleOwners = new Set(state.players.filter((p) => teamVisible(p.team)).map((p) => p.id));
+  const teamOf = (playerId: PlayerId): TeamId => getPlayer(state, playerId).team;
+  const cardVisible = (cardId: CardId): boolean => {
+    const card = state.cards[cardId];
+    if (card === undefined) return false;
+    if (teamOf(card.ownerId) === viewerTeam) return true;
+    if (state.phase === 'setup') return false;
+    return !state.ruleset.hiddenTeams || card.revealed;
+  };
   const { declaration, turn } = state;
 
   return {
@@ -76,15 +88,20 @@ export function getPlayerView(state: MatchState, viewerId: PlayerId): PlayerView
     duelNumber: state.duelNumber,
     ruleset: state.ruleset,
     roster: state.roster,
-    players: state.players.map((p) => ({
-      id: p.id,
-      team: p.team,
-      seat: p.seat,
-      confirmed: p.cardIds !== null,
-      cardIds: teamVisible(p.team) ? p.cardIds : null,
-    })),
+    players: state.players.map((p) => {
+      const secret = p.team !== viewerTeam && state.phase === 'setup';
+      const visible = p.cardIds?.filter(cardVisible) ?? null;
+      return {
+        id: p.id,
+        team: p.team,
+        seat: p.seat,
+        confirmed: p.cardIds !== null,
+        cardIds: secret ? null : visible,
+        hiddenCards: secret ? 0 : (p.cardIds?.length ?? 0) - (visible?.length ?? 0),
+      };
+    }),
     cards: Object.fromEntries(
-      Object.entries(state.cards).filter(([, card]) => visibleOwners.has(card.ownerId)),
+      Object.entries(state.cards).filter(([cardId]) => cardVisible(cardId)),
     ),
     teamCooldowns: state.teamCooldowns,
     turnOrder: state.turnOrder,
@@ -104,9 +121,13 @@ export function getPlayerView(state: MatchState, viewerId: PlayerId): PlayerView
 }
 
 export type PlayerEvent =
-  | Exclude<DomainEvent, TeamConfirmedEvent | AttackDeclaredEvent>
+  | Exclude<DomainEvent, TeamConfirmedEvent | AttackDeclaredEvent | MatchStartedEvent>
   | (Omit<TeamConfirmedEvent, 'animalIds'> & { readonly animalIds: readonly AnimalId[] | null })
-  | (Omit<AttackDeclaredEvent, 'cardId'> & { readonly cardId: CardId | null });
+  | (Omit<AttackDeclaredEvent, 'cardId'> & { readonly cardId: CardId | null })
+  | (Omit<MatchStartedEvent, 'teams'> & {
+      /** Con `hiddenTeams`, los equipos rivales llegan como `null`. */
+      readonly teams: Readonly<Record<PlayerId, readonly AnimalId[] | null>>;
+    });
 
 /** Versión de un evento que puede enviarse a un jugador concreto. */
 export function redactEvent(
@@ -123,6 +144,17 @@ export function redactEvent(
     case 'attackDeclared':
       return sameTeam(event.attackerId) ? event : { ...event, cardId: null };
     case 'matchStarted':
+      return state.ruleset.hiddenTeams
+        ? {
+            ...event,
+            teams: Object.fromEntries(
+              Object.entries(event.teams).map(([playerId, animals]) => [
+                playerId,
+                sameTeam(playerId) ? animals : null,
+              ]),
+            ),
+          }
+        : event;
     case 'turnStarted':
     case 'combatResolved':
     case 'conceded':

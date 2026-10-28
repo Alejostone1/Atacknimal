@@ -9,6 +9,7 @@ const card = (locks: CardState['locks']): CardState => ({
   hp: 100,
   maxHp: 100,
   locks,
+  revealed: false,
 });
 
 describe('bloqueos (GAME_RULES §8)', () => {

@@ -361,6 +361,7 @@ Con estos datos, la pantalla de resultado y el **registro del combate** pueden e
 | `defenderBonus` | 0 (*experimental, desactivado*: ventaja fija del defensor fuera de defensa forzada) | #025 A |
 | `teamAttributeLock` | 0 (*experimental, desactivado*: ataques propios en que el atributo usado queda bloqueado para todo el equipo) | #025 B |
 | `habitatCooldown` | 0 (*experimental, desactivado*: ataques propios en que el equipo no puede repetir hábitat; error `HABITAT_LOCKED`) | #025 C |
+| `hiddenTeams` | `false` (*experimental, desactivado*: las cartas rivales no se ven hasta que participan en un duelo; la vista muestra solo cuántas quedan ocultas) | #028 A |
 | `turnTimers.declareSeconds` | 30 (solo online) | §16 |
 | `turnTimers.defendSeconds` | 20 (solo online) | §16 |
 | `reconnectGraceSeconds` | 60 (solo online) | §16 |

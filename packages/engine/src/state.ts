@@ -39,6 +39,8 @@ export interface CardState {
   readonly hp: number;
   readonly maxHp: number;
   readonly locks: readonly Lock[];
+  /** `true` desde que la carta participa en su primer duelo (relevante con `hiddenTeams`). */
+  readonly revealed: boolean;
 }
 
 export interface PlayerState {

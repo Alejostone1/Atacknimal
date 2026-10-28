@@ -199,7 +199,7 @@ function applyResolution(state: MatchState, resolution: CombatResolution): Match
       hp > 0
         ? locksAfterDuel(card.locks, resolution.attribute, state.ruleset.lockDuration).locks
         : [];
-    return { ...card, hp, locks };
+    return { ...card, hp, locks, revealed: true };
   };
   const attacker = update(resolution.attacker.cardId, resolution.attacker.hpAfter);
   const defender = update(resolution.defender.cardId, resolution.defender.hpAfter);

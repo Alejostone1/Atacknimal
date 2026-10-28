@@ -56,7 +56,15 @@ function createCard(state: MatchState, ownerId: PlayerId, animalId: AnimalId): C
   const profile = state.roster[animalId];
   invariant(profile, `Animal sin perfil: ${animalId}`);
   const maxHp = profile.baseHp ?? state.ruleset.baseHp;
-  return { id: cardIdFor(ownerId, animalId), animalId, ownerId, hp: maxHp, maxHp, locks: [] };
+  return {
+    id: cardIdFor(ownerId, animalId),
+    animalId,
+    ownerId,
+    hp: maxHp,
+    maxHp,
+    locks: [],
+    revealed: false,
+  };
 }
 
 /** Sorteo del primer equipo atacante y primer turno (docs/GAME_RULES.md §3.3). */
