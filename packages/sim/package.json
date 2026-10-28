@@ -10,7 +10,8 @@
   "scripts": {
     "typecheck": "tsc -p tsconfig.json",
     "simulate": "node src/cli.ts",
-    "experiment": "node src/experiment.ts"
+    "experiment": "node src/experiment.ts",
+    "matchup": "node src/matchup-cli.ts"
   },
   "dependencies": {
     "@atacknimal/content": "*",

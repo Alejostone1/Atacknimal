@@ -46,8 +46,9 @@ export function ReadyScreen() {
       <div className={styles.notice} role="note">
         <Info size={20} aria-hidden="true" />
         <p>
-          En esta versión la IA todavía elige sus jugadas al azar, sea cual sea la dificultad. Los
-          niveles Fácil, Normal y Difícil llegan en la próxima versión.
+          Al atacar eliges hábitat, animal y atributo. Quien defiende solo sabe el hábitat y el
+          atributo, y tu rival no verá tus animales hasta que entren en combate. Gana quien deje al
+          otro sin cartas.
         </p>
       </div>
     </Screen>

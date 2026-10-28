@@ -1,3 +1,4 @@
+import type { AiDifficulty } from '@atacknimal/engine';
 import { create } from 'zustand';
 import { createJSONStorage, persist, type StateStorage } from 'zustand/middleware';
 import { BALANCE } from '../content/catalog.ts';
@@ -32,7 +33,8 @@ const safeLocalStorage: StateStorage = {
 };
 
 export type MotionPreference = 'system' | 'reduce' | 'full';
-export type Difficulty = 'easy' | 'normal' | 'hard';
+/** Niveles de la IA del motor (packages/engine/src/ai). */
+export type Difficulty = AiDifficulty;
 
 interface SettingsState {
   motion: MotionPreference;

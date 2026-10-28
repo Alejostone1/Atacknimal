@@ -351,3 +351,34 @@ Todos los perfiles siguen cumpliendo el presupuesto de §2 (los tests de `packag
 - ⚠️ **Guepardo, Águila y Tigre** rondan el 56 %, y **Lobo y Cocodrilo** el 45 %.
 - ⚠️ **Duración de 25,8 duelos**, por encima del objetivo de 24. Subir el daño base acortaría las partidas, pero en la ronda 3 movía el equilibrio de animales. Conviene revisarlo cuando la IA sea más lista que `greedy`.
 - Los bots `greedy` son una aproximación. Cuando exista la IA Difícil (Fase 7), el balance debe volver a medirse con ella.
+
+---
+
+## 14. IA por niveles (Fase 7)
+
+Código: `packages/engine/src/ai/`. Informes: `packages/sim/reports/0.2.0/matchups/`. Comando para repetir la medición:
+
+```bash
+npm run matchup -- --a hard --b normal --sample 4000
+```
+
+| Enfrentamiento (balance 0.2.0, 4 000 partidas, lados alternos) | Win rate del primero | Objetivo |
+|---|---|---|
+| Difícil contra Normal | **63,2 %** | 60–70 % ✅ |
+| Difícil contra Fácil | **81,0 %** | — |
+| Normal contra Fácil | **68,2 %** | — |
+| Fácil contra azar | 100 % | — |
+
+**Calibración de Fácil:** la primera versión jugaba al azar la mitad de las veces y ganaba un **0,1 %** a Normal. Sin nada de azar, atacando con su mayor valor sin mirar al rival, seguía ganando solo un **7,6 %**. En una partida de ~25 duelos, cualquier ventaja sistemática al elegir el ataque se acumula. Por eso Fácil razona como Normal pero **valora cada opción con un error uniforme de ±20 puntos**:
+
+| Error de Fácil | Fácil contra Normal |
+|---|---|
+| ±10 | 42,4 % |
+| **±20 (elegido)** | **32,1 %** |
+| ±35 | 19,8 % |
+
+Con ±20 la curva queda escalonada: cada nivel gana aproximadamente dos de cada tres partidas al anterior.
+
+**Cambio en el simulador:** la política `greedy` de los informes es ahora la IA Normal del motor. A diferencia del bot de la Fase 4, incluye la ventaja del defensor al estimar la defensa rival. Los informes anteriores de 0.2.0 se generaron con el bot antiguo; las diferencias esperadas son pequeñas.
+
+**Pendiente:** volver a medir el balance de animales con `--policy hard`, como se previó en §13.3.

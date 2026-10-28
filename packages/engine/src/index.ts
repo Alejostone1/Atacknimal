@@ -68,6 +68,11 @@ export { cardIdFor, isActive } from './queries.ts';
 export { getPlayerView, redactEvent } from './view.ts';
 export type { DeclarationView, PlayerEvent, PlayerSummary, PlayerView } from './view.ts';
 
+// Inteligencia artificial (decide con la vista del jugador, nunca con el estado completo)
+export { AI_DIFFICULTIES, decideAI } from './ai/decide.ts';
+export type { AiDifficulty } from './ai/decide.ts';
+export { estimateAttack, estimateDefense, expectedMax } from './ai/estimate.ts';
+
 // Aleatoriedad determinista (para IA y simulación)
 export { createRng, nextFloat, nextInt } from './rng.ts';
 export type { RngState } from './rng.ts';

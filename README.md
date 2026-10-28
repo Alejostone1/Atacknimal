@@ -14,7 +14,8 @@
 | 4b · Imágenes y datos reales | ✅ Cerrada | [`docs/ASSETS.md`](docs/ASSETS.md) · [`tools/curator`](tools/curator) |
 | 5 · Frontend (React) | ✅ Cerrada | [`apps/web`](apps/web/src) |
 | 6 · Combate (Phaser) | ✅ Cerrada | [`apps/web/src/match`](apps/web/src/match) · [`apps/web/src/phaser`](apps/web/src/phaser) |
-| 7 · IA (MVP) | ⏳ Siguiente | — |
+| 7 · IA · 🎯 **MVP** | ✅ Cerrada | [`packages/engine/src/ai`](packages/engine/src/ai) · se juega contra la IA en Fácil, Normal o Difícil |
+| 8 · Servidor y 1 vs 1 online | ⏳ Siguiente | — |
 
 Hoja de ruta completa: [`docs/ROADMAP.md`](docs/ROADMAP.md).
 

@@ -23,7 +23,8 @@
     "build": "npm run build --workspace @atacknimal/web",
     "simulate": "npm run simulate --workspace @atacknimal/sim --",
     "experiment": "npm run experiment --workspace @atacknimal/sim --",
-    "curate": "npm run curate --workspace @atacknimal/curator --"
+    "curate": "npm run curate --workspace @atacknimal/curator --",
+    "matchup": "npm run matchup --workspace @atacknimal/sim --"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",

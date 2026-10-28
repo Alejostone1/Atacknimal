@@ -1,12 +1,16 @@
 export {
   blindPolicy,
-  expectedMax,
+  easyPolicy,
   greedyPolicy,
+  hardPolicy,
   isPolicyName,
+  normalPolicy,
   POLICIES,
   randomPolicy,
 } from './policies.ts';
 export type { Policy, PolicyName } from './policies.ts';
+export { matchup } from './matchup.ts';
+export type { MatchupResult } from './matchup.ts';
 export { playMatch } from './runner.ts';
 export type { DuelRecord, MatchOptions, MatchRecord } from './runner.ts';
 export { allTeams, simulate } from './simulate.ts';

@@ -92,7 +92,7 @@ Al crear `apps/web` se añadirá la regla equivalente: **Phaser no puede importa
 | `getDefenseOptions(state, playerId, attribute)` | ✅ | Cartas legales para defender y si la defensa es forzada |
 | `getPlayerView(state, playerId) → PlayerView` | ✅ | Vista **redactada**: oculta la carta atacante al equipo defensor, el equipo rival durante la preparación y el estado del RNG ([GAME_RULES.md](GAME_RULES.md) §11) |
 | `redactEvent(event, state, playerId) → PlayerEvent` | ✅ | Versión de un evento que puede enviarse a ese jugador |
-| `decideAI(view, difficulty, rng) → Action` | ⏳ Fase 7 | La IA recibe una `PlayerView`, **no** el `MatchState`: es imposible que haga trampa por construcción |
+| `decideAI(view, difficulty, rng) → [Action, rng]` | ✅ Fase 7 | La IA recibe una `PlayerView`, **no** el `MatchState`: es imposible que haga trampa por construcción |
 
 **Acciones:** `selectTeam`, `declare` (hábitat + carta + atributo), `defend`, `concede`.
 
@@ -176,7 +176,7 @@ Las reglas no lanzan excepciones para acciones ilegales: devuelven un `RuleError
 |---|---|
 | `game/localMatch.ts` | Crea la partida local (motor en el navegador): jugador `jugador` contra `rival`, con el equipo del rival al azar |
 | `game/matchStore.ts` | Estado de la partida. **Guarda el estado del motor fuera del store** y solo expone la `PlayerView` del jugador, el duelo que se está mostrando y el registro. Mientras se muestra un duelo, el rival espera |
-| `game/opponent.ts` | **Rival provisional:** acción legal al azar desde su vista. Lo sustituye la IA de la Fase 7 |
+| IA del rival | `decideAI` del motor con la dificultad elegida, a partir de la vista del rival (Fase 7). El rival provisional al azar de la Fase 6 se eliminó |
 | `game/present.ts` | Traduce cada `CombatResolution` en datos para Phaser y en un **texto equivalente** (accesible y para movimiento reducido) que explica por qué ganó una carta |
 | `match/` | Pantalla `/partida`: tiras de equipo (las rivales sin revelar como "?"), ataque en tres pasos (hábitat → animal → atributo, con el valor real de cada opción), defensa (con aviso de defensa forzada), resultado, registro, fin de partida y abandono |
 | `phaser/` | `CombatStage.tsx` (único puente React ↔ Phaser), `DuelScene.ts` (animación) y `presentation.ts` (contrato de datos) |

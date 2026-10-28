@@ -5,6 +5,7 @@
  */
 import {
   applyAction,
+  decideAI,
   getPlayerView,
   type Action,
   type CombatResolution,
@@ -15,7 +16,6 @@ import {
 import { create } from 'zustand';
 import type { Difficulty } from '../state/stores.ts';
 import { createLocalMatch, HUMAN, randomSeed, RIVAL } from './localMatch.ts';
-import { chooseOpponentAction } from './opponent.ts';
 
 /** Un duelo listo para presentarse: la resolución del motor y la vitalidad previa de cada carta. */
 export interface PresentedDuel {
@@ -101,7 +101,12 @@ export const useMatch = create<MatchStoreState>()((set, get) => ({
     const turn = engineState.turn;
     const actor = engineState.phase === 'declare' ? turn?.attackerId : turn?.defenderId;
     if (actor !== RIVAL) return;
-    const [action, next] = chooseOpponentAction(getPlayerView(engineState, RIVAL), opponentRng);
+    // La IA decide con su propia vista: no ve tu carta atacante ni tus cartas sin revelar.
+    const [action, next] = decideAI(
+      getPlayerView(engineState, RIVAL),
+      get().difficulty,
+      opponentRng,
+    );
     opponentRng = next;
     apply(action, set, get);
   },

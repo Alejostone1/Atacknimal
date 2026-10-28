@@ -10,13 +10,18 @@ const DIFFICULTIES: readonly { id: Difficulty; label: string; description: strin
   {
     id: 'easy',
     label: 'Fácil',
-    description: 'Ataca por instinto y a menudo elige mal su defensa.',
+    description: 'Entiende el juego, pero a menudo calcula mal qué le conviene.',
   },
-  { id: 'normal', label: 'Normal', description: 'Busca siempre el mejor duelo inmediato.' },
+  {
+    id: 'normal',
+    label: 'Normal',
+    description: 'Busca siempre el duelo que más le favorece ahora.',
+  },
   {
     id: 'hard',
     label: 'Difícil',
-    description: 'Gestiona bloqueos y vitalidad, y te tiende cebos.',
+    description:
+      'Calcula el daño de ida y vuelta, protege sus cartas y sabe cuándo sacrificar una.',
   },
 ];
 

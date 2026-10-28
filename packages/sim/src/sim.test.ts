@@ -1,4 +1,4 @@
-import { getBalanceSet } from '@atacknimal/content';
+﻿import { getBalanceSet } from '@atacknimal/content';
 import {
   applyAction,
   createMatch,
@@ -7,7 +7,8 @@ import {
   type MatchState,
 } from '@atacknimal/engine';
 import { describe, expect, it } from 'vitest';
-import { expectedMax, greedyPolicy, randomPolicy } from './policies.ts';
+import { expectedMax } from '@atacknimal/engine';
+import { greedyPolicy, randomPolicy } from './policies.ts';
 import { evaluate, marginSplit } from './report.ts';
 import { playMatch } from './runner.ts';
 import { allTeams, simulate } from './simulate.ts';
@@ -49,7 +50,7 @@ describe('equipos', () => {
   });
 });
 
-describe('política greedy', () => {
+describe('polÃ­tica greedy', () => {
   it('ataca donde su margen frente a la mejor defensa rival es mayor', () => {
     const state = started();
     const attacker = state.turn?.attackerId ?? '';
@@ -77,7 +78,7 @@ describe('política greedy', () => {
   });
 });
 
-describe('simulación', () => {
+describe('simulaciÃ³n', () => {
   it('juega partidas completas y deterministas', () => {
     const run = () =>
       playMatch({
@@ -95,7 +96,7 @@ describe('simulación', () => {
     expect(run()).toEqual(record);
   });
 
-  it('agrega estadísticas coherentes en una muestra', () => {
+  it('agrega estadÃ­sticas coherentes en una muestra', () => {
     const stats = simulate({ balance, policy: greedyPolicy, seed: 1, sample: 30 });
     expect(stats.matches).toBe(30);
     expect(stats.reasons.elimination + stats.reasons['duel-limit']).toBe(30);
@@ -105,8 +106,8 @@ describe('simulación', () => {
   });
 });
 
-describe('estimación de cartas ocultas', () => {
-  it('calcula el máximo esperado sin reemplazo', () => {
+describe('estimaciÃ³n de cartas ocultas', () => {
+  it('calcula el mÃ¡ximo esperado sin reemplazo', () => {
     expect(expectedMax([10, 20, 30], 1)).toBeCloseTo(20);
     expect(expectedMax([10, 20, 30], 2)).toBeCloseTo((20 + 30 + 30) / 3);
     expect(expectedMax([10, 20, 30], 3)).toBe(30);
@@ -114,7 +115,7 @@ describe('estimación de cartas ocultas', () => {
   });
 });
 
-describe('márgenes', () => {
+describe('mÃ¡rgenes', () => {
   it('estima el reparto de resultados con una ventaja defensiva', () => {
     const stats = new BalanceStats();
     for (const [margin, count] of [
@@ -131,7 +132,7 @@ describe('márgenes', () => {
   });
 });
 
-describe('evaluación de objetivos', () => {
+describe('evaluaciÃ³n de objetivos', () => {
   const target = { min: 0.45, max: 0.55, alertMin: 0.42, alertMax: 0.58 };
   it.each([
     [0.5, 'ok'],
@@ -139,7 +140,7 @@ describe('evaluación de objetivos', () => {
     [0.56, 'warn'],
     [0.41, 'alert'],
     [0.6, 'alert'],
-  ])('%f → %s', (value, status) => {
+  ])('%f â†’ %s', (value, status) => {
     expect(evaluate(value, target)).toBe(status);
   });
 });

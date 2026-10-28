@@ -317,12 +317,14 @@ Un jugador que abandona voluntariamente pierde. En 2v2 pierde todo su equipo.
 
 | Nivel | Al defender | Al atacar |
 |---|---|---|
-| **Fácil** | Elige una carta legal ponderando por valor efectivo con mucho ruido; a menudo no es la óptima | Elige hábitat, carta y atributo con sesgo hacia sus valores altos y ruido |
-| **Normal** | Mayor valor efectivo legal con una pequeña variación | Maximiza el margen esperado contra la mejor defensa legal del rival |
-| **Difícil** | Además pondera la vitalidad restante (sacrificios), el coste del bloqueo que sufrirá y la probabilidad de cada atacante posible según el hábitat declarado | Además pondera su propio bloqueo y busca "cebos" que obliguen al rival a bloquear sus mejores defensores |
+| **Fácil** | Razona como Normal, pero valora cada opción con un error de hasta ±20 puntos | Igual: razona como Normal con ese mismo error |
+| **Normal** | Mayor valor efectivo legal (incluida la ventaja del defensor). En defensa forzada, la carta con más vitalidad | Maximiza el margen frente a la **mejor defensa estimada** del rival: sus cartas visibles legales y, si tiene ocultas, el máximo esperado entre los animales que podrían ser |
+| **Difícil** | Estima el valor del atacante (sus cartas visibles que pueden usar el atributo y el máximo esperado de las ocultas). Gana con la carta cuyo bloqueo cueste menos. Si va a perder, minimiza el daño, evita eliminaciones y sacrifica a la carta con menos vitalidad | Calcula el intercambio de daño esperado (daño causado o contraataque recibido), penaliza arriesgar una eliminación propia y el coste de bloquear su mejor carta en ese atributo |
 
 - La dificultad **nunca** se basa en hacer trampa ni en modificar estadísticas.
-- El detalle de cada política se especificará en la Fase 7.
+- Implementación: `packages/engine/src/ai/` (`decideAI(vista, nivel, rng)`). La usan la web, el simulador y, más adelante, el servidor.
+- Calibración (balance 0.2.0, 4 000 partidas por emparejamiento): Difícil gana el **63 %** a Normal y el **81 %** a Fácil; Normal gana el **68 %** a Fácil ([BALANCE.md](BALANCE.md) §14).
+- Los "cebos" (atacar para forzar que el rival bloquee sus mejores defensores) quedan para una futura IA más profunda.
 
 ---
 
