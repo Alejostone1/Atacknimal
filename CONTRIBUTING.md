@@ -22,6 +22,7 @@ npm run check
 | Script | Qué hace |
 |---|---|
 | `npm run dev` | Aplicación web en modo desarrollo (http://localhost:5173) |
+| `npm run dev:server` | Servidor de juego online (puerto 3001, PGlite en memoria) |
 | `npm run build` | Build de producción de la aplicación web (también lo ejecuta la CI) |
 | `npm run check` | Todo lo siguiente, en orden |
 | `npm run format:check` / `npm run format` | Comprueba o aplica Prettier |
@@ -48,10 +49,11 @@ npm run check
 ## Estructura
 
 ```text
-docs/          documentación (análisis, reglas, balance, arquitectura, decisiones, hoja de ruta)
+docs/          documentación (análisis, reglas, balance, arquitectura, API, base de datos, decisiones, hoja de ruta)
 docs/diseno/   material de diseño original (no se edita)
-packages/      paquetes compartidos (engine; más adelante content, sim, protocol)
-apps/          aplicaciones (más adelante web y server)
+packages/      paquetes compartidos (engine, content, sim, protocol)
+tools/         herramientas de desarrollo (curator)
+apps/          aplicaciones (web, server)
 ```
 
 Las carpetas nuevas se crean cuando empieza la fase que las necesita, no antes ([ROADMAP.md](docs/ROADMAP.md)).

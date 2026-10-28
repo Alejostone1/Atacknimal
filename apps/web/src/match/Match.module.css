@@ -422,3 +422,21 @@
   width: 100%;
   max-width: 440px;
 }
+
+/* Reloj del turno online */
+.clock {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  padding: 0 var(--s-3);
+  border: 1px solid var(--c-moss-hi);
+  border-radius: var(--radius);
+  font-size: 18px;
+  color: var(--c-lichen);
+}
+
+.clock[data-urgent='true'] {
+  border-color: var(--c-amber);
+  color: var(--c-amber);
+}

@@ -408,6 +408,10 @@ Estas reglas no afectan al motor; las aplica el servidor alrededor de él:
 - **Temporizador:** 30 s para declarar y 20 s para defender. Al agotarse, el servidor genera la acción con la **política de IA Fácil** en nombre del jugador y la pasa por el motor como cualquier otra.
 - **Desconexión:** 60 s de gracia. Mientras dure, sus temporizadores siguen corriendo (actúa la IA Fácil por él). Si no vuelve dentro de la gracia, cuenta como **abandono** (§10.3).
 - **Acciones duplicadas:** cada acción lleva un identificador. El servidor ignora los duplicados (idempotencia), lo que permite reintentar tras una reconexión sin aplicar dos veces la misma jugada.
+- **Antes de empezar:** si alguien sale de la sala o no vuelve dentro de la gracia mientras se espera rival o se eligen equipos, la sala se cierra sin resultado.
+- **Elección de equipo:** por ahora no tiene límite de tiempo (pendiente; ARCHITECTURE §10).
+
+Detalle técnico en [API.md](API.md) §6.
 
 ---
 

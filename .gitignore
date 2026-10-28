@@ -10,3 +10,6 @@ Thumbs.db
 
 # Salidas locales de la herramienta de curación (se regeneran)
 tools/curator/out/
+
+# Datos locales de PGlite (servidor en desarrollo)
+.data/

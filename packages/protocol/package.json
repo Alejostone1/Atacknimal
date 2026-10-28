@@ -1,0 +1,17 @@
+{
+  "name": "@atacknimal/protocol",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Contrato entre cliente y servidor de ATACKNIMAL: mensajes de Socket.IO y respuestas REST, validados con Zod.",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "@atacknimal/engine": "*",
+    "zod": "4.6.7"
+  }
+}

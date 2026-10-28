@@ -38,14 +38,14 @@ export function HomeScreen() {
             Jugar contra la IA
           </Link>
           <div className={styles.online}>
-            <button type="button" className="btn btn--ghost" aria-disabled="true" disabled>
+            <Link to="/sala" className="btn btn--ghost">
               Crear sala
-            </button>
-            <button type="button" className="btn btn--ghost" aria-disabled="true" disabled>
+            </Link>
+            <Link to="/sala?modo=unirse" className="btn btn--ghost">
               Unirse con código
-            </button>
+            </Link>
             <p className={styles.soon}>
-              Las partidas online con código y QR llegarán más adelante.
+              Online 1 vs 1 con código de sala. El QR llegará más adelante.
             </p>
           </div>
           <div className={styles.secondary}>

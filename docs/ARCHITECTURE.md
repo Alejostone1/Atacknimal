@@ -22,22 +22,23 @@
 ## 2. Vista general
 
 ```text
-┌──────────────────────────── apps/web (navegador) ──────────────────────────────┐
-│  React ── Action ──► GameClient ──┬─ modo local: @atacknimal/engine (1 vs IA)   │
-│    ▲                              └─ modo online: Socket.IO ──────────────┐     │
-│    └── PlayerView + CombatResolution ◄──────────────────────────────────┐ │     │
-│  Phaser (CombatStage) ◄── CombatResolution (solo datos)                  │ │     │
-└──────────────────────────────────────────────────────────────────────────┼─┼─────┘
-                                                                           │ ▼
-┌──────────────────────────── apps/server (Node.js) ───────────────────────┼───────┐
-│  Socket.IO ─► MatchService: estado ─► engine.applyAction ─► eventos ─────┘       │
-│  Fastify (REST)     RoomService (código, enlace, caducidad)     IA (timeouts)    │
-└───────────────────────────────────────┬──────────────────────────────────────────┘
-                                        ▼
-                         PostgreSQL (Drizzle): eventos + instantáneas
+apps/web (navegador)
+  React ── ClientAction ──► useMatch (game/matchStore.ts)
+    ▲                          ├─ local:  engine + IA en el navegador
+    │                          └─ online: game/online.ts ── match:act ──────┐
+    └── PlayerView + duelos ◄───────────── match:update (vista redactada) ──┤
+  Phaser (CombatStage) ◄── DuelPresentation (solo datos)                    │
+                                                                            │
+apps/server (Node.js)                                                       │
+  Socket.IO + Fastify (server.ts) ◄────────────────────────────────────────┘
+    └─► Room (room.ts): estado completo ─► engine.applyAction
+          temporizadores · IA Fácil por tiempo · reconexión · abandono
+          │ escrituras encoladas (nunca bloquean la partida)
+          ▼
+  PostgreSQL / PGlite (Drizzle): salas, jugadores, semilla + acciones
 ```
 
-**Clave del diseño:** `GameClient` es la única puerta entre React y el juego. En el 1 vs IA ejecuta el motor localmente; en el modo online habla con el servidor. React no sabe cuál de los dos usa. El MVP local y el modo online comparten así todo el código de interfaz.
+**Clave del diseño:** `useMatch` es la única puerta entre React y el juego. En el 1 vs IA ejecuta el motor en el navegador; online recibe la vista del servidor y le envía las acciones. Los paneles de ataque y defensa, la escena de Phaser y el resumen final no saben cuál de los dos se usa: trabajan con `view.viewerId` y la `PlayerView`.
 
 ---
 
@@ -48,10 +49,10 @@
 | `@atacknimal/engine` | ✅ reglas completas sin IA (Fase 3) | Reglas puras y deterministas | **Nada** (solo TypeScript) |
 | `@atacknimal/content` | ✅ Fase 4a · ⏳ imágenes y datos reales (4b) | Animales, perfiles, afinidades y versiones de balance en JSON, validados con Zod | engine (tipos) |
 | `@atacknimal/sim` | ✅ Fase 4a | Simulación masiva e informes de balance (`npm run simulate`) | engine, content |
-| `@atacknimal/protocol` | ⏳ Fase 8 | Contratos de eventos WebSocket y DTO REST (Zod) | engine (tipos) |
+| `@atacknimal/protocol` | ✅ Fase 8 | Contratos de eventos WebSocket y respuestas REST, esquemas Zod ([API.md](API.md)) | engine |
 | `tools/curator` | ✅ Fase 4b | Herramienta de desarrollo: fotos con licencia abierta y datos de Wikidata ([ASSETS.md](ASSETS.md)) | content |
-| `apps/web` | ✅ Fase 5 (interfaz) · ✅ Fase 6 (combate) | React + Vite; Phaser solo en `src/phaser/` | engine, content (protocol en la Fase 8) |
-| `apps/server` | ⏳ Fase 8 | Fastify + Socket.IO + Drizzle | engine, content, protocol |
+| `apps/web` | ✅ Fase 5 (interfaz) · ✅ Fase 6 (combate) · ✅ Fase 8 (online) | React + Vite; Phaser solo en `src/phaser/`; Socket.IO cliente en `src/game/online.ts` | engine, content, protocol |
+| `apps/server` | ✅ Fase 8 | Fastify + Socket.IO + Drizzle (PostgreSQL o PGlite) ([DATABASE.md](DATABASE.md)) | engine, content, protocol |
 
 ```text
 engine ◄── content ◄── sim
@@ -189,7 +190,7 @@ Las reglas no lanzan excepciones para acciones ilegales: devuelven un `RuleError
 
 ### 6.3 Pendiente para fases siguientes
 
-- Una partida en curso no sobrevive a recargar la página (el estado vive en memoria).
+- Una partida **contra la IA** no sobrevive a recargar la página (el estado vive en memoria). Las partidas online sí: el servidor la reenvía al reconectar.
 - Las tiras de equipo se actualizan antes de que termine la animación: se ve la vitalidad nueva mientras Phaser todavía la está bajando.
 - Las cartas de combate aún no muestran el icono ⓘ con el crédito de la foto: el crédito está en la ficha y en Créditos.
 
@@ -201,13 +202,23 @@ Las reglas no lanzan excepciones para acciones ilegales: devuelven un `RuleError
 
 ---
 
-## 7. Servidor (Fase 8)
+## 7. Servidor (Fase 8, ✅)
 
-- Autoridad: el cliente envía acciones; el servidor las pasa por `applyAction`, persiste los eventos y emite a cada jugador **su** `PlayerView`. Nunca emite el estado completo.
-- Idempotencia: cada acción lleva un id; los duplicados se ignoran ([GAME_RULES.md](GAME_RULES.md) §16).
-- Temporizadores y desconexiones se gestionan en el servidor, alrededor del motor.
-- Salas: código corto sin caracteres ambiguos (sin 0/O/1/I), enlace `/sala/:codigo` y QR generado en el cliente a partir del enlace.
-- `PUBLIC_APP_URL` configurable para que el QR funcione desde el móvil en desarrollo (IP de la red local).
+Contrato completo en [API.md](API.md); persistencia en [DATABASE.md](DATABASE.md).
+
+| Archivo (`apps/server/src`) | Responsabilidad |
+|---|---|
+| `config.ts` | Variables de entorno validadas con Zod ([`.env.example`](../apps/server/.env.example)) |
+| `server.ts` | Fastify (HTTP) y Socket.IO; sesiones de invitado; valida cada mensaje con `@atacknimal/protocol` |
+| `room.ts` | Una sala 1 vs 1: asientos, partida del motor, temporizadores, reconexión, abandono y difusión de vistas |
+| `codes.ts` | Códigos de sala aleatorios sin caracteres ambiguos |
+| `db/` | Esquema Drizzle, migraciones SQL y repositorio (PostgreSQL con `DATABASE_URL`, si no PGlite) |
+
+- **Autoridad:** el cliente envía intenciones sin `playerId`; el servidor pone el jugador de la sesión y las pasa por `applyAction`. A cada jugador le envía **su** `PlayerView` y sus eventos redactados (`redactEvent`). Nunca el estado completo.
+- **Una sola puerta al motor:** `Room.apply` aplica, guarda la acción, programa el turno y difunde. Las acciones por tiempo agotado (IA Fácil) y por abandono pasan por la misma puerta.
+- **Idempotencia:** cada acción lleva un id; los duplicados se responden sin aplicarse ([GAME_RULES.md](GAME_RULES.md) §16).
+- **Salas en memoria** (un solo proceso). La base de datos guarda la historia, no el estado vivo.
+- Pendiente para la Fase 10: QR generado en el cliente desde el enlace `/sala/:codigo` y `PUBLIC_APP_URL` para que funcione desde el móvil en la red local.
 
 ---
 
@@ -223,6 +234,7 @@ Las reglas no lanzan excepciones para acciones ilegales: devuelven un `RuleError
 | Formato | Prettier (excepto Markdown, escrito a mano) |
 | Lint | ESLint con `typescript-eslint` `strictTypeChecked` |
 | Configuración | Variables de entorno por app, validadas con Zod al arrancar; `.env.example` documenta cada una |
+| Sintaxis TypeScript | Solo sintaxis que se puede borrar (`erasableSyntaxOnly`): Node 24 ejecuta el servidor quitando los tipos, así que no hay `enum`, `namespace` ni propiedades en parámetros del constructor |
 
 ### 8.1 Glosario código ↔ juego
 
@@ -250,7 +262,7 @@ Las reglas no lanzan excepciones para acciones ilegales: devuelven un `RuleError
 | ESLint / typescript-eslint | 10.13.0 / 8.72.1 | Fase 2 |
 | Prettier | 3.9.10 | Fase 2 |
 | Zod | 4.6.7 | Fase 4 |
-| @types/node | 26.6.5 (solo `sim`) | Fase 4 |
+| @types/node | 26.6.5 (`sim`, `server`) | Fase 4 |
 | React / React DOM | 19.3.1 | Fase 5 |
 | Vite / @vitejs/plugin-react | 8.3.5 / 6.1.2 | Fase 5 |
 | React Router | 8.5.1 | Fase 5 |
@@ -258,7 +270,10 @@ Las reglas no lanzan excepciones para acciones ilegales: devuelven un `RuleError
 | lucide-react | 1.63.0 | Fase 5 |
 | Testing Library (React) / jsdom | 16.3.3 / 30.1.3 | Fase 5 |
 | Phaser | 4.2.1 | Fase 6 |
-| Fastify, Socket.IO, Drizzle, PostgreSQL | ⏳ | Fase 8 |
+| Fastify | 5.12.7 | Fase 8 |
+| Socket.IO (servidor y cliente) | 4.8.4 | Fase 8 |
+| Drizzle ORM | 0.45.4 | Fase 8 |
+| PGlite / pg | 0.5.13 / 8.23.1 | Fase 8 |
 
 Las dependencias se instalan con versión exacta (`--save-exact`) y el `package-lock.json` se versiona.
 
@@ -268,10 +283,12 @@ Las dependencias se instalan con versión exacta (`--save-exact`) y el `package-
 
 No bloquea el desarrollo actual. Se abordará en la Fase 13:
 
-- Autenticación real (hoy: invitado con apodo) y autorización por sala.
+- Autenticación real (hoy: invitado con apodo y *token* aleatorio en memoria, sin firma ni caducidad) y autorización por sala.
 - *Rate limiting* en REST y WebSocket; protección de los *handshakes* de Socket.IO.
 - Códigos de sala no enumerables y *tokens* de invitación firmados con caducidad.
 - Sanitización de apodos y de cualquier texto de usuario.
 - Gestión de secretos fuera del repositorio; rol de PostgreSQL con mínimos privilegios.
 - CORS y CSP estrictos.
+- Límite de tiempo para elegir equipo: hoy una sala puede quedarse indefinidamente en `team-select` si nadie confirma (se cierra solo si alguien se desconecta).
+- Límite de salas por sesión o por IP. Hoy solo hay un tope de tamaño por mensaje WebSocket (16 KB).
 - Anti-trampas: ya previsto por diseño (servidor autoritativo, vistas redactadas, acciones idempotentes). Falta auditoría y detección de patrones anómalos.

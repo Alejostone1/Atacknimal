@@ -15,7 +15,8 @@
 | 5 · Frontend (React) | ✅ Cerrada | [`apps/web`](apps/web/src) |
 | 6 · Combate (Phaser) | ✅ Cerrada | [`apps/web/src/match`](apps/web/src/match) · [`apps/web/src/phaser`](apps/web/src/phaser) |
 | 7 · IA · 🎯 **MVP** | ✅ Cerrada | [`packages/engine/src/ai`](packages/engine/src/ai) · se juega contra la IA en Fácil, Normal o Difícil |
-| 8 · Servidor y 1 vs 1 online | ⏳ Siguiente | — |
+| 8 · Servidor y 1 vs 1 online | ✅ Cerrada | [`apps/server`](apps/server/src) · [`packages/protocol`](packages/protocol/src) · [`docs/API.md`](docs/API.md) · [`docs/DATABASE.md`](docs/DATABASE.md) |
+| 9 · 2 vs 2 | ⏳ Siguiente | — |
 
 Hoja de ruta completa: [`docs/ROADMAP.md`](docs/ROADMAP.md).
 
@@ -28,7 +29,15 @@ npm install
 npm run dev
 ```
 
-La aplicación se abre en http://localhost:5173. Para comprobar todo el proyecto:
+La aplicación se abre en http://localhost:5173. Para jugar online, arranca también el servidor de juego en otra terminal:
+
+```bash
+npm run dev:server
+```
+
+El servidor escucha en el puerto 3001 y usa PGlite (PostgreSQL embebido) en memoria; no hace falta instalar PostgreSQL. Para probar una partida online en un mismo navegador, abre dos pestañas: cada una es un jugador. Configuración en [`apps/server/.env.example`](apps/server/.env.example).
+
+Para comprobar todo el proyecto:
 
 ```bash
 npm run check

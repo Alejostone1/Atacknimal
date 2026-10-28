@@ -2,7 +2,7 @@ import { computeValue, getDefenseOptions, type PlayerView } from '@atacknimal/en
 import { ShieldAlert } from 'lucide-react';
 import { useState } from 'react';
 import { findEntry } from '../content/catalog.ts';
-import { HUMAN, useMatch } from '../game/matchStore.ts';
+import { useMatch } from '../game/matchStore.ts';
 import { ATTRIBUTE, HABITAT } from '../i18n/es.ts';
 import styles from './Match.module.css';
 
@@ -14,7 +14,7 @@ export function DefensePanel({ view }: { view: PlayerView }) {
   if (declaration === null) return null;
 
   const { habitat, attribute } = declaration;
-  const options = getDefenseOptions(view, HUMAN, attribute);
+  const options = getDefenseOptions(view, view.viewerId, attribute);
   const valueOf = (id: string): number => {
     const card = view.cards[id];
     const profile = card === undefined ? undefined : view.roster[card.animalId];
@@ -72,7 +72,7 @@ export function DefensePanel({ view }: { view: PlayerView }) {
         className="btn btn--primary btn--block"
         disabled={cardId === null}
         onClick={() => {
-          if (cardId !== null) act({ type: 'defend', playerId: HUMAN, cardId });
+          if (cardId !== null) act({ type: 'defend', cardId });
         }}
       >
         {chosen === undefined ? 'Elige quién defiende' : `Defender con ${chosen.name}`}

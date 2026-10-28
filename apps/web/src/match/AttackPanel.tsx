@@ -11,7 +11,7 @@ import {
 import { Lock } from 'lucide-react';
 import { useState } from 'react';
 import { findEntry } from '../content/catalog.ts';
-import { HUMAN, useMatch } from '../game/matchStore.ts';
+import { useMatch } from '../game/matchStore.ts';
 import { ATTRIBUTE, HABITAT } from '../i18n/es.ts';
 import styles from './Match.module.css';
 
@@ -25,7 +25,9 @@ export function AttackPanel({ view }: { view: PlayerView }) {
   const [cardId, setCardId] = useState<string | null>(null);
   const [attribute, setAttribute] = useState<Attribute | null>(null);
 
-  const legal = getLegalActions(view, HUMAN).flatMap((a) => (a.type === 'declare' ? [a] : []));
+  const legal = getLegalActions(view, view.viewerId).flatMap((a) =>
+    a.type === 'declare' ? [a] : [],
+  );
   const isLegal = (h: Habitat | null, c: string | null, at: Attribute | null): boolean =>
     legal.some(
       (a) =>
@@ -34,7 +36,7 @@ export function AttackPanel({ view }: { view: PlayerView }) {
         (at === null || a.attribute === at),
     );
 
-  const me = view.players.find((p) => p.id === HUMAN);
+  const me = view.players.find((p) => p.id === view.viewerId);
   const myCards = (me?.cardIds ?? []).flatMap((id) => {
     const card = view.cards[id];
     return card !== undefined && isActive(card) ? [card] : [];
@@ -155,7 +157,7 @@ export function AttackPanel({ view }: { view: PlayerView }) {
         disabled={!ready}
         onClick={() => {
           if (habitat === null || cardId === null || attribute === null) return;
-          act({ type: 'declare', playerId: HUMAN, habitat, cardId, attribute });
+          act({ type: 'declare', habitat, cardId, attribute });
         }}
       >
         {ready && cardName !== undefined

@@ -103,3 +103,29 @@ Composición final, elegida con el criterio de #029 (ninguna métrica que decide
 - **Perfiles:** ajustes de Águila, Guepardo, Lobo, Tiburón y Cocodrilo.
 
 Detalle y resultados en [BALANCE.md](BALANCE.md) §13. GAME_RULES.md describe 0.2.0 como ruleset vigente.
+
+## Fase 8 · Servidor y 1 vs 1 online (2026-10-28)
+
+Decisiones técnicas tomadas durante la fase. Ninguna cambia las reglas del juego; todas son revisables.
+
+### #030 PGlite en desarrollo y tests, PostgreSQL en producción
+
+En esta máquina no hay PostgreSQL ni Docker. PGlite es PostgreSQL compilado a WebAssembly: se instala con npm y corre dentro del proceso. El mismo código Drizzle y las mismas migraciones funcionan con `pg` cuando se define `DATABASE_URL`.
+**Riesgo:** pequeñas diferencias con un PostgreSQL real. **Mitigación:** ejecutar la suite contra PostgreSQL antes del despliegue (Fase 14). Ver [DATABASE.md](DATABASE.md).
+
+### #031 La partida se guarda como semilla + acciones
+
+El análisis proponía "eventos + instantáneas". Como el motor es determinista, basta con la semilla y las acciones aceptadas para reconstruir la partida exacta, con sus eventos. Es menos dato, no puede desincronizarse y un test lo comprueba. Las acciones guardan su origen: jugador, tiempo agotado o abandono.
+
+### #032 El reloj del turno viaja como tiempo restante
+
+El servidor envía cuántos milisegundos le quedan al turno (`turnEndsInMs`), no una hora absoluta. Así el reloj no depende de que el móvil tenga la hora bien puesta.
+
+### #033 Sesión de invitado por pestaña
+
+El token de sesión se guarda en `sessionStorage`: cada pestaña es un jugador (útil para probar) y la partida sobrevive a recargar la página.
+**Contrapartida:** cerrar la pestaña y abrir otra no recupera la partida. Si en la Fase 10 (enlace y QR en el móvil) resulta molesto, se puede pasar a `localStorage` con una sesión por dispositivo.
+
+### #034 Antes de empezar, abandonar cierra la sala
+
+Si alguien sale (o no vuelve a tiempo) mientras se espera rival o se eligen equipos, la sala pasa a `closed` sin resultado. Durante la partida, salir cuenta como abandono (GAME_RULES §10.3).

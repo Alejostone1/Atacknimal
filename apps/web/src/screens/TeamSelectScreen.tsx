@@ -1,5 +1,5 @@
 import { EyeOff } from 'lucide-react';
-import { Link } from 'react-router';
+import { Link, useSearchParams } from 'react-router';
 import { AnimalCard } from '../components/AnimalCard.tsx';
 import { AnimalBrowser } from '../components/Browse.tsx';
 import { Screen } from '../components/Screen.tsx';
@@ -9,8 +9,16 @@ import { useMatchSetup } from '../state/stores.ts';
 import { isTeamComplete } from '../state/team.ts';
 import styles from './TeamSelectScreen.module.css';
 
+/** De dónde se viene: contra la IA o desde una sala online (lista cerrada, sin redirecciones libres). */
+const FLOWS = {
+  ia: { back: '/jugar', next: '/jugar/listo' },
+  sala: { back: '/sala', next: '/sala' },
+} as const;
+
 export function TeamSelectScreen() {
   const { team, toggle } = useMatchSetup();
+  const [params] = useSearchParams();
+  const flow = params.get('volver') === 'sala' ? FLOWS.sala : FLOWS.ia;
   const size = BALANCE.ruleset.teamSize;
   const complete = isTeamComplete(team, size);
 
@@ -18,10 +26,10 @@ export function TeamSelectScreen() {
     <Screen
       title="Elige tu equipo"
       eyebrow={`${String(team.length)} de ${String(size)} animales`}
-      back="/jugar"
+      back={flow.back}
       footer={
         complete ? (
-          <Link to="/jugar/listo" className="btn btn--primary btn--block">
+          <Link to={flow.next} className="btn btn--primary btn--block">
             Confirmar equipo
           </Link>
         ) : (

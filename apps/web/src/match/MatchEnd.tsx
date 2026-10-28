@@ -1,7 +1,8 @@
 import { ATTRIBUTES, type Attribute, type PlayerView } from '@atacknimal/engine';
 import { Link } from 'react-router';
 import { Wordmark } from '../components/Brand.tsx';
-import { HUMAN, useMatch, type PresentedDuel } from '../game/matchStore.ts';
+import { useMatch, type PresentedDuel } from '../game/matchStore.ts';
+import { leaveRoom } from '../game/online.ts';
 import { ATTRIBUTE } from '../i18n/es.ts';
 import { useMatchSetup } from '../state/stores.ts';
 import styles from './Match.module.css';
@@ -14,12 +15,13 @@ const REASON = {
 
 /** Resumen final: los datos salen del registro de duelos (presentación, no reglas). */
 export function MatchEnd({ view, log }: { view: PlayerView; log: readonly PresentedDuel[] }) {
-  const { start, leave } = useMatch();
-  const { team, difficulty } = useMatchSetup();
+  const { start, leave, source } = useMatch();
+  const team = useMatchSetup((s) => s.team);
   const result = view.result;
   if (result === null) return null;
 
-  const myTeam = view.players.find((p) => p.id === HUMAN)?.team;
+  const me = view.viewerId;
+  const myTeam = view.players.find((p) => p.id === me)?.team;
   const outcome = result.winner === null ? 'draw' : result.winner === myTeam ? 'win' : 'loss';
   const title = { win: '¡Victoria!', loss: 'Derrota', draw: 'Empate' }[outcome];
 
@@ -30,10 +32,10 @@ export function MatchEnd({ view, log }: { view: PlayerView; log: readonly Presen
     if (r.damage !== null) {
       const targetOwner =
         r.damage.targetCardId === r.attacker.cardId ? r.attacker.playerId : r.defender.playerId;
-      if (targetOwner === HUMAN) received += r.damage.amount;
+      if (targetOwner === me) received += r.damage.amount;
       else dealt += r.damage.amount;
     }
-    if (r.attacker.playerId === HUMAN) used.set(r.attribute, (used.get(r.attribute) ?? 0) + 1);
+    if (r.attacker.playerId === me) used.set(r.attribute, (used.get(r.attribute) ?? 0) + 1);
   }
   const favourite = ATTRIBUTES.filter((a) => used.has(a)).sort(
     (a, b) => (used.get(b) ?? 0) - (used.get(a) ?? 0),
@@ -65,16 +67,27 @@ export function MatchEnd({ view, log }: { view: PlayerView; log: readonly Presen
         </div>
       </dl>
       <div className={styles.endActions}>
-        <button
-          type="button"
-          className="btn btn--primary btn--block"
+        {source?.kind === 'local' && (
+          <button
+            type="button"
+            className="btn btn--primary btn--block"
+            onClick={() => {
+              start(team, source.difficulty);
+            }}
+          >
+            Jugar otra vez
+          </button>
+        )}
+        <Link
+          to="/"
+          className={
+            source?.kind === 'local' ? 'btn btn--ghost btn--block' : 'btn btn--primary btn--block'
+          }
           onClick={() => {
-            start(team, difficulty);
+            if (source?.kind === 'online') void leaveRoom();
+            else leave();
           }}
         >
-          Jugar otra vez
-        </button>
-        <Link to="/" className="btn btn--ghost btn--block" onClick={leave}>
           Volver al inicio
         </Link>
       </div>

@@ -10,18 +10,20 @@ export function DuelResult({
   view,
   duel,
   reduceMotion,
+  rivalName,
 }: {
   view: PlayerView;
   duel: PresentedDuel;
   reduceMotion: boolean;
+  rivalName: string;
 }) {
   const acknowledge = useMatch((s) => s.acknowledge);
   const [animated, setAnimated] = useState(false);
   const presentation = useMemo(
-    () => toPresentation(view, duel, reduceMotion),
+    () => toPresentation(view, duel, reduceMotion, rivalName),
     // La presentación de un duelo no cambia aunque la vista avance.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [duel, reduceMotion],
+    [duel, reduceMotion, rivalName],
   );
 
   return (

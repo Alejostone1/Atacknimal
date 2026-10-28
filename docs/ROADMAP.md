@@ -14,7 +14,7 @@ Cada fase sigue el ciclo: explicar → arquitectura → archivos → implementar
 | **5 · Frontend** | ✅ | Navegación | `apps/web`: Inicio, Selección de equipo, Colección, Créditos, Ajustes; móvil primero | Recorrido manual en 375 px y escritorio |
 | **6 · Combate (Phaser)** | ✅ | Escena de duelo | `CombatStage`: revelación, VS, desglose, daño, eliminación; reducir movimiento | La escena consume `CombatResolution` sin lógica propia |
 | **7 · IA** 🎯 **MVP** | ✅ **MVP alcanzado** | **1 vs IA jugable** | IA Fácil, Normal y Difícil (ataque y defensa) | Partida completa en el móvil de principio a fin |
-| **8 · Servidor + 1v1** | ⏳ | Online | `apps/server`, `protocol`, PostgreSQL, salas por código, autoridad del servidor, reconexión, `API.md`, `DATABASE.md` | Dos navegadores juegan; test de redacción en red; reconexión sin duplicar acciones |
+| **8 · Servidor + 1v1** | ✅ | Online | `apps/server`, `protocol`, PostgreSQL (PGlite en desarrollo), salas por código y enlace, autoridad del servidor, temporizadores, reconexión, [API.md](API.md), [DATABASE.md](DATABASE.md) | Dos pestañas juegan por red; tests de integración con dos clientes (redacción, duplicados, reconexión, tiempo agotado, abandono, reproducción desde la base de datos) |
 | **9 · 2v2** | ⏳ | Equipos | Asientos, orden de turnos, relevo, marcadores rápidos | Cuatro clientes completan una partida |
 | **10 · Enlace y QR** | ⏳ | Compartir | Enlace `/sala/:codigo`, QR, flujo móvil, caducidad | Un teléfono real escanea y entra a la sala |
 | **11 · QA** | ⏳ | Robustez | Playwright e2e, red, casos límite | CI en verde |
