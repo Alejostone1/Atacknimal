@@ -8,7 +8,7 @@ Cómo publicar el juego para compartir el enlace de una sala con cualquiera (dec
 |---|---|
 | Juego | https://atacknimal.vercel.app |
 | Servidor | https://atacknimal-server.onrender.com (`/health`) |
-| Base de datos | Sin conectar todavía (almacén en memoria) |
+| Base de datos | Neon (PostgreSQL, Oregón), proyecto `atacknimal` · `/health` muestra `"storage":"postgres"` |
 
 | Pieza | Servicio | Plan | Archivo de configuración |
 |---|---|---|---|
