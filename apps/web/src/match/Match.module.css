@@ -99,7 +99,7 @@
 }
 
 .miniName {
-  font: 800 14px/1 var(--f-display);
+  font: 800 14px/1.25 var(--f-display);
   text-transform: uppercase;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -289,7 +289,8 @@
 }
 
 .choiceName {
-  font: 800 14px/1 var(--f-display);
+  /* Interlineado holgado: con overflow oculto, 1 recorta las tildes de las mayúsculas (LEÓN). */
+  font: 800 14px/1.25 var(--f-display);
   text-transform: uppercase;
   overflow: hidden;
   text-overflow: ellipsis;

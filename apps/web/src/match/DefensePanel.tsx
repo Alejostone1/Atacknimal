@@ -63,7 +63,7 @@ export function DefensePanel({ view }: { view: PlayerView }) {
                 entry={entry}
                 card={card}
                 pressed={cardId === id}
-                detail={`${ATTRIBUTE[attribute].label} ${String(valueOf(id))}`}
+                detail={String(valueOf(id))}
                 label={`${entry?.name ?? 'Carta'}: ${ATTRIBUTE[attribute].label} ${String(valueOf(id))}, vitalidad ${String(card.hp)} de ${String(card.maxHp)}`}
                 onSelect={() => {
                   setCardId(id);
