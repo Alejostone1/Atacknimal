@@ -2,6 +2,7 @@ import type { AnimalProfile, Ruleset } from '@atacknimal/engine';
 import animalsData from '../data/animals.json' with { type: 'json' };
 import balance010 from '../data/balance/0.1.0.json' with { type: 'json' };
 import balance020 from '../data/balance/0.2.0.json' with { type: 'json' };
+import balance030 from '../data/balance/0.3.0.json' with { type: 'json' };
 import factsData from '../data/facts.json' with { type: 'json' };
 import habitatsData from '../data/habitats.json' with { type: 'json' };
 import imagesData from '../data/images.json' with { type: 'json' };
@@ -90,14 +91,14 @@ export function getFacts(animalId: string): AnimalFacts | undefined {
 }
 
 const BALANCE_SETS: Readonly<Record<string, BalanceSet>> = Object.fromEntries(
-  [balance010, balance020].map((data) => {
+  [balance010, balance020, balance030].map((data) => {
     const set = toBalanceSet(data);
     return [set.version, set];
   }),
 );
 
 export const BALANCE_VERSIONS: readonly string[] = Object.keys(BALANCE_SETS);
-export const LATEST_BALANCE_VERSION = '0.2.0';
+export const LATEST_BALANCE_VERSION = '0.3.0';
 
 export function getBalanceSet(version: string = LATEST_BALANCE_VERSION): BalanceSet {
   const set = BALANCE_SETS[version];
@@ -116,12 +117,12 @@ function toBalanceSet(raw: unknown): BalanceSet {
   const known = new Set(ANIMALS.map((animal) => animal.id));
   const profiled = data.profiles.map((profile) => profile.animalId);
 
+  // Cada versión tiene su propio roster (0.1.0 y 0.2.0 tenían 11 animales; 0.3.0, 20):
+  // así una versión publicada sigue siendo reproducible aunque se añadan animales.
   const unknown = profiled.filter((id) => !known.has(id));
-  const missing = [...known].filter((id) => !profiled.includes(id));
-  if (unknown.length > 0 || missing.length > 0 || new Set(profiled).size !== profiled.length) {
+  if (unknown.length > 0 || new Set(profiled).size !== profiled.length) {
     throw new ContentError(
-      `Balance ${data.version}: perfiles desconocidos [${unknown.join(', ')}], ` +
-        `sin perfil [${missing.join(', ')}] o repetidos.`,
+      `Balance ${data.version}: perfiles desconocidos [${unknown.join(', ')}] o repetidos.`,
     );
   }
   if (data.ruleset.version !== data.version) {

@@ -64,5 +64,59 @@
     "name": "Ballena",
     "scientificName": "Balaenoptera musculus",
     "role": "Coloso acuático"
+  },
+  {
+    "id": "lion",
+    "name": "León",
+    "scientificName": "Panthera leo",
+    "role": "Rey de la sabana"
+  },
+  {
+    "id": "gorilla",
+    "name": "Gorila",
+    "scientificName": "Gorilla gorilla",
+    "role": "Fuerza de la selva"
+  },
+  {
+    "id": "jaguar",
+    "name": "Jaguar",
+    "scientificName": "Panthera onca",
+    "role": "Acechador arbóreo"
+  },
+  {
+    "id": "orca",
+    "name": "Orca",
+    "scientificName": "Orcinus orca",
+    "role": "Cazador oceánico"
+  },
+  {
+    "id": "peregrine-falcon",
+    "name": "Halcón peregrino",
+    "scientificName": "Falco peregrinus",
+    "role": "Picado letal"
+  },
+  {
+    "id": "hippopotamus",
+    "name": "Hipopótamo",
+    "scientificName": "Hippopotamus amphibius",
+    "role": "Coloso del río"
+  },
+  {
+    "id": "python",
+    "name": "Pitón reticulada",
+    "scientificName": "Malayopython reticulatus",
+    "role": "Constrictor"
+  },
+  {
+    "id": "polar-bear",
+    "name": "Oso polar",
+    "scientificName": "Ursus maritimus",
+    "role": "Gigante del hielo"
+  },
+  {
+    "id": "eagle-owl",
+    "name": "Búho real",
+    "scientificName": "Bubo bubo",
+    "role": "Cazador nocturno"
   }
 ]

@@ -5,6 +5,7 @@ import {
   BALANCE_VERSIONS,
   ContentError,
   IMAGES,
+  LATEST_BALANCE_VERSION,
   LICENSE_IDS,
   checkProfileBudget,
   checkRosterCoverage,
@@ -15,22 +16,26 @@ import {
 } from './index.ts';
 
 describe('animales', () => {
-  it('el roster inicial tiene los 11 animales del documento maestro', () => {
-    expect(ANIMALS).toHaveLength(11);
-    expect(new Set(ANIMALS.map((a) => a.id)).size).toBe(11);
+  it('hay 20 animales: los 11 del documento maestro y los 9 de la Fase 10b', () => {
+    expect(ANIMALS).toHaveLength(20);
+    expect(new Set(ANIMALS.map((a) => a.id)).size).toBe(20);
   });
 
   it('busca por id y falla con ids desconocidos', () => {
     expect(getAnimal('cheetah').scientificName).toBe('Acinonyx jubatus');
-    expect(() => getAnimal('lion')).toThrow(ContentError);
+    expect(() => getAnimal('unicorn')).toThrow(ContentError);
   });
 });
 
 describe.each(BALANCE_VERSIONS)('balance %s', (version) => {
   const set = getBalanceSet(version);
 
-  it('tiene un perfil por animal con los 8 atributos', () => {
-    expect(set.roster.map((p) => p.id).sort()).toEqual(ANIMALS.map((a) => a.id).sort());
+  it('perfila animales conocidos con los 8 atributos (la vigente, todos)', () => {
+    const ids = set.roster.map((p) => p.id);
+    expect(ids.every((id) => ANIMALS.some((a) => a.id === id))).toBe(true);
+    if (version === LATEST_BALANCE_VERSION) {
+      expect([...ids].sort()).toEqual(ANIMALS.map((a) => a.id).sort());
+    }
     for (const profile of set.roster) {
       expect(Object.keys(profile.stats).sort()).toEqual([...ATTRIBUTES].sort());
     }
@@ -43,7 +48,7 @@ describe.each(BALANCE_VERSIONS)('balance %s', (version) => {
     },
   );
 
-  it('cada atributo tiene 2–3 especialistas y como mucho un 100', () => {
+  it('cada atributo tiene los especialistas del presupuesto y como mucho un 100', () => {
     expect(checkRosterCoverage(set.roster, set.budget)).toEqual([]);
   });
 

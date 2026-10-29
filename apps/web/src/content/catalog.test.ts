@@ -11,11 +11,12 @@ import {
 } from './catalog.ts';
 
 describe('catálogo de la interfaz', () => {
-  it('muestra los 11 animales con perfil de la versión de balance vigente y foto', () => {
-    expect(CATALOG).toHaveLength(11);
+  it('muestra los 20 animales con perfil de la versión de balance vigente y foto', () => {
+    expect(CATALOG).toHaveLength(20);
     for (const entry of CATALOG) {
       expect(entry.profile).toBe(BALANCE.roster.find((p) => p.id === entry.id));
-      expect(entry.image?.status).toBe('approved');
+      // "proposed": elegida y revisada en la curación, pendiente de la aprobación del usuario.
+      expect(['approved', 'proposed']).toContain(entry.image?.status);
     }
   });
 

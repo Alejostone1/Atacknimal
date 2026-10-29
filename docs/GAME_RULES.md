@@ -49,7 +49,7 @@ El 1 vs IA usa exactamente las mismas reglas que el 1 vs 1. La IA es un jugador 
 
 ### 3.1 Formación de equipos
 
-1. El roster v0.1 tiene **11 animales** (ver [BALANCE.md](BALANCE.md) §3).
+1. El roster tiene **20 animales** desde el balance 0.3.0 (11 en 0.1.0 y 0.2.0; ver [BALANCE.md](BALANCE.md) §3 y §15).
 2. Cada equipo forma **4 cartas**. En 1v1 las elige un jugador; en 2v2 **cada jugador elige 2**.
 3. **No se permiten animales repetidos dentro de un equipo**, tampoco entre compañeros en 2v2 (#020).
 4. **Sí se permite** que ambos equipos lleven el mismo animal (espejo) (#020).

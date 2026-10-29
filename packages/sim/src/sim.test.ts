@@ -40,13 +40,13 @@ function started(): MatchState {
 }
 
 describe('equipos', () => {
-  it('con 11 animales hay C(11,4) = 330 equipos distintos', () => {
+  it('con 20 animales hay C(20,4) = 4845 equipos distintos', () => {
     const teams = allTeams(
       balance.roster.map((p) => p.id),
       4,
     );
-    expect(teams).toHaveLength(330);
-    expect(new Set(teams.map((t) => t.join('+'))).size).toBe(330);
+    expect(teams).toHaveLength(4845);
+    expect(new Set(teams.map((t) => t.join('+'))).size).toBe(4845);
   });
 });
 

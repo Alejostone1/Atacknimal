@@ -204,3 +204,12 @@ La escena de combate (Phaser) se rehízo como una secuencia de unos 3 segundos, 
 5. Resultado: la vitalidad baja dejando un rastro blanco, el daño salta y flota, la ganadora brilla; la eliminada se apaga, cae y recibe el sello.
 
 Con "reducir movimiento" (o al redimensionar) se dibuja directamente el estado final. Phaser sigue sin calcular nada: todo valor llega en la presentación. También se corrigió el desglose que se salía de la carta (ahora ocupa hasta dos líneas) y el nombre largo se reduce para caber.
+
+### #042 Bloque 4: 20 animales y balance 0.3.0
+
+- **9 animales nuevos** (León, Gorila, Jaguar, Orca, Halcón peregrino, Hipopótamo, Pitón reticulada, Oso polar y Búho real) diseñados con el mismo presupuesto que los originales (BALANCE §2). Por primera vez hay animales **nativos de Árboles** (Gorila, Jaguar y Pitón).
+- **Cada versión de balance tiene su propio roster:** 0.1.0 y 0.2.0 siguen con sus 11 animales y son reproducibles; la versión vigente debe incluir a todos. Se relajó la validación de `@atacknimal/content` en ese sentido.
+- **Cobertura escalada:** "2–3 especialistas (≥85) por atributo" era imposible con 20 animales (unos 44 picos para 24 huecos); en 0.3.0 es **4–6**.
+- **Ventaja defensiva +6** (era +5): con 20 animales la ventaja del primer jugador subió a ~55 %; +6 la baja a ~54 %. Subir a +7 no aportó nada más.
+- **Ajustes tras simular:** Halcón (demasiado fuerte: sin hábitat hostil y velocidad 100 imbatible en Aire → Agua hostil, Árboles neutral, velocidad 96), León (débil → más agilidad, velocidad y percepción, Agua neutral) y Oso polar (débil → nativo del Agua, como mamífero marino).
+- **Fotos** elegidas a mano entre las candidatas del curador (ASSETS §9), en estado `proposed` hasta la aprobación del usuario.

@@ -113,3 +113,21 @@ Los hábitats se eligen con una foto real a sangre (decisión #039), con las mis
 | Árboles | Beech Forest, Great Otway National Park | Dietmar Rabich | CC BY-SA 4.0 |
 
 Se descartó una primera foto de Agua (*Les otaries du Cap*) porque mostraba lobos marinos. Los créditos completos están en la pantalla **Créditos**. Estado: `proposed` hasta que el usuario las revise en el celular.
+
+## 9. Fotos de los 9 animales nuevos (Fase 10b, estado `proposed`)
+
+Buscadas con `npm run curate -- search` y revisadas una a una en la galería. Se descartaron varias propuestas automáticas: un cuadro de Henri Rousseau (*La Bohémienne endormie*) para el León, una vitrina de esqueletos para el Gorila, un paisaje de hielo sin oso para el Oso polar, una orca de espectáculo en Loro Parque y una pitón tan camuflada que no se veía. Para el Gorila se eligió una foto con autor identificado porque la mejor candidata no lo tenía y su licencia (CC BY-SA 2.5) obliga a citarlo. Al Hipopótamo se le ajustó el punto focal (mira a la derecha).
+
+| Animal | Foto | Autor | Licencia | Fuente |
+|---|---|---|---|---|
+| León | Lion (Panthera leo) old male Chobe | Charles J. Sharp | CC BY-SA 4.0 | Commons |
+| Gorila | Gorilla gorilla (iNaturalist 327975185) | Tony King | CC BY | iNaturalist |
+| Jaguar | Jaguar (Panthera onca palustris) male Rio Negro 2 | Charles J. Sharp | CC BY-SA 4.0 | Commons |
+| Orca | Orcinus orca (iNaturalist 282690764) | steve b | CC0 | iNaturalist |
+| Halcón peregrino | Falco peregrinus - 01 | Carlos Delgado | CC BY-SA 4.0 | Commons |
+| Hipopótamo | Hipopótamo (Hippopotamus amphibius), parque nacional de Chobe, Botsuana, 2018-07-28, DD 82 | Diego Delso | CC BY-SA 4.0 | Commons |
+| Pitón reticulada | Malayopython reticulatus (iNaturalist 721622660) | John Witton | CC BY | iNaturalist |
+| Oso polar | Polar bear near Sjuøyane with a typical gesture assessing the situation | Andreas Weith | CC BY-SA 4.0 | Commons |
+| Búho real | Bubo bubo.003 - Betanzos | Fernando Losada Rodríguez | CC BY-SA 4.0 | Commons |
+
+Pendientes de la aprobación del usuario (`npm run curate -- approve all`).
