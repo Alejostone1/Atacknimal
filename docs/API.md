@@ -29,7 +29,7 @@ Variables de entorno del servidor: [`apps/server/.env.example`](../apps/server/.
 
 ### `GET /api/rooms/:code`
 
-Resumen público de una sala. El código no distingue mayúsculas.
+Resumen público de una sala. El código no distingue mayúsculas. La web lo consulta al abrir un enlace o un QR, antes de entrar. Responde con `Access-Control-Allow-Origin` solo a los orígenes de `CORS_ORIGIN`.
 
 | Respuesta | Cuerpo |
 |---|---|
@@ -98,6 +98,8 @@ interface RoomState {
   code: string;
   mode: '1v1';
   status: 'waiting' | 'team-select' | 'playing' | 'finished' | 'closed';
+  phaseEndsInMs: number | null; // lo que queda para llenar la sala o confirmar equipos
+  closeReason: 'abandoned' | 'expired' | 'team-select-timeout' | null;
   you: string | null; // tu playerId: 'A1' o 'B1'
   players: { playerId; team; nickname; connected; teamConfirmed; isYou }[];
 }
@@ -160,6 +162,7 @@ room:create ──► waiting ──(sala llena: 2 o 4)──► team-select ─
 2. **team-select:** el servidor crea la partida en el motor (semilla aleatoria del servidor) y cada jugador envía su equipo con `team:select`. Ninguno ve el del otro.
 3. **playing:** quien tiene el turno envía `match:act`. Tras cada acción aceptada, cada jugador recibe su `match:update`.
 4. **finished:** el resultado lo decide el motor (eliminación, límite de duelos o abandono). La sala se conserva 10 minutos para ver el resultado o reconectar.
+5. **closed:** la sala se cerró antes de jugar. `closeReason` dice por qué: alguien salió (`abandoned`), no se llenó en 30 minutos (`expired`) o alguien no confirmó su equipo en 3 minutos (`team-select-timeout`).
 
 ---
 
@@ -173,6 +176,8 @@ Las reglas están en [GAME_RULES.md](GAME_RULES.md) §16; así las aplica el ser
 | Turno de defender | 20 s (`DEFEND_SECONDS`), igual que arriba |
 | Desconexión | 60 s de gracia (`RECONNECT_GRACE_SECONDS`). Los turnos siguen corriendo. Si no vuelve: abandono durante la partida, o sala cerrada antes de empezar |
 | Reconexión | Mismo token → mismo asiento. Recibe `session` con su sala, `room:state` y un `match:update` con `history` |
+| Sala sin llenar | Caduca a los 30 min (`ROOM_WAIT_MINUTES`) |
+| Elegir equipo | 180 s para que todos confirmen (`TEAM_SELECT_SECONDS`); si no, la sala se cierra |
 | Acción repetida | Mismo `actionId` → `{ ok: true, duplicate: true }` y la partida no cambia |
 
 ---

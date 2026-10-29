@@ -48,7 +48,9 @@ Si el dominio de Vercel **no** es exactamente el que pusiste en el paso 1:
 1. En Render: servicio `atacknimal-server` → **Environment** → `CORS_ORIGIN` = tu dominio de Vercel.
 2. **Save changes** (Render vuelve a desplegar solo).
 
-`CORS_ORIGIN` admite varios dominios separados por comas (por ejemplo, para añadir un dominio propio más adelante).
+`CORS_ORIGIN` admite varios dominios separados por comas (por ejemplo, para añadir un dominio propio más adelante). También controla quién puede consultar `GET /api/rooms/:code` (la vista previa de una sala al abrir su enlace).
+
+En producción no hace falta `VITE_PUBLIC_APP_URL`: los enlaces y el QR usan la dirección de Vercel con la que se abrió la página.
 
 ## Paso 4 (opcional) · Base de datos en Neon
 

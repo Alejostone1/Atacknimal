@@ -30,6 +30,10 @@ const envSchema = z.object({
   DECLARE_SECONDS: z.coerce.number().positive().default(30),
   DEFEND_SECONDS: z.coerce.number().positive().default(20),
   RECONNECT_GRACE_SECONDS: z.coerce.number().positive().default(60),
+  /** Una sala que no se llena en este tiempo caduca (docs/API.md §6). */
+  ROOM_WAIT_MINUTES: z.coerce.number().positive().default(30),
+  /** Tiempo para que todos confirmen su equipo; si no, la sala se cierra. */
+  TEAM_SELECT_SECONDS: z.coerce.number().positive().default(180),
 });
 
 export interface ServerConfig {
@@ -46,6 +50,8 @@ export interface TimerConfig {
   readonly declareMs: number;
   readonly defendMs: number;
   readonly reconnectGraceMs: number;
+  readonly roomWaitMs: number;
+  readonly teamSelectMs: number;
 }
 
 export function loadConfig(env: NodeJS.ProcessEnv = process.env): ServerConfig {
@@ -63,6 +69,8 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): ServerConfig {
       declareMs: parsed.DECLARE_SECONDS * 1000,
       defendMs: parsed.DEFEND_SECONDS * 1000,
       reconnectGraceMs: parsed.RECONNECT_GRACE_SECONDS * 1000,
+      roomWaitMs: parsed.ROOM_WAIT_MINUTES * 60_000,
+      teamSelectMs: parsed.TEAM_SELECT_SECONDS * 1000,
     },
   };
 }

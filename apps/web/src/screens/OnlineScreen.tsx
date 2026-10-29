@@ -1,13 +1,25 @@
 import {
   nicknameSchema,
   roomCodeSchema,
+  type CloseReason,
   type RoomMode,
   type RoomPlayer,
   type RoomState,
 } from '@atacknimal/protocol';
-import { ArrowLeftRight, Check, Copy, EyeOff, Wifi, WifiOff } from 'lucide-react';
+import {
+  ArrowLeftRight,
+  Check,
+  Copy,
+  EyeOff,
+  Hourglass,
+  Share2,
+  TriangleAlert,
+  Wifi,
+  WifiOff,
+} from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router';
+import { RoomQr } from '../components/RoomQr.tsx';
 import { Screen } from '../components/Screen.tsx';
 import { TeamSlots } from '../components/TeamSlots.tsx';
 import { BALANCE, findEntry } from '../content/catalog.ts';
@@ -16,7 +28,10 @@ import {
   createRoom,
   joinRoom,
   leaveRoom,
+  linkIsLocalOnly,
+  lookupRoom,
   roomLink,
+  type RoomLookup,
   selectTeam,
   switchTeam,
   useRoom,
@@ -29,6 +44,73 @@ import styles from './OnlineScreen.module.css';
 type EntryMode = 'crear' | 'unirse';
 
 const MODE_LABEL: Readonly<Record<RoomMode, string>> = { '1v1': '1 vs 1', '2v2': '2 vs 2' };
+
+const CLOSE_REASON: Readonly<Record<CloseReason, string>> = {
+  abandoned: 'alguien salió antes de empezar la partida.',
+  expired: 'nadie la completó a tiempo.',
+  'team-select-timeout': 'alguien no confirmó su equipo a tiempo.',
+};
+
+/** Cuenta atrás en minutos y segundos. Se monta de nuevo (`key`) con cada dato del servidor. */
+function Countdown({ ms }: { ms: number }) {
+  const [deadline] = useState(() => Date.now() + ms);
+  const [now, setNow] = useState(() => Date.now());
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setNow(Date.now());
+    }, 1000);
+    return () => {
+      clearInterval(timer);
+    };
+  }, []);
+  const left = Math.max(0, Math.ceil((deadline - now) / 1000));
+  const minutes = Math.floor(left / 60);
+  const seconds = String(left % 60).padStart(2, '0');
+  return <span className="mono">{`${String(minutes)}:${seconds}`}</span>;
+}
+
+/** Lo que se sabe de una sala antes de entrar, al abrir su enlace o su QR. */
+function RoomPreview({ code }: { code: string }) {
+  const [lookup, setLookup] = useState<RoomLookup | null>(null);
+  useEffect(() => {
+    let active = true;
+    void lookupRoom(code).then((result) => {
+      if (active) setLookup(result);
+    });
+    return () => {
+      active = false;
+    };
+  }, [code]);
+
+  if (lookup === null) {
+    return (
+      <p className={styles.notice} role="status">
+        Buscando la sala {code}… Si tarda, el servidor se está despertando (hasta un minuto).
+      </p>
+    );
+  }
+  if (lookup.kind === 'not-found') {
+    return (
+      <p className={styles.error} role="alert">
+        La sala {code} ya no existe: caducó o se cerró. Pide un código nuevo o crea tu propia sala.
+      </p>
+    );
+  }
+  if (lookup.kind === 'error') {
+    return (
+      <p className={styles.error} role="alert">
+        No se pudo consultar la sala. Comprueba tu conexión e inténtalo de nuevo.
+      </p>
+    );
+  }
+  const { room } = lookup;
+  return (
+    <p className={room.joinable ? styles.notice : styles.error} role="status">
+      Sala {room.code} · {MODE_LABEL[room.mode]} · {room.players}/{room.capacity} jugadores
+      {room.joinable ? '. ¡Hay sitio!' : '. Ya empezó o está completa.'}
+    </p>
+  );
+}
 
 /** Sala online (1 vs 1 o 2 vs 2): crear o unirse con código, esperar y confirmar equipo. */
 export function OnlineScreen() {
@@ -99,6 +181,7 @@ function RoomEntry({ initialMode, initialCode }: { initialMode: EntryMode; initi
         </button>
       }
     >
+      {initialCode !== '' && mode === 'unirse' && <RoomPreview code={initialCode} />}
       <form
         id="room-entry"
         className={styles.form}
@@ -253,6 +336,9 @@ function RoomLobby({ room }: { room: RoomState }) {
   };
 
   const waitingFor = others.filter((p) => !p.teamConfirmed).map((p) => p.nickname);
+  const link = roomLink(room.code);
+  const localOnly = linkIsLocalOnly(room.code);
+  const canShare = typeof navigator.share === 'function';
 
   return (
     <Screen
@@ -288,7 +374,7 @@ function RoomLobby({ room }: { room: RoomState }) {
     >
       {room.status === 'closed' ? (
         <p className={styles.notice} role="status">
-          La sala se cerró: alguien salió antes de empezar la partida.
+          La sala se cerró: {CLOSE_REASON[room.closeReason ?? 'abandoned']}
         </p>
       ) : (
         <>
@@ -297,22 +383,67 @@ function RoomLobby({ room }: { room: RoomState }) {
               Código
             </h2>
             <p className={styles.code}>{room.code}</p>
-            <button
-              type="button"
-              className="btn btn--ghost"
-              onClick={() => {
-                void navigator.clipboard.writeText(roomLink(room.code)).then(() => {
-                  setCopied(true);
-                });
-              }}
-            >
-              {copied ? (
-                <Check size={18} aria-hidden="true" />
-              ) : (
-                <Copy size={18} aria-hidden="true" />
+            {room.status === 'waiting' && (
+              <div className={styles.qr}>
+                <RoomQr url={link} label={`Código QR para entrar en la sala ${room.code}`} />
+              </div>
+            )}
+            <div className={styles.shareButtons}>
+              <button
+                type="button"
+                className="btn btn--ghost"
+                onClick={() => {
+                  void navigator.clipboard.writeText(link).then(() => {
+                    setCopied(true);
+                  });
+                }}
+              >
+                {copied ? (
+                  <Check size={18} aria-hidden="true" />
+                ) : (
+                  <Copy size={18} aria-hidden="true" />
+                )}
+                {copied ? 'Enlace copiado' : 'Copiar enlace'}
+              </button>
+              {canShare && (
+                <button
+                  type="button"
+                  className="btn btn--ghost"
+                  onClick={() => {
+                    void navigator
+                      .share({
+                        title: 'ATACKNIMAL',
+                        text: `Únete a mi sala ${MODE_LABEL[room.mode]} de ATACKNIMAL: ${room.code}`,
+                        url: link,
+                      })
+                      .catch(() => {
+                        // Compartir cancelado por el usuario: no es un error.
+                      });
+                  }}
+                >
+                  <Share2 size={18} aria-hidden="true" /> Compartir
+                </button>
               )}
-              {copied ? 'Enlace copiado' : 'Copiar enlace'}
-            </button>
+            </div>
+            {localOnly && (
+              <p className={styles.help}>
+                <TriangleAlert size={16} aria-hidden="true" />
+                Este enlace apunta a este equipo (localhost) y no funcionará en otro dispositivo.
+                Para probar con el celular, abre la web con la IP de tu PC o define
+                VITE_PUBLIC_APP_URL.
+              </p>
+            )}
+            {room.phaseEndsInMs !== null && (
+              <p className={styles.help}>
+                <Hourglass size={16} aria-hidden="true" />
+                {room.status === 'waiting' ? 'La sala caduca en ' : 'Quedan '}
+                <Countdown
+                  key={`${room.status}-${String(room.phaseEndsInMs)}`}
+                  ms={room.phaseEndsInMs}
+                />
+                {room.status === 'waiting' ? ' si no se llena.' : ' para confirmar los equipos.'}
+              </p>
+            )}
           </section>
 
           <section aria-labelledby="players-title">

@@ -55,7 +55,14 @@ function config(overrides: Partial<ServerConfig['timers']> = {}): ServerConfig {
     pgliteDir: undefined,
     localDriver: 'pglite',
     corsOrigins: ['http://localhost:5173'],
-    timers: { declareMs: 30_000, defendMs: 20_000, reconnectGraceMs: 60_000, ...overrides },
+    timers: {
+      declareMs: 30_000,
+      defendMs: 20_000,
+      reconnectGraceMs: 60_000,
+      roomWaitMs: 60_000,
+      teamSelectMs: 60_000,
+      ...overrides,
+    },
   };
 }
 
@@ -597,6 +604,41 @@ describe('tiempos y abandono', () => {
     await a.waitFor(() => a.view()?.result !== null);
     expect(a.view()?.result).toEqual({ winner: 'A', reason: 'concede' });
     expect(a.room?.status).toBe('finished');
+  });
+
+  it('una sala que nadie completa caduca', async () => {
+    await server.close();
+    await repository.close();
+    await start({ roomWaitMs: 150 });
+    const a = await client();
+    const created = await a.call<{ code: string }>('room:create', { nickname: 'Ana' });
+    if (!created.ok) throw new Error(created.error.message);
+    expect(a.room?.phaseEndsInMs).toBeGreaterThan(0);
+    await a.waitFor(() => a.room?.status === 'closed');
+    expect(a.room?.closeReason).toBe('expired');
+    expect(server.rooms.has(created.code)).toBe(false);
+  });
+
+  it('si alguien no confirma su equipo a tiempo, la sala se cierra', async () => {
+    await server.close();
+    await repository.close();
+    await start({ teamSelectMs: 150 });
+    const { a, b } = await pair();
+    expect((await a.call('team:select', { animalIds: TEAM })).ok).toBe(true);
+    await b.waitFor(() => b.room?.status === 'closed');
+    expect(b.room?.closeReason).toBe('team-select-timeout');
+  });
+
+  it('la consulta HTTP de una sala admite el origen de la web', async () => {
+    const { code } = await pair();
+    const allowed = await fetch(`${url}/api/rooms/${code}`, {
+      headers: { Origin: 'http://localhost:5173' },
+    });
+    expect(allowed.headers.get('access-control-allow-origin')).toBe('http://localhost:5173');
+    const foreign = await fetch(`${url}/api/rooms/${code}`, {
+      headers: { Origin: 'https://otro.example' },
+    });
+    expect(foreign.headers.get('access-control-allow-origin')).toBeNull();
   });
 
   it('si alguien se va antes de empezar, la sala se cierra', async () => {

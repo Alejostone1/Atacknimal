@@ -409,7 +409,7 @@ Estas reglas no afectan al motor; las aplica el servidor alrededor de él:
 - **Desconexión:** 60 s de gracia. Mientras dure, sus temporizadores siguen corriendo (actúa la IA Fácil por él). Si no vuelve dentro de la gracia, cuenta como **abandono** (§10.3).
 - **Acciones duplicadas:** cada acción lleva un identificador. El servidor ignora los duplicados (idempotencia), lo que permite reintentar tras una reconexión sin aplicar dos veces la misma jugada.
 - **Antes de empezar:** si alguien sale de la sala o no vuelve dentro de la gracia mientras se espera rival o se eligen equipos, la sala se cierra sin resultado.
-- **Elección de equipo:** por ahora no tiene límite de tiempo (pendiente; ARCHITECTURE §10).
+- **Elección de equipo:** 3 minutos para que todos confirmen; si no, la sala se cierra sin resultado. Una sala que no se llena en 30 minutos también caduca (#038).
 
 Detalle técnico en [API.md](API.md) §6.
 

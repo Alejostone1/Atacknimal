@@ -112,6 +112,14 @@ export function buildServer(options: BuildOptions): GameServerHandle {
   // Qué almacenamiento usa (nunca la cadena de conexión). Con `postgres`, las migraciones ya
   // se aplicaron al arrancar: si la base de datos no respondiera, el servidor no habría arrancado.
   const storage = config.databaseUrl === undefined ? config.localDriver : 'postgres';
+  // La web (Vercel) consulta salas desde otro dominio: solo los orígenes de CORS_ORIGIN.
+  http.addHook('onRequest', async (request, reply) => {
+    const origin = request.headers.origin;
+    if (origin !== undefined && config.corsOrigins.includes(origin)) {
+      void reply.header('Access-Control-Allow-Origin', origin).header('Vary', 'Origin');
+    }
+  });
+
   http.get('/health', () => ({ status: 'ok', rooms: rooms.size, storage }));
 
   http.get<{ Params: { code: string } }>('/api/rooms/:code', async (request, reply) => {

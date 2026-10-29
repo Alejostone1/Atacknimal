@@ -22,6 +22,7 @@ import {
 } from '@atacknimal/engine';
 import type {
   ClientAction,
+  CloseReason,
   MatchUpdate,
   ProtocolErrorCode,
   RoomMode,
@@ -116,6 +117,10 @@ export class Room {
   private turnTimer: NodeJS.Timeout | null = null;
   private turnDeadline: number | null = null;
   private retentionTimer: NodeJS.Timeout | null = null;
+  /** Caducidad de la fase previa a la partida: completar la sala o elegir equipo. */
+  private phaseTimer: NodeJS.Timeout | null = null;
+  private phaseDeadline: number | null = null;
+  private closeReason: CloseReason | null = null;
   /** Escrituras encadenadas: se guardan en orden y nunca frenan la partida. */
   private persistence: Promise<void> = Promise.resolve();
 
@@ -128,6 +133,7 @@ export class Room {
     this.mode = mode;
     this.deps = deps;
     this.persist((repo) => repo.roomCreated({ id: this.id, code, mode }));
+    this.schedulePhase(deps.timers.roomWaitMs, 'expired');
   }
 
   /* ---------- Consultas ---------- */
@@ -301,6 +307,7 @@ export class Room {
   dispose(): void {
     clearTimer(this.turnTimer);
     clearTimer(this.retentionTimer);
+    clearTimer(this.phaseTimer);
     for (const member of this.members) clearTimer(member.graceTimer);
   }
 
@@ -344,6 +351,7 @@ export class Room {
     // La IA que juega por un jugador sin tiempo usa su propia semilla, derivada de la partida.
     this.aiRng = createRng(seed ^ 0x5bd1e995);
     this.status = 'team-select';
+    this.schedulePhase(this.deps.timers.teamSelectMs, 'team-select-timeout');
     // Los asientos quedan fijos al empezar: se guardan ahora (antes podían cambiar de equipo).
     for (const { spec, nickname } of this.members) {
       this.persist((repo) => repo.playerJoined(this.id, spec.playerId, nickname));
@@ -383,6 +391,7 @@ export class Room {
     } else if (next.phase !== 'setup') {
       this.status = 'playing';
     }
+    if (this.status !== 'team-select') this.clearPhase();
     this.scheduleTurn();
     for (const member of this.members) this.sendMatch(member, result.value.events);
     if (this.status !== previous) this.broadcastRoom();
@@ -408,12 +417,37 @@ export class Room {
       this.apply({ type: 'concede', playerId: member.spec.playerId }, 'abandon');
       return;
     }
-    // Antes de empezar no hay resultado que registrar: la sala se cierra para todos.
+    this.close('abandoned');
+  }
+
+  /** Antes de empezar no hay resultado que registrar: la sala se cierra para todos. */
+  private close(reason: CloseReason): void {
+    if (this.isOver()) return;
     this.status = 'closed';
+    this.closeReason = reason;
+    this.clearPhase();
     this.dispose();
     this.persist((repo) => repo.roomClosed(this.id));
     this.broadcastRoom();
     this.deps.onDisposed(this);
+  }
+
+  /** Plazo de la fase previa a la partida; al vencer, la sala se cierra con `reason`. */
+  private schedulePhase(ms: number, reason: CloseReason): void {
+    this.clearPhase();
+    this.phaseDeadline = Date.now() + ms;
+    this.phaseTimer = unrefTimer(
+      setTimeout(() => {
+        this.phaseTimer = null;
+        this.close(reason);
+      }, ms),
+    );
+  }
+
+  private clearPhase(): void {
+    clearTimer(this.phaseTimer);
+    this.phaseTimer = null;
+    this.phaseDeadline = null;
   }
 
   /** Temporizador del turno: si vence, la IA Fácil juega por quien debía actuar (GAME_RULES §16). */
@@ -474,6 +508,9 @@ export class Room {
       mode: this.mode,
       status: this.status,
       you,
+      phaseEndsInMs:
+        this.phaseDeadline === null ? null : Math.max(0, this.phaseDeadline - Date.now()),
+      closeReason: this.closeReason,
       players: members.map(({ spec, nickname, connected }) => ({
         playerId: spec.playerId,
         team: spec.team,

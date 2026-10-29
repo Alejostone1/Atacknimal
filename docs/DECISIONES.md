@@ -160,3 +160,15 @@ El primer despliegue en Render falló por memoria: PGlite ocupa unos 530 MB y el
 - **Pantalla:** tiras de cada rival y del compañero con su apodo; el texto de espera distingue «Tu compañero X elige…» de los rivales; el resumen final cuenta el daño por equipo.
 
 **Revisable:** elegir asiento concreto (no solo «cambiar de equipo»), señales durante la elección de equipo y la IA en 2 vs 2 contra la máquina (hoy el 2 vs 2 es solo online).
+
+## Fase 10 · Enlace y QR (2026-10-29)
+
+### #038 QR local, compartir y caducidad de salas
+
+- **QR generado en el navegador** con `uqr` 0.1.3 (MIT, sin dependencias): el enlace de la sala no se envía a ningún servicio de terceros. Se dibuja como un SVG oscuro sobre blanco también en el tema oscuro, con corrección de errores M para tolerar reflejos de pantalla. Se descartó `qrcode` por arrastrar dependencias de línea de comandos.
+- **Compartir:** botón nativo (`navigator.share`) cuando el dispositivo lo ofrece (celulares); siempre queda «Copiar enlace».
+- **Vista previa** al abrir `/sala/:código`: modo, jugadores y si hay sitio, o «la sala ya no existe». Avisa de que el servidor gratuito puede tardar un minuto en despertar.
+- **Caducidad:** una sala sin llenar se cierra a los 30 minutos y la elección de equipos tiene 3 minutos. Antes una sala podía quedar abierta para siempre (🔒 pendiente de ARCHITECTURE §10, ya resuelto). La sala dice por qué se cerró.
+- **Desarrollo:** si el enlace apunta a `localhost`, la sala avisa de que el QR no servirá en un celular; `VITE_PUBLIC_APP_URL` permite apuntarlo a la IP de la red local.
+
+**Revisable:** los tiempos (30 min y 3 min) y si al agotarse la elección de equipo debería elegir la IA en lugar de cerrar la sala.

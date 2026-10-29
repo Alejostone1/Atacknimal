@@ -106,8 +106,14 @@ export type ProtocolErrorCode = (typeof PROTOCOL_ERRORS)[number];
 export type Ack<T = Record<string, never>> =
   ({ ok: true } & T) | { ok: false; error: { code: ProtocolErrorCode; message: string } };
 
-/** `closed`: alguien abandonó antes de empezar la partida (no hay resultado). */
+/** `closed`: la sala se cerró antes de empezar la partida (no hay resultado). */
 export type RoomStatus = 'waiting' | 'team-select' | 'playing' | 'finished' | 'closed';
+
+/**
+ * Por qué se cerró una sala sin partida: alguien salió (`abandoned`), nadie la completó a
+ * tiempo (`expired`) o alguien no confirmó su equipo a tiempo (`team-select-timeout`).
+ */
+export type CloseReason = 'abandoned' | 'expired' | 'team-select-timeout';
 
 export interface RoomPlayer {
   readonly playerId: string;
@@ -125,6 +131,9 @@ export interface RoomState {
   readonly players: readonly RoomPlayer[];
   /** Tu identificador de jugador en la partida, o `null` si aún no estás en la sala. */
   readonly you: string | null;
+  /** Milisegundos que quedan para completar la sala o elegir equipo, o `null`. */
+  readonly phaseEndsInMs: number | null;
+  readonly closeReason: CloseReason | null;
 }
 
 export interface MatchUpdate {

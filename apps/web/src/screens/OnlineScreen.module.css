@@ -174,3 +174,17 @@
   text-transform: uppercase;
   color: var(--c-lichen);
 }
+
+/* QR de la sala: fondo claro siempre, para que lo lea cualquier cámara */
+.qr {
+  width: min(240px, 70vw);
+  padding: var(--s-2);
+  border-radius: var(--radius);
+  background: #ffffff;
+}
+
+.shareButtons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+}

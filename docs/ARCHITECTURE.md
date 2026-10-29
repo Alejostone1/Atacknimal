@@ -271,6 +271,7 @@ Contrato completo en [API.md](API.md); persistencia en [DATABASE.md](DATABASE.md
 | lucide-react | 1.63.0 | Fase 5 |
 | Testing Library (React) / jsdom | 16.3.3 / 30.1.3 | Fase 5 |
 | Phaser | 4.2.1 | Fase 6 |
+| uqr (códigos QR, sin dependencias) | 0.1.3 | Fase 10 |
 | Fastify | 5.12.7 | Fase 8 |
 | Socket.IO (servidor y cliente) | 4.8.4 | Fase 8 |
 | Drizzle ORM | 0.45.4 | Fase 8 |
@@ -290,6 +291,5 @@ No bloquea el desarrollo actual. Se abordará en la Fase 13:
 - Sanitización de apodos y de cualquier texto de usuario.
 - Gestión de secretos fuera del repositorio; rol de PostgreSQL con mínimos privilegios.
 - CORS y CSP estrictos.
-- Límite de tiempo para elegir equipo: hoy una sala puede quedarse indefinidamente en `team-select` si nadie confirma (se cierra solo si alguien se desconecta).
 - Límite de salas por sesión o por IP. Hoy solo hay un tope de tamaño por mensaje WebSocket (16 KB).
 - Anti-trampas: ya previsto por diseño (servidor autoritativo, vistas redactadas, acciones idempotentes). Falta auditoría y detección de patrones anómalos.

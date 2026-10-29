@@ -4,6 +4,7 @@ import { MemoryRouter } from 'react-router';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { findEntry } from '../content/catalog.ts';
 import { AnimalCard } from './AnimalCard.tsx';
+import { RoomQr } from './RoomQr.tsx';
 import { TeamSlots } from './TeamSlots.tsx';
 
 afterEach(cleanup);
@@ -57,5 +58,17 @@ describe('TeamSlots', () => {
     expect(screen.getByRole('list', { name: 'Equipo: 1 de 4' }).children).toHaveLength(4);
     fireEvent.click(screen.getByRole('button', { name: 'Quitar Lobo del equipo' }));
     expect(onRemove).toHaveBeenCalledWith('wolf');
+  });
+});
+
+describe('RoomQr', () => {
+  it('dibuja el QR del enlace como un SVG accesible y cuadrado', () => {
+    render(<RoomQr url="https://atacknimal.vercel.app/sala/7F3K2J" label="QR de la sala" />);
+    const svg = screen.getByRole('img', { name: 'QR de la sala' });
+    const [, , width, height] = (svg.getAttribute('viewBox') ?? '').split(' ').map(Number);
+    // Versión 3 con corrección M (29 módulos) más 2 de borde por lado.
+    expect(width).toBe(33);
+    expect(height).toBe(width);
+    expect(svg.querySelector('path')?.getAttribute('d')?.length).toBeGreaterThan(100);
   });
 });

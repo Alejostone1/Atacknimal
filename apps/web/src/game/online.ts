@@ -8,6 +8,7 @@ import type {
   ClientToServerEvents,
   RoomMode,
   RoomState,
+  RoomSummary,
   ServerToClientEvents,
   SignalNotice,
   TeamSignal,
@@ -29,6 +30,7 @@ import {
  */
 const configuredUrl = import.meta.env.VITE_GAME_SERVER_URL?.trim() ?? '';
 const SERVER_URL = configuredUrl === '' ? undefined : configuredUrl;
+const publicUrl = import.meta.env.VITE_PUBLIC_APP_URL?.trim().replace(/\/+$/, '') ?? '';
 
 /** Espera máxima de una respuesta del servidor. */
 const ACK_TIMEOUT_MS = 8000;
@@ -170,7 +172,30 @@ export function resumeOnline(): void {
   if (hasActiveRoom()) connect();
 }
 
-/** Enlace para invitar a la sala. */
+/** Enlace para invitar a la sala (también es lo que codifica el QR). */
 export function roomLink(code: string): string {
-  return `${location.origin}/sala/${code}`;
+  return `${publicUrl === '' ? location.origin : publicUrl}/sala/${code}`;
+}
+
+/** El enlace solo funciona en este equipo (localhost): el QR no le servirá a un celular. */
+export function linkIsLocalOnly(code: string): boolean {
+  const host = new URL(roomLink(code)).hostname;
+  return host === 'localhost' || host === '127.0.0.1' || host === '[::1]';
+}
+
+export type RoomLookup =
+  | { readonly kind: 'found'; readonly room: RoomSummary }
+  | { readonly kind: 'not-found' }
+  | { readonly kind: 'error' };
+
+/** Consulta una sala antes de entrar (al abrir un enlace o un QR). */
+export async function lookupRoom(code: string): Promise<RoomLookup> {
+  try {
+    const response = await fetch(`${SERVER_URL ?? ''}/api/rooms/${encodeURIComponent(code)}`);
+    if (response.status === 404 || response.status === 400) return { kind: 'not-found' };
+    if (!response.ok) return { kind: 'error' };
+    return { kind: 'found', room: (await response.json()) as RoomSummary };
+  } catch {
+    return { kind: 'error' };
+  }
 }
