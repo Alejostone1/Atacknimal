@@ -22,6 +22,8 @@ export interface DuelPresentation {
   /** Identificador único del duelo (para no repetir la animación). */
   readonly key: string;
   readonly caption: string;
+  /** Foto del hábitat del duelo para el fondo, o `null` si no hay. */
+  readonly backdropUrl: string | null;
   readonly attacker: DuelSide;
   readonly defender: DuelSide;
   readonly winner: DuelRole | 'tie';

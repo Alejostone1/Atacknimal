@@ -171,7 +171,7 @@ Las reglas no lanzan excepciones para acciones ilegales: devuelven un `RuleError
 
 **Regla de ESLint:** fuera de `src/phaser/` no se puede importar Phaser.
 
-### 6.2 Combate (Fase 6, ✅)
+### 6.2 Combate (Fase 6, ✅; rehecho en la Fase 10b, decisión #041)
 
 | Carpeta (`apps/web/src`) | Contenido |
 |---|---|

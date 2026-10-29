@@ -3,6 +3,7 @@
  * equivalente (accesible y para movimiento reducido). No calcula reglas: solo describe.
  */
 import type { CombatSide, PlayerView, ValueBreakdown } from '@atacknimal/engine';
+import { getHabitatImage } from '@atacknimal/content';
 import { findEntry } from '../content/catalog.ts';
 import { ATTRIBUTE, HABITAT, signed } from '../i18n/es.ts';
 import type { DuelPresentation, DuelRole, DuelSide } from '../phaser/presentation.ts';
@@ -58,6 +59,7 @@ export function toPresentation(
   return {
     key: `${view.matchId}-${String(r.duelNumber)}`,
     caption: `${habitatLabel} · ${ATTRIBUTE[r.attribute].label}`,
+    backdropUrl: getHabitatImage(r.habitat)?.imageUrl ?? null,
     attacker: side(view, r.attacker, hpBefore.attacker, habitatLabel, nameOf),
     defender: side(view, r.defender, hpBefore.defender, habitatLabel, nameOf),
     winner: r.outcome,

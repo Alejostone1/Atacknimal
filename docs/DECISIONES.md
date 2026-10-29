@@ -192,3 +192,15 @@ El usuario pidió una mejora completa de diseño, animación, efectos, selecció
 - **Ranuras del equipo:** el animal entra con un rebote y el siguiente hueco libre late.
 - **Ataque y defensa:** cartas con foto, valor y barra de vida (`CardChoice`); los atributos muestran una barra proporcional al valor de tu carta en el hábitat elegido; la defensa muestra la foto del hábitat donde te atacan.
 - **Transición entre pantallas:** fundido y deslizamiento al entrar. Se descartó la opción `viewTransition` de React Router 8 porque está marcada como obsoleta.
+
+### #041 Bloque 3: coreografía del duelo
+
+La escena de combate (Phaser) se rehízo como una secuencia de unos 3 segundos, con los tiempos en una tabla (`T` en `DuelScene.ts`) para ajustar el ritmo sin tocar la lógica:
+
+1. Fondo con la foto del hábitat del duelo (oscurecida, con zoom lento) y titular.
+2. Las cartas entran boca abajo y se voltean: primero la atacante, después la defensora.
+3. Los valores cuentan hasta su cifra y aparece el VS.
+4. Choque: la carta ganadora embiste; en el impacto, destello, sacudida, chispas y esquirlas (partículas), zarpazo sobre la carta golpeada, retroceso y foto en rojo. En empate chocan en el centro.
+5. Resultado: la vitalidad baja dejando un rastro blanco, el daño salta y flota, la ganadora brilla; la eliminada se apaga, cae y recibe el sello.
+
+Con "reducir movimiento" (o al redimensionar) se dibuja directamente el estado final. Phaser sigue sin calcular nada: todo valor llega en la presentación. También se corrigió el desglose que se salía de la carta (ahora ocupa hasta dos líneas) y el nombre largo se reduce para caber.
