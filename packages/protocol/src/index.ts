@@ -35,7 +35,14 @@ export const nicknameSchema = z
 
 /* ---------- Cliente → servidor ---------- */
 
-export const createRoomSchema = z.strictObject({ nickname: nicknameSchema });
+/** Modos online (docs/GAME_RULES.md §2). El 1 vs IA se juega sin servidor. */
+export const ROOM_MODES = ['1v1', '2v2'] as const;
+export type RoomMode = (typeof ROOM_MODES)[number];
+
+export const createRoomSchema = z.strictObject({
+  nickname: nicknameSchema,
+  mode: z.enum(ROOM_MODES).default('1v1'),
+});
 export const joinRoomSchema = z.strictObject({ code: roomCodeSchema, nickname: nicknameSchema });
 export const selectTeamSchema = z.strictObject({
   animalIds: z.array(z.string().min(1)).min(1).max(8),
@@ -52,6 +59,21 @@ export const clientActionSchema = z.discriminatedUnion('type', [
   z.strictObject({ type: z.literal('defend'), cardId: z.string().min(1) }),
   z.strictObject({ type: z.literal('concede') }),
 ]);
+
+/**
+ * Marcadores rápidos entre compañeros en 2 vs 2: la única comunicación del MVP, sin chat libre
+ * (docs/GAME_RULES.md §9.2). Solo llegan al compañero; el rival nunca los ve.
+ */
+export const teamSignalSchema = z.discriminatedUnion('type', [
+  z.strictObject({ type: z.literal('wellPlayed') }),
+  z.strictObject({ type: z.literal('careful') }),
+  /** "Guarda tu {carta}" / "Usa tu {carta}": una carta del propio equipo. */
+  z.strictObject({ type: z.literal('saveCard'), cardId: z.string().min(1) }),
+  z.strictObject({ type: z.literal('useCard'), cardId: z.string().min(1) }),
+  /** "Ataca en {hábitat}". */
+  z.strictObject({ type: z.literal('useHabitat'), habitat: z.enum(HABITATS) }),
+]);
+export type TeamSignal = z.infer<typeof teamSignalSchema>;
 
 /** Cada acción lleva un id: el servidor ignora los duplicados (reintentos tras reconexión). */
 export const actSchema = z.strictObject({
@@ -76,6 +98,7 @@ export const PROTOCOL_ERRORS = [
   'ALREADY_IN_ROOM',
   'MATCH_NOT_STARTED',
   'RULE_VIOLATION',
+  'RATE_LIMITED',
   'INTERNAL_ERROR',
 ] as const;
 export type ProtocolErrorCode = (typeof PROTOCOL_ERRORS)[number];
@@ -97,7 +120,7 @@ export interface RoomPlayer {
 
 export interface RoomState {
   readonly code: string;
-  readonly mode: '1v1';
+  readonly mode: RoomMode;
   readonly status: RoomStatus;
   readonly players: readonly RoomPlayer[];
   /** Tu identificador de jugador en la partida, o `null` si aún no estás en la sala. */
@@ -118,6 +141,12 @@ export interface MatchUpdate {
   readonly history: readonly CombatResolution[] | null;
 }
 
+/** Marcador rápido recibido de un compañero (o el propio, como confirmación). */
+export interface SignalNotice {
+  readonly from: string;
+  readonly signal: TeamSignal;
+}
+
 export interface SessionInfo {
   readonly token: string;
   /** Sala en la que sigue esta sesión, o `null` (por ejemplo, si la sala ya no existe). */
@@ -130,29 +159,36 @@ export const EVENTS = {
   roomCreate: 'room:create',
   roomJoin: 'room:join',
   roomLeave: 'room:leave',
+  roomSwitchTeam: 'room:switch-team',
   roomState: 'room:state',
   teamSelect: 'team:select',
   matchAct: 'match:act',
   matchUpdate: 'match:update',
+  teamSignal: 'team:signal',
 } as const;
 
 export interface ServerToClientEvents {
   session: (info: SessionInfo) => void;
   'room:state': (state: RoomState) => void;
   'match:update': (update: MatchUpdate) => void;
+  'team:signal': (notice: SignalNotice) => void;
 }
 
 export interface ClientToServerEvents {
   'room:create': (request: unknown, ack: (response: Ack<{ code: string }>) => void) => void;
   'room:join': (request: unknown, ack: (response: Ack<{ code: string }>) => void) => void;
   'room:leave': (ack: (response: Ack) => void) => void;
+  /** 2 vs 2, mientras se espera: pasar a un asiento libre del otro equipo. */
+  'room:switch-team': (ack: (response: Ack) => void) => void;
   'team:select': (request: unknown, ack: (response: Ack) => void) => void;
   'match:act': (request: unknown, ack: (response: Ack<{ duplicate: boolean }>) => void) => void;
+  'team:signal': (request: unknown, ack: (response: Ack) => void) => void;
 }
 
 /** Respuesta de `GET /api/rooms/:code` (la usa el enlace o el QR antes de entrar). */
 export interface RoomSummary {
   readonly code: string;
+  readonly mode: RoomMode;
   readonly status: RoomStatus;
   readonly players: number;
   readonly capacity: number;

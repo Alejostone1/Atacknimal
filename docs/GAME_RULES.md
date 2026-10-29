@@ -261,7 +261,7 @@ Cada jugador controla sus 2 cartas. Ciclo de 4 duelos, repetido:
 - **Defensor designado sin cartas activas (relevo):** defiende su compañero.
 - **Defensor designado con cartas activas pero ninguna legal:** defensa forzada con **sus propias** cartas. No hay relevo, porque el relevo solo se da cuando el defensor no tiene cartas activas.
 - **Jugador sin cartas:** sigue en la partida como asesor de su equipo (puede usar marcadores rápidos) y no actúa.
-- **Comunicación en el MVP de 2v2:** solo marcadores rápidos predefinidos ("Yo defiendo", "Guarda tu {carta}", "Bien jugado"…), sin chat libre.
+- **Comunicación en el MVP de 2v2:** solo marcadores rápidos predefinidos, sin chat libre: «¡Bien jugado!», «¡Cuidado!», «Guarda tu {carta}», «Usa tu {carta}» y «Ataca en {hábitat}» (#037). «Yo defiendo» se descartó: el defensor lo designa el orden de turnos, no se elige.
 - **Información entre compañeros:** cada jugador ve las cartas y los bloqueos de su compañero, como los del rival. La declaración del atacante es visible para su compañero.
 
 ---

@@ -1,7 +1,8 @@
 import { Flag, LoaderCircle, Timer, WifiOff } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Navigate } from 'react-router';
-import { currentActor, rivalOf, useMatch } from '../game/matchStore.ts';
+import { RIVAL } from '../game/localMatch.ts';
+import { currentActor, sidesOf, useMatch } from '../game/matchStore.ts';
 import { useRoom } from '../game/online.ts';
 import { describeDuel } from '../game/present.ts';
 import { hasActiveRoom } from '../game/session.ts';
@@ -10,6 +11,7 @@ import { AttackPanel } from './AttackPanel.tsx';
 import { DefensePanel } from './DefensePanel.tsx';
 import { DuelResult } from './DuelResult.tsx';
 import { MatchEnd } from './MatchEnd.tsx';
+import { SignalBar } from './SignalBar.tsx';
 import { TeamStrip } from './TeamStrip.tsx';
 import styles from './Match.module.css';
 
@@ -55,14 +57,13 @@ export default function MatchScreen() {
   const reduceMotion = useReducedMotion();
   const [confirmingExit, setConfirmingExit] = useState(false);
   const online = source?.kind === 'online';
-  const rivalId = view === null ? undefined : rivalOf(view);
 
   // Contra la IA, el rival actúa solo cuando le toca y no se está mostrando un duelo.
   const rivalTurn =
     source?.kind === 'local' &&
     view !== null &&
     presenting === null &&
-    currentActor(view) === rivalId;
+    currentActor(view) === RIVAL;
   useEffect(() => {
     if (!rivalTurn) return;
     const delay = reduceMotion ? 250 : view.phase === 'declare' ? 900 : 700;
@@ -92,10 +93,20 @@ export default function MatchScreen() {
     );
   }
 
-  const rival = room?.players.find((p) => p.playerId === rivalId);
-  const rivalName = online ? (rival?.nickname ?? 'Rival') : 'IA';
+  const { partners, rivals } = sidesOf(view);
+  const nameOf = (playerId: string): string =>
+    playerId === view.viewerId
+      ? 'Tú'
+      : online
+        ? (room?.players.find((p) => p.playerId === playerId)?.nickname ?? 'Jugador')
+        : 'IA';
+  const isPartner = (playerId: string): boolean => partners.some((p) => p.id === playerId);
   const actor = currentActor(view);
   const mine = actor === view.viewerId;
+  const actorName =
+    actor === null ? '' : isPartner(actor) ? `Tu compañero ${nameOf(actor)}` : nameOf(actor);
+  const away = online ? (room?.players.filter((p) => !p.isYou && !p.connected) ?? []) : [];
+  const [partner] = partners;
   return (
     <div className={styles.page}>
       <header className={styles.header}>
@@ -147,16 +158,23 @@ export default function MatchScreen() {
           <WifiOff size={16} aria-hidden="true" /> Sin conexión. Reconectando…
         </p>
       )}
-      {online && rival?.connected === false && (
-        <p className={styles.forced} role="status">
-          <WifiOff size={16} aria-hidden="true" /> {rivalName} se ha desconectado. Si no vuelve a
-          tiempo, ganas por abandono.
+      {away.map((player) => (
+        <p key={player.playerId} className={styles.forced} role="status">
+          <WifiOff size={16} aria-hidden="true" /> {player.nickname} se ha desconectado.{' '}
+          {player.team === view.players.find((p) => p.id === view.viewerId)?.team
+            ? 'Si no vuelve a tiempo, vuestro equipo pierde por abandono.'
+            : 'Si no vuelve a tiempo, ganáis por abandono.'}
         </p>
-      )}
+      ))}
 
-      {rivalId !== undefined && (
-        <TeamStrip view={view} playerId={rivalId} label={online ? rivalName : 'Rival'} />
-      )}
+      {rivals.map((rival) => (
+        <TeamStrip
+          key={rival.id}
+          view={view}
+          playerId={rival.id}
+          label={online ? `Rival · ${nameOf(rival.id)}` : 'Rival'}
+        />
+      ))}
 
       <main className={styles.stage}>
         {error !== null && (
@@ -165,12 +183,7 @@ export default function MatchScreen() {
           </p>
         )}
         {presenting !== null ? (
-          <DuelResult
-            view={view}
-            duel={presenting}
-            reduceMotion={reduceMotion}
-            rivalName={rivalName}
-          />
+          <DuelResult view={view} duel={presenting} reduceMotion={reduceMotion} nameOf={nameOf} />
         ) : mine && view.phase === 'declare' ? (
           <AttackPanel key={view.duelNumber} view={view} />
         ) : mine && view.phase === 'defend' ? (
@@ -179,13 +192,29 @@ export default function MatchScreen() {
           <p className={styles.waiting} role="status">
             <LoaderCircle size={20} className={styles.spin} aria-hidden="true" />
             {view.phase === 'declare'
-              ? `${rivalName} elige hábitat, animal y atributo…`
-              : `${rivalName} elige con qué defenderse…`}
+              ? `${actorName} elige hábitat, animal y atributo…`
+              : `${actorName} elige con qué defenderse…`}
           </p>
         )}
       </main>
 
-      <TeamStrip view={view} playerId={view.viewerId} label="Tu equipo" />
+      {partners.map((mate) => (
+        <TeamStrip
+          key={mate.id}
+          view={view}
+          playerId={mate.id}
+          label={`Compañero · ${nameOf(mate.id)}`}
+        />
+      ))}
+      <TeamStrip
+        view={view}
+        playerId={view.viewerId}
+        label={partners.length > 0 ? 'Tus cartas' : 'Tu equipo'}
+      />
+
+      {online && partner !== undefined && (
+        <SignalBar view={view} partnerId={partner.id} nameOf={nameOf} />
+      )}
 
       {log.length > 0 && (
         <details className={styles.log}>

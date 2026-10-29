@@ -210,7 +210,7 @@ Contrato completo en [API.md](API.md); persistencia en [DATABASE.md](DATABASE.md
 |---|---|
 | `config.ts` | Variables de entorno validadas con Zod ([`.env.example`](../apps/server/.env.example)) |
 | `server.ts` | Fastify (HTTP) y Socket.IO; sesiones de invitado; valida cada mensaje con `@atacknimal/protocol` |
-| `room.ts` | Una sala 1 vs 1: asientos, partida del motor, temporizadores, reconexión, abandono y difusión de vistas |
+| `room.ts` | Una sala 1 vs 1 o 2 vs 2: asientos (y cambio de equipo), partida del motor, temporizadores, reconexión, abandono, marcadores entre compañeros y difusión de vistas |
 | `codes.ts` | Códigos de sala aleatorios sin caracteres ambiguos |
 | `db/` | Esquema Drizzle, migraciones SQL y repositorio (PostgreSQL con `DATABASE_URL`, si no PGlite) |
 

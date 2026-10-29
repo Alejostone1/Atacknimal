@@ -9,9 +9,11 @@ import {
   joinRoomSchema,
   roomCodeSchema,
   selectTeamSchema,
+  teamSignalSchema,
   type Ack,
   type ClientToServerEvents,
   type ProtocolErrorCode,
+  type RoomMode,
   type ServerToClientEvents,
 } from '@atacknimal/protocol';
 import Fastify, { type FastifyInstance } from 'fastify';
@@ -82,9 +84,9 @@ export function buildServer(options: BuildOptions): GameServerHandle {
     http.log.error(error);
   };
 
-  const createRoom = (): Room => {
+  const createRoom = (mode: RoomMode): Room => {
     const code = generateRoomCode((candidate) => rooms.has(candidate));
-    const room = new Room(code, {
+    const room = new Room(code, mode, {
       balance,
       repository,
       timers: config.timers,
@@ -98,6 +100,7 @@ export function buildServer(options: BuildOptions): GameServerHandle {
       transport: {
         roomState: (token, state) => io.to(sessionChannel(token)).emit('room:state', state),
         matchUpdate: (token, update) => io.to(sessionChannel(token)).emit('match:update', update),
+        teamSignal: (token, notice) => io.to(sessionChannel(token)).emit('team:signal', notice),
       },
     });
     rooms.set(code, room);
@@ -165,7 +168,7 @@ export function buildServer(options: BuildOptions): GameServerHandle {
         const parsed = createRoomSchema.safeParse(request);
         if (!parsed.success) return invalid(parsed.error);
         if (current() !== undefined) return error('ALREADY_IN_ROOM', 'Ya estás en una sala.');
-        return enter(createRoom(), parsed.data.nickname);
+        return enter(createRoom(parsed.data.mode), parsed.data.nickname);
       });
     });
 
@@ -186,6 +189,26 @@ export function buildServer(options: BuildOptions): GameServerHandle {
         const left = room.leave(session.token);
         session.roomCode = null;
         return left.ok ? { ok: true } : failure(left);
+      });
+    });
+
+    socket.on('room:switch-team', (ack: unknown) => {
+      handle(ack, () => {
+        const room = current();
+        if (room === undefined) return error('NOT_IN_ROOM', 'No estás en una sala.');
+        const result = room.switchTeam(session.token);
+        return result.ok ? { ok: true } : failure(result);
+      });
+    });
+
+    socket.on('team:signal', (request: unknown, ack: unknown) => {
+      handle(ack, () => {
+        const parsed = teamSignalSchema.safeParse(request);
+        if (!parsed.success) return invalid(parsed.error);
+        const room = current();
+        if (room === undefined) return error('NOT_IN_ROOM', 'No estás en una sala.');
+        const result = room.signal(session.token, parsed.data);
+        return result.ok ? { ok: true } : failure(result);
       });
     });
 

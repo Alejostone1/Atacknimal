@@ -21,7 +21,8 @@
   cursor: pointer;
 }
 
-.tab[aria-selected='true'] {
+.tab[aria-selected='true'],
+.tab[aria-checked='true'] {
   background: var(--c-bone);
   color: var(--c-night);
 }
@@ -29,6 +30,9 @@
 .field {
   display: grid;
   gap: var(--s-2);
+  margin: 0;
+  padding: 0;
+  border: 0;
 }
 
 .label {
@@ -150,4 +154,23 @@
 .edit {
   font-weight: 600;
   color: var(--c-amber);
+}
+
+/* 2 vs 2: los dos equipos lado a lado en pantallas anchas */
+.teams {
+  display: grid;
+  gap: var(--s-3);
+}
+
+@media (min-width: 720px) {
+  .teams {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.teamName {
+  margin-top: var(--s-3);
+  font: 800 16px/1 var(--f-display);
+  text-transform: uppercase;
+  color: var(--c-lichen);
 }

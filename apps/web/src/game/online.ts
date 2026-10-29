@@ -6,8 +6,11 @@ import type {
   Ack,
   ClientAction,
   ClientToServerEvents,
+  RoomMode,
   RoomState,
   ServerToClientEvents,
+  SignalNotice,
+  TeamSignal,
 } from '@atacknimal/protocol';
 import { io, type Socket } from 'socket.io-client';
 import { create } from 'zustand';
@@ -32,12 +35,28 @@ const ACK_TIMEOUT_MS = 8000;
 
 export type Connection = 'idle' | 'connecting' | 'online' | 'offline';
 
+/** Cuántos marcadores recientes se muestran a la vez. */
+const SIGNALS_SHOWN = 4;
+
+export interface ReceivedSignal extends SignalNotice {
+  readonly id: number;
+  /** Hora local de llegada (ms), para retirarlo de pantalla pasado un rato. */
+  readonly at: number;
+}
+
 interface RoomStoreState {
   connection: Connection;
   room: RoomState | null;
+  /** Marcadores rápidos recientes de tu equipo (2 vs 2), el más nuevo al final. */
+  signals: ReceivedSignal[];
 }
 
-export const useRoom = create<RoomStoreState>()(() => ({ connection: 'idle', room: null }));
+export const useRoom = create<RoomStoreState>()(() => ({
+  connection: 'idle',
+  room: null,
+  signals: [],
+}));
+let signalCounter = 0;
 
 type GameSocket = Socket<ServerToClientEvents, ClientToServerEvents>;
 let socket: GameSocket | null = null;
@@ -78,6 +97,13 @@ function connect(): GameSocket {
   created.on('match:update', (update) => {
     useMatch.getState().receive(update);
   });
+  created.on('team:signal', (notice) => {
+    const signals = [
+      ...useRoom.getState().signals,
+      { ...notice, id: ++signalCounter, at: Date.now() },
+    ];
+    useRoom.setState({ signals: signals.slice(-SIGNALS_SHOWN) });
+  });
   socket = created;
   return created;
 }
@@ -97,8 +123,18 @@ async function request<T>(send: (s: GameSocket) => Promise<Ack<T>>): Promise<Ack
   }
 }
 
-export function createRoom(nickname: string): Promise<Ack<{ code: string }>> {
-  return request((s) => s.emitWithAck('room:create', { nickname }));
+export function createRoom(nickname: string, mode: RoomMode): Promise<Ack<{ code: string }>> {
+  return request((s) => s.emitWithAck('room:create', { nickname, mode }));
+}
+
+/** 2 vs 2, mientras se espera: pasar al otro equipo si tiene un asiento libre. */
+export function switchTeam(): Promise<Ack> {
+  return request((s) => s.emitWithAck('room:switch-team'));
+}
+
+/** Marcador rápido para tu compañero. */
+export function sendSignal(signal: TeamSignal): Promise<Ack> {
+  return request((s) => s.emitWithAck('team:signal', signal));
 }
 
 export function joinRoom(code: string, nickname: string): Promise<Ack<{ code: string }>> {
@@ -125,7 +161,7 @@ bindOnlineSender((action) => {
 export async function leaveRoom(): Promise<void> {
   if (socket !== null) await request((s) => s.emitWithAck('room:leave'));
   write(ROOM_KEY, null);
-  useRoom.setState({ room: null });
+  useRoom.setState({ room: null, signals: [] });
   useMatch.getState().leave();
 }
 

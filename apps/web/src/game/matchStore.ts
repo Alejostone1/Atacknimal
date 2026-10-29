@@ -13,6 +13,7 @@ import {
   type CombatSide,
   type MatchState,
   type PlayerEvent,
+  type PlayerSummary,
   type PlayerView,
   type RngState,
 } from '@atacknimal/engine';
@@ -226,8 +227,14 @@ export function currentActor(view: PlayerView): string | null {
   return view.phase === 'declare' ? view.turn.attackerId : view.turn.defenderId;
 }
 
-/** El otro jugador de una partida 1 vs 1, visto desde quien mira. */
-export function rivalOf(view: PlayerView): string | undefined {
-  return view.players.find((p) => p.team !== view.players.find((q) => q.id === view.viewerId)?.team)
-    ?.id;
+/** Quién está en cada lado de la mesa, visto desde quien mira (1 vs 1 o 2 vs 2). */
+export function sidesOf(view: PlayerView): {
+  readonly partners: readonly PlayerSummary[];
+  readonly rivals: readonly PlayerSummary[];
+} {
+  const myTeam = view.players.find((p) => p.id === view.viewerId)?.team;
+  return {
+    partners: view.players.filter((p) => p.team === myTeam && p.id !== view.viewerId),
+    rivals: view.players.filter((p) => p.team !== myTeam),
+  };
 }

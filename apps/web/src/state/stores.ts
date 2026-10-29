@@ -59,11 +59,17 @@ export const useSettings = create<SettingsState>()(
   ),
 );
 
+/** Animales por jugador en 2 vs 2: la mitad del equipo (docs/GAME_RULES.md §2). */
+export const DUO_SIZE = BALANCE.ruleset.teamSize / 2;
+
 interface MatchSetupState {
   difficulty: Difficulty;
   team: string[];
+  /** Tus 2 animales en una sala 2 vs 2 (cada jugador aporta la mitad del equipo). */
+  duo: string[];
   setDifficulty: (difficulty: Difficulty) => void;
   toggle: (animalId: string) => void;
+  toggleDuo: (animalId: string) => void;
   clearTeam: () => void;
 }
 
@@ -72,11 +78,15 @@ export const useMatchSetup = create<MatchSetupState>()(
     (set) => ({
       difficulty: 'normal',
       team: [],
+      duo: [],
       setDifficulty: (difficulty) => {
         set({ difficulty });
       },
       toggle: (animalId) => {
         set((state) => ({ team: toggleAnimal(state.team, animalId, BALANCE.ruleset.teamSize) }));
+      },
+      toggleDuo: (animalId) => {
+        set((state) => ({ duo: toggleAnimal(state.duo, animalId, DUO_SIZE) }));
       },
       clearTeam: () => {
         set({ team: [] });
@@ -91,5 +101,5 @@ export function clearLocalData(): void {
   useSettings.persist.clearStorage();
   useMatchSetup.persist.clearStorage();
   useSettings.setState({ motion: 'system', nickname: '' });
-  useMatchSetup.setState({ difficulty: 'normal', team: [] });
+  useMatchSetup.setState({ difficulty: 'normal', team: [], duo: [] });
 }

@@ -32,7 +32,9 @@ export function MatchEnd({ view, log }: { view: PlayerView; log: readonly Presen
     if (r.damage !== null) {
       const targetOwner =
         r.damage.targetCardId === r.attacker.cardId ? r.attacker.playerId : r.defender.playerId;
-      if (targetOwner === me) received += r.damage.amount;
+      // En 2 vs 2 el daño se cuenta por equipo: lo que recibe tu compañero también es tuyo.
+      const targetTeam = view.players.find((p) => p.id === targetOwner)?.team;
+      if (targetTeam === myTeam) received += r.damage.amount;
       else dealt += r.damage.amount;
     }
     if (r.attacker.playerId === me) used.set(r.attribute, (used.get(r.attribute) ?? 0) + 1);

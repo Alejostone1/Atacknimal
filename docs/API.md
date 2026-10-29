@@ -33,7 +33,7 @@ Resumen público de una sala. El código no distingue mayúsculas.
 
 | Respuesta | Cuerpo |
 |---|---|
-| `200` | `{ "code": "7F3K2J", "status": "waiting", "players": 1, "capacity": 2, "joinable": true }` |
+| `200` | `{ "code": "7F3K2J", "mode": "2v2", "status": "waiting", "players": 3, "capacity": 4, "joinable": true }` |
 | `400` | `{ "error": "INVALID_MESSAGE" }` (código mal formado) |
 | `404` | `{ "error": "ROOM_NOT_FOUND" }` |
 
@@ -65,9 +65,11 @@ type Ack<T> = ({ ok: true } & T) | { ok: false; error: { code: ProtocolErrorCode
 
 | Evento | Petición | Respuesta (`Ack`) | Notas |
 |---|---|---|---|
-| `room:create` | `{ nickname }` | `{ code }` | Crea una sala 1 vs 1 y te sienta como `A1` |
+| `room:create` | `{ nickname, mode? }` | `{ code }` | Crea una sala `1v1` (por defecto) o `2v2` y te sienta como `A1` |
 | `room:join` | `{ code, nickname }` | `{ code }` | Te sienta como `B1`. Si ya estabas en esa sala, te reconecta |
-| `room:leave` | — | `{}` | Antes de empezar cierra la sala; durante la partida cuenta como **abandono** |
+| `room:leave` | — | `{}` | Antes de empezar cierra la sala; durante la partida cuenta como **abandono** (en 2 vs 2 pierde todo tu equipo) |
+| `room:switch-team` | — | `{}` | 2 vs 2, mientras se espera: te pasa al primer asiento libre del otro equipo |
+| `team:signal` | `TeamSignal` | `{}` | 2 vs 2: marcador rápido para tu compañero (§4.4) |
 | `team:select` | `{ animalIds: string[] }` | `{}` | Equipo secreto. El motor valida tamaño, repetidos y animales existentes |
 | `match:act` | `{ actionId, action }` | `{ duplicate: boolean }` | `action`: `declare`, `defend` o `concede` (sin `playerId`) |
 
@@ -111,7 +113,25 @@ interface MatchUpdate {
 - **`turnEndsInMs`** es relativo para que el reloj del cliente no tenga que estar en hora: el cliente calcula su plazo local al recibirlo.
 - **`history`** llega al empezar y al reconectar: el cliente rehace con él el registro de combate sin volver a animar duelos pasados. En las actualizaciones normales es `null`.
 
-### 4.3 Errores
+### 4.3 Asientos en 2 vs 2
+
+Por orden de llegada: `A1`, `B1`, `A2`, `B2` (los equipos se alternan). Mientras la sala espera, cualquiera puede pasarse a un asiento libre del otro equipo con `room:switch-team`. Los asientos quedan fijos al empezar la elección de equipos. Cada jugador elige `teamSize / 2` animales (2), y el motor rechaza repetir un animal del compañero.
+
+### 4.4 Marcadores rápidos (2 vs 2)
+
+La única comunicación entre compañeros (GAME_RULES §9.2). El servidor los entrega **solo al equipo de quien los envía** (también a él, como confirmación) con el evento `team:signal`: `{ from, signal }`.
+
+| `signal` | Texto |
+|---|---|
+| `{ type: 'wellPlayed' }` | ¡Bien jugado! |
+| `{ type: 'careful' }` | ¡Cuidado! |
+| `{ type: 'saveCard', cardId }` | Guarda tu {carta} |
+| `{ type: 'useCard', cardId }` | Usa tu {carta} |
+| `{ type: 'useHabitat', habitat }` | Ataca en {hábitat} |
+
+`cardId` debe ser una carta del propio equipo; un mismo jugador puede enviar como mucho uno por segundo.
+
+### 4.5 Errores
 
 | Código | Significado |
 |---|---|
@@ -123,6 +143,7 @@ interface MatchUpdate {
 | `ALREADY_IN_ROOM` | La sesión ya está en otra sala |
 | `MATCH_NOT_STARTED` | La acción no corresponde al estado de la sala |
 | `RULE_VIOLATION` | El motor rechazó la acción (el mensaje es el del motor) |
+| `RATE_LIMITED` | Demasiados marcadores seguidos (como mínimo 1 s entre uno y otro) |
 | `INTERNAL_ERROR` | Fallo inesperado del servidor (queda registrado) |
 
 ---
@@ -130,7 +151,7 @@ interface MatchUpdate {
 ## 5. Ciclo de una sala
 
 ```text
-room:create ──► waiting ──(llega el 2.º jugador)──► team-select ──(ambos confirman)──► playing ──► finished
+room:create ──► waiting ──(sala llena: 2 o 4)──► team-select ──(todos confirman)──► playing ──► finished
                    │                                    │
                    └──── alguien sale o no vuelve ──────┴──► closed (sin resultado)
 ```
@@ -165,3 +186,4 @@ Las reglas están en [GAME_RULES.md](GAME_RULES.md) §16; así las aplica el ser
 - Duplicados, suplantación de `playerId` y acciones fuera de turno.
 - Reconexión con el mismo token, con historial de duelos.
 - Tiempo agotado (juega la IA Fácil), abandono por desconexión y cierre de sala antes de empezar.
+- 2 vs 2 con cuatro clientes: asientos y cambio de equipo, partida completa reproducible, carta atacante visible solo para el compañero, animales repetidos entre compañeros, marcadores que nunca llegan al rival y abandono que hace perder al equipo.

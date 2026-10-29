@@ -28,7 +28,7 @@ function side(
   combat: CombatSide,
   hpBefore: number,
   habitatLabel: string,
-  rivalName: string,
+  nameOf: (playerId: string) => string,
 ): DuelSide {
   const card = view.cards[combat.cardId];
   const entry = findEntry(card?.animalId);
@@ -40,7 +40,7 @@ function side(
     hpBefore,
     hpAfter: combat.hpAfter,
     maxHp: card?.maxHp ?? view.ruleset.baseHp,
-    owner: combat.playerId === view.viewerId ? 'Tú' : rivalName,
+    owner: combat.playerId === view.viewerId ? 'Tú' : nameOf(combat.playerId),
   };
 }
 
@@ -48,8 +48,8 @@ export function toPresentation(
   view: PlayerView,
   duel: PresentedDuel,
   reduceMotion: boolean,
-  /** Cómo se llama al rival en las cartas: "IA" en local, su apodo online. */
-  rivalName: string,
+  /** Nombre de cada jugador en las cartas: "IA" en local, su apodo online. */
+  nameOf: (playerId: string) => string,
 ): DuelPresentation {
   const { resolution: r, hpBefore } = duel;
   const habitatLabel = HABITAT[r.habitat].label;
@@ -58,8 +58,8 @@ export function toPresentation(
   return {
     key: `${view.matchId}-${String(r.duelNumber)}`,
     caption: `${habitatLabel} · ${ATTRIBUTE[r.attribute].label}`,
-    attacker: side(view, r.attacker, hpBefore.attacker, habitatLabel, rivalName),
-    defender: side(view, r.defender, hpBefore.defender, habitatLabel, rivalName),
+    attacker: side(view, r.attacker, hpBefore.attacker, habitatLabel, nameOf),
+    defender: side(view, r.defender, hpBefore.defender, habitatLabel, nameOf),
     winner: r.outcome,
     damage:
       r.damage === null

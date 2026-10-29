@@ -12,6 +12,7 @@ import type {
   ClientToServerEvents,
   MatchUpdate,
   RoomState,
+  SignalNotice,
   ServerToClientEvents,
 } from '@atacknimal/protocol';
 import type { AddressInfo } from 'node:net';
@@ -35,6 +36,7 @@ interface TestClient {
   sessionRoom: string | null;
   room: RoomState | null;
   readonly updates: MatchUpdate[];
+  readonly signals: SignalNotice[];
   view(): PlayerView | null;
   waitFor(check: () => boolean): Promise<void>;
   call<T>(event: string, ...args: unknown[]): Promise<Ack<T>>;
@@ -85,6 +87,7 @@ function client(token?: string): Promise<TestClient> {
     sessionRoom: null,
     room: null,
     updates,
+    signals: [],
     view: () => updates.at(-1)?.view ?? null,
     waitFor: (check) =>
       new Promise((resolve, reject) => {
@@ -121,6 +124,10 @@ function client(token?: string): Promise<TestClient> {
   });
   socket.on('match:update', (update) => {
     updates.push(update);
+    notify();
+  });
+  socket.on('team:signal', (notice) => {
+    created.signals.push(notice);
     notify();
   });
   clients.push(created);
@@ -216,6 +223,7 @@ describe('salas', () => {
     const summary = await fetch(`${url}/api/rooms/${created.code}`).then((r) => r.json());
     expect(summary).toEqual({
       code: created.code,
+      mode: '1v1',
       status: 'waiting',
       players: 1,
       capacity: 2,
@@ -371,6 +379,197 @@ describe('partida autoritativa', () => {
     expect(back.updates[0]?.history).toHaveLength(1);
     expect(back.updates[0]?.history?.[0]).toEqual(a.view()?.lastResolution);
     await a.waitFor(() => a.room?.players.every((p) => p.connected) === true);
+  });
+});
+
+/* ---------- 2 vs 2 ---------- */
+
+/** Cuatro jugadores en una sala 2 vs 2, por orden de llegada: A1, B1, A2, B2. */
+async function quartet(): Promise<{ players: TestClient[]; code: string }> {
+  const players = await Promise.all([client(), client(), client(), client()]);
+  const [host, ...rest] = players;
+  const created = await host.call<{ code: string }>('room:create', {
+    nickname: 'Ana',
+    mode: '2v2',
+  });
+  if (!created.ok) throw new Error(created.error.message);
+  for (const [i, player] of rest.entries()) {
+    const joined = await player.call('room:join', {
+      code: created.code,
+      nickname: `J${String(i + 2)}`,
+    });
+    expect(joined.ok).toBe(true);
+  }
+  return { players, code: created.code };
+}
+
+/** Por asiento: A1 y B1 llevan los dos primeros animales; A2 y B2, los dos siguientes. */
+const DUO = { 1: TEAM.slice(0, 2), 2: TEAM.slice(2, 4) } as const;
+
+async function pickDuos(players: readonly TestClient[]): Promise<void> {
+  for (const player of players) {
+    const seat = player.room?.you?.endsWith('1') === true ? 1 : 2;
+    const result = await player.call('team:select', { animalIds: DUO[seat] });
+    expect(result).toEqual({ ok: true });
+  }
+  await Promise.all(players.map((p) => p.waitFor(() => p.view()?.phase === 'declare')));
+}
+
+/** Juega hasta el final con cualquier número de clientes. */
+async function playAll(players: readonly TestClient[]): Promise<void> {
+  const [first] = players;
+  if (first === undefined) return;
+  for (let step = 0; step < 800; step++) {
+    if (first.view()?.phase === 'finished') return;
+    const actor = players.find((c) => {
+      const v = c.view();
+      return v !== null && firstLegal(v) !== null;
+    });
+    const view = actor?.view();
+    const action = view === null || view === undefined ? null : firstLegal(view);
+    if (actor === undefined || action === null) throw new Error('Nadie puede actuar');
+    const seen = first.updates.length;
+    const result = await actor.call('match:act', { actionId: nextActionId(), action });
+    if (!result.ok) throw new Error(result.error.message);
+    await first.waitFor(() => first.updates.length > seen);
+    await Promise.all(
+      players.map((p) => p.waitFor(() => p.updates.length === first.updates.length)),
+    );
+  }
+  throw new Error('La partida 2 vs 2 no terminó');
+}
+
+describe('2 vs 2', () => {
+  it('sienta a cuatro jugadores y permite cambiar de equipo mientras esperan', async () => {
+    const [a, b, c] = await Promise.all([client(), client(), client()]);
+    const created = await a.call<{ code: string }>('room:create', { nickname: 'Ana', mode: '2v2' });
+    if (!created.ok) throw new Error(created.error.message);
+    await b.call('room:join', { code: created.code, nickname: 'Beto' });
+    await c.call('room:join', { code: created.code, nickname: 'Caro' });
+    await c.waitFor(() => c.room?.you === 'A2');
+
+    // Caro se pasa al equipo B (asiento libre B2).
+    expect(await c.call('room:switch-team')).toEqual({ ok: true });
+    await a.waitFor(() => a.room?.players.find((p) => p.nickname === 'Caro')?.team === 'B');
+    expect(c.room?.you).toBe('B2');
+    expect(await fetch(`${url}/api/rooms/${created.code}`).then((r) => r.json())).toMatchObject({
+      mode: '2v2',
+      players: 3,
+      capacity: 4,
+      joinable: true,
+    });
+    // Beto pasa al asiento libre A2; el equipo A queda completo y Caro ya no puede volver.
+    expect(await b.call('room:switch-team')).toEqual({ ok: true });
+    expect(await c.call('room:switch-team')).toMatchObject({
+      ok: false,
+      error: { code: 'ROOM_FULL' },
+    });
+  });
+
+  it('juega una partida completa con cuatro clientes y la guarda reproducible', async () => {
+    const { players, code } = await quartet();
+    await pickDuos(players);
+    await playAll(players);
+
+    const results = players.map((p) => p.view()?.result);
+    expect(results[0]).not.toBeNull();
+    for (const result of results) expect(result).toEqual(results[0]);
+
+    const room = server.rooms.get(code);
+    if (room === undefined) throw new Error('Sala no encontrada');
+    await room.flush();
+    const stored = await repository.findMatchByRoom(room.id);
+    if (stored === null) throw new Error('Partida no guardada');
+    let replay: MatchState = createMatch({
+      id: stored.id,
+      mode: '2v2',
+      ruleset: BALANCE.ruleset,
+      roster: BALANCE.roster,
+      players: [
+        { id: 'A1', team: 'A', seat: 1 },
+        { id: 'B1', team: 'B', seat: 1 },
+        { id: 'A2', team: 'A', seat: 2 },
+        { id: 'B2', team: 'B', seat: 2 },
+      ],
+      seed: stored.seed,
+    });
+    for (const { action } of await repository.loadActions(stored.id)) {
+      const result = applyAction(replay, action);
+      if (!result.ok) throw new Error(result.error.message);
+      replay = result.value.state;
+    }
+    expect(replay).toEqual(room.matchState);
+  });
+
+  it('el compañero ve la carta atacante; el rival nunca', async () => {
+    const { players } = await quartet();
+    await pickDuos(players);
+    await playAll(players);
+    for (const viewer of players) {
+      const mine = viewer.room?.you?.[0];
+      for (const { events } of viewer.updates) {
+        for (const event of events) {
+          if (event.type !== 'attackDeclared') continue;
+          const sameTeam = event.attackerId[0] === mine;
+          if (sameTeam) expect(event.cardId).not.toBeNull();
+          else expect(event.cardId).toBeNull();
+        }
+      }
+    }
+  });
+
+  it('no deja repetir un animal del compañero', async () => {
+    const { players } = await quartet();
+    const [a1, , a2] = players;
+    if (a1 === undefined || a2 === undefined) throw new Error('Sin jugadores');
+    expect(await a1.call('team:select', { animalIds: DUO[1] })).toEqual({ ok: true });
+    const repeated = await a2.call('team:select', { animalIds: [DUO[1][0], DUO[2][0]] });
+    expect(repeated).toMatchObject({ ok: false, error: { code: 'RULE_VIOLATION' } });
+  });
+
+  it('los marcadores rápidos solo llegan al compañero', async () => {
+    const { players } = await quartet();
+    const [a1, b1, a2, b2] = players;
+    if (a1 === undefined || b1 === undefined || a2 === undefined || b2 === undefined) {
+      throw new Error('Sin jugadores');
+    }
+    await pickDuos(players);
+    const myCard = Object.values(a1.view()?.cards ?? {}).find((c) => c.ownerId === 'A2');
+    if (myCard === undefined) throw new Error('A1 no ve las cartas de su compañero');
+
+    expect(await a1.call('team:signal', { type: 'saveCard', cardId: myCard.id })).toEqual({
+      ok: true,
+    });
+    await a2.waitFor(() => a2.signals.length === 1);
+    expect(a2.signals[0]).toEqual({ from: 'A1', signal: { type: 'saveCard', cardId: myCard.id } });
+    expect(a1.signals).toHaveLength(1); // confirmación propia
+
+    // Demasiado seguido, o señalando una carta rival: rechazado.
+    expect(await a1.call('team:signal', { type: 'careful' })).toMatchObject({
+      ok: false,
+      error: { code: 'RATE_LIMITED' },
+    });
+    const rivalCard = Object.values(b1.view()?.cards ?? {}).find((c) => c.ownerId === 'B1');
+    if (rivalCard === undefined) throw new Error('Sin carta rival');
+    expect(await a2.call('team:signal', { type: 'useCard', cardId: rivalCard.id })).toMatchObject({
+      ok: false,
+      error: { code: 'INVALID_MESSAGE' },
+    });
+    // El rival no recibió nada.
+    expect(b1.signals).toHaveLength(0);
+    expect(b2.signals).toHaveLength(0);
+  });
+
+  it('si un jugador abandona, pierde todo su equipo', async () => {
+    const { players } = await quartet();
+    await pickDuos(players);
+    const [, b1] = players;
+    if (b1 === undefined) throw new Error('Sin jugador');
+    expect((await b1.call('room:leave')).ok).toBe(true);
+    for (const player of players.filter((p) => p !== b1)) {
+      await player.waitFor(() => player.view()?.result != null);
+      expect(player.view()?.result).toEqual({ winner: 'A', reason: 'concede' });
+    }
   });
 });
 

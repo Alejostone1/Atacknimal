@@ -149,3 +149,14 @@ Vercel (web) + Render (servidor) + Neon (PostgreSQL, opcional al principio). Par
 ### #036 Almacén en memoria en Render (2026-10-28)
 
 El primer despliegue en Render falló por memoria: PGlite ocupa unos 530 MB y el plan gratuito da 512 MB. Sin `DATABASE_URL`, Render usa ahora un almacén en memoria (`DB_DRIVER=memory`, ~126 MB el servidor completo). PGlite sigue siendo lo predeterminado en desarrollo y tests. Al añadir Neon (`DATABASE_URL`), el servidor pasa solo a PostgreSQL.
+
+## Fase 9 · 2 vs 2 (2026-10-29)
+
+### #037 Asientos, cambio de equipo y marcadores rápidos
+
+- **Asientos:** por orden de llegada, alternando equipos (A1, B1, A2, B2). Mientras se espera, cada jugador puede pasarse a un asiento libre del otro equipo, para que los amigos elijan con quién jugar. Al empezar la elección de equipos los asientos quedan fijos.
+- **Animales:** cada jugador elige 2, distintos de los de su compañero. La web guarda esta selección aparte del equipo de 4 del 1 vs 1 y bloquea en pantalla los animales que el compañero ya confirmó. La validación definitiva es del motor.
+- **Marcadores:** «¡Bien jugado!», «¡Cuidado!», «Guarda tu {carta}», «Usa tu {carta}» y «Ataca en {hábitat}». Se descarta «Yo defiendo» del borrador de GAME_RULES: el defensor lo designa el orden de turnos. Solo llegan al equipo de quien los envía, como mucho uno por segundo por jugador (🔒 límite básico contra el abuso).
+- **Pantalla:** tiras de cada rival y del compañero con su apodo; el texto de espera distingue «Tu compañero X elige…» de los rivales; el resumen final cuenta el daño por equipo.
+
+**Revisable:** elegir asiento concreto (no solo «cambiar de equipo»), señales durante la elección de equipo y la IA en 2 vs 2 contra la máquina (hoy el 2 vs 2 es solo online).
