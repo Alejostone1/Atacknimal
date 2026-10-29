@@ -36,7 +36,7 @@ export async function commonsCandidates(wikidataId: string, today: string): Prom
   return [...quality, ...general.filter((c) => !seen.has(c.image.sourceId))];
 }
 
-async function search(text: string, quality: boolean, today: string): Promise<Candidate[]> {
+export async function search(text: string, quality: boolean, today: string): Promise<Candidate[]> {
   const data = (await getJson(
     query(API, {
       action: 'query',

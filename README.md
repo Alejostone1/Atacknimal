@@ -21,7 +21,8 @@
 | 8b · Despliegue (Vercel + Render) | ✅ En línea | **https://atacknimal.vercel.app** · [`docs/DEPLOY.md`](docs/DEPLOY.md) |
 | 9 · 2 vs 2 | ✅ Cerrada | Salas de 4, marcadores entre compañeros · [`docs/API.md`](docs/API.md) §4.3–4.4 |
 | 10 · Enlace y QR | ✅ Cerrada (probada con un celular real) | QR y Compartir en la sala · decisión #038 |
-| 11 · QA | ⏳ Siguiente | — |
+| 10b · Rediseño visual y 20 animales | 🚧 En curso | Decisión #039 |
+| 11 · QA | ⏳ | — |
 
 Hoja de ruta completa: [`docs/ROADMAP.md`](docs/ROADMAP.md).
 

@@ -172,3 +172,15 @@ El primer despliegue en Render falló por memoria: PGlite ocupa unos 530 MB y el
 - **Desarrollo:** si el enlace apunta a `localhost`, la sala avisa de que el QR no servirá en un celular; `VITE_PUBLIC_APP_URL` permite apuntarlo a la IP de la red local.
 
 **Revisable:** los tiempos (30 min y 3 min) y si al agotarse la elección de equipo debería elegir la IA en lugar de cerrar la sala.
+
+## Fase 10b · Rediseño visual y 20 animales (2026-10-29)
+
+### ✅ #039 Prioridades del rediseño (elegidas por el usuario)
+
+El usuario pidió una mejora completa de diseño, animación, efectos, selección de cartas e imágenes; hábitats representativos en lugar de iconos; más animales; y fotos nítidas en el celular. La QA (Fase 11) se pospone.
+
+- **Hábitats con fotos reales** con licencia abierta (cielo, océano, sabana, selva), curadas igual que las de los animales. Se descartan las ilustraciones propias para mantener la identidad de "animales reales".
+- **20 animales** (hoy 11): León, Gorila, Jaguar, Orca, Halcón peregrino, Hipopótamo, Pitón, Oso polar y Búho real. Requiere perfiles nuevos, fotos, datos y una versión de balance 0.3.0 medida con simulación.
+- **Orden:** primero lo visual y después los animales. Cada bloque se publica al terminarlo.
+
+**Causa de las fotos borrosas en el celular (diagnóstico):** la escena de combate se dibujaba a 1 píxel por píxel CSS (los celulares tienen 2–3) y las cartas usaban siempre la miniatura de 500 px recortada a formato vertical.

@@ -1,0 +1,94 @@
+[
+  {
+    "provider": "wikimedia-commons",
+    "sourceId": "File:Small sun dog in cumulus.jpg",
+    "title": "Small sun dog in cumulus",
+    "imageUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0c/Small_sun_dog_in_cumulus.jpg/1280px-Small_sun_dog_in_cumulus.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "thumbnailUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0c/Small_sun_dog_in_cumulus.jpg/500px-Small_sun_dog_in_cumulus.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "width": 4492,
+    "height": 2526,
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Small_sun_dog_in_cumulus.jpg",
+    "author": "W.carter",
+    "authorUrl": "https://commons.wikimedia.org/wiki/User:W.carter",
+    "licenseId": "cc0",
+    "license": "CC0",
+    "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/deed.en",
+    "attribution": "W.carter · CC0 · Wikimedia Commons",
+    "focalPoint": {
+      "x": 0.5,
+      "y": 0.5
+    },
+    "retrievedAt": "2026-10-29",
+    "status": "proposed",
+    "habitat": "air"
+  },
+  {
+    "provider": "wikimedia-commons",
+    "sourceId": "File:Solitaire berk (Betula) in open landschap. Locatie, natuurgebied Delleboersterheide – Catspoele 02.jpg",
+    "title": "Solitaire berk (Betula) in open landschap. Locatie, natuurgebied Delleboersterheide – Catspoele 02",
+    "imageUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f4/Solitaire_berk_%28Betula%29_in_open_landschap._Locatie%2C_natuurgebied_Delleboersterheide_%E2%80%93_Catspoele_02.jpg/1280px-Solitaire_berk_%28Betula%29_in_open_landschap._Locatie%2C_natuurgebied_Delleboersterheide_%E2%80%93_Catspoele_02.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "thumbnailUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f4/Solitaire_berk_%28Betula%29_in_open_landschap._Locatie%2C_natuurgebied_Delleboersterheide_%E2%80%93_Catspoele_02.jpg/500px-Solitaire_berk_%28Betula%29_in_open_landschap._Locatie%2C_natuurgebied_Delleboersterheide_%E2%80%93_Catspoele_02.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "width": 4871,
+    "height": 3152,
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Solitaire_berk_(Betula)_in_open_landschap._Locatie,_natuurgebied_Delleboersterheide_%E2%80%93_Catspoele_02.jpg",
+    "author": "Dominicus Johannes Bergsma",
+    "authorUrl": "https://commons.wikimedia.org/wiki/User:Famberhorst",
+    "licenseId": "cc-by-sa",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "attribution": "Dominicus Johannes Bergsma · CC BY-SA 4.0 · Wikimedia Commons",
+    "focalPoint": {
+      "x": 0.5,
+      "y": 0.5
+    },
+    "retrievedAt": "2026-10-29",
+    "status": "proposed",
+    "habitat": "land"
+  },
+  {
+    "provider": "wikimedia-commons",
+    "sourceId": "File:Beech Forest (AU), Great Otway National Park -- 2019 -- 1294.jpg",
+    "title": "Beech Forest (AU), Great Otway National Park -- 2019 -- 1294",
+    "imageUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/67/Beech_Forest_%28AU%29%2C_Great_Otway_National_Park_--_2019_--_1294.jpg/1280px-Beech_Forest_%28AU%29%2C_Great_Otway_National_Park_--_2019_--_1294.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "thumbnailUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/67/Beech_Forest_%28AU%29%2C_Great_Otway_National_Park_--_2019_--_1294.jpg/500px-Beech_Forest_%28AU%29%2C_Great_Otway_National_Park_--_2019_--_1294.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "width": 6720,
+    "height": 4480,
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Beech_Forest_(AU),_Great_Otway_National_Park_--_2019_--_1294.jpg",
+    "author": "Dietmar Rabich",
+    "authorUrl": "https://www.wikidata.org/wiki/Q34788025",
+    "licenseId": "cc-by-sa",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "attribution": "Dietmar Rabich · CC BY-SA 4.0 · Wikimedia Commons",
+    "focalPoint": {
+      "x": 0.5,
+      "y": 0.5
+    },
+    "retrievedAt": "2026-10-29",
+    "status": "proposed",
+    "habitat": "trees"
+  },
+  {
+    "provider": "wikimedia-commons",
+    "sourceId": "File:Waves at La Corniche.jpg",
+    "title": "Waves at La Corniche",
+    "imageUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/71/Waves_at_La_Corniche.jpg/1280px-Waves_at_La_Corniche.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "thumbnailUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/71/Waves_at_La_Corniche.jpg/500px-Waves_at_La_Corniche.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "width": 7360,
+    "height": 4912,
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Waves_at_La_Corniche.jpg",
+    "author": "Christian Ferrer",
+    "authorUrl": "https://commons.wikimedia.org/wiki/User:Christian_Ferrer",
+    "licenseId": "cc-by",
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+    "attribution": "Christian Ferrer · CC BY 4.0 · Wikimedia Commons",
+    "focalPoint": {
+      "x": 0.5,
+      "y": 0.5
+    },
+    "retrievedAt": "2026-10-29",
+    "status": "proposed",
+    "habitat": "water"
+  }
+]

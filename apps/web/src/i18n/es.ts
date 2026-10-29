@@ -31,11 +31,13 @@ export const ATTRIBUTE: Readonly<Record<Attribute, { label: string; icon: Lucide
   perception: { label: 'Percepción', icon: Eye },
 };
 
-export const HABITAT: Readonly<Record<Habitat, { label: string; icon: LucideIcon }>> = {
-  air: { label: 'Aire', icon: Wind },
-  water: { label: 'Agua', icon: Waves },
-  land: { label: 'Tierra', icon: Mountain },
-  trees: { label: 'Árboles', icon: TreePine },
+export const HABITAT: Readonly<
+  Record<Habitat, { label: string; scene: string; icon: LucideIcon }>
+> = {
+  air: { label: 'Aire', scene: 'Cielo abierto', icon: Wind },
+  water: { label: 'Agua', scene: 'Mar, ríos y lagos', icon: Waves },
+  land: { label: 'Tierra', scene: 'Llanuras y sabana', icon: Mountain },
+  trees: { label: 'Árboles', scene: 'Bosque y selva', icon: TreePine },
 };
 
 export const AFFINITY: Readonly<Record<Affinity, string>> = {

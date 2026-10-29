@@ -1,4 +1,5 @@
 import type { AnimalEntry } from '../content/catalog.ts';
+import { photoSet } from '../content/photo.ts';
 import styles from './AnimalPhoto.module.css';
 
 interface AnimalPhotoProps {
@@ -6,13 +7,20 @@ interface AnimalPhotoProps {
   /** `card`: miniatura ligera; `hero`: versión grande para la ficha. */
   variant?: 'card' | 'hero';
   className?: string | undefined;
+  /** Ancho con que se muestra (atributo `sizes`); por defecto, el de cada variante. */
+  sizes?: string | undefined;
 }
+
+const DEFAULT_SIZES = {
+  card: '(min-width: 720px) 240px, 50vw',
+  hero: '(min-width: 720px) 720px, 100vw',
+} as const;
 
 /**
  * Foto real enlazada al proveedor (hotlink) y recortada por CSS según su punto focal:
  * no se generan archivos derivados (docs/ASSETS.md §4).
  */
-export function AnimalPhoto({ entry, variant = 'card', className }: AnimalPhotoProps) {
+export function AnimalPhoto({ entry, variant = 'card', className, sizes }: AnimalPhotoProps) {
   const { image } = entry;
   const classes = [styles.frame, styles[variant], className].filter(Boolean).join(' ');
   if (image === undefined) {
@@ -27,7 +35,7 @@ export function AnimalPhoto({ entry, variant = 'card', className }: AnimalPhotoP
   return (
     <div className={classes}>
       <img
-        src={variant === 'hero' ? image.imageUrl : image.thumbnailUrl}
+        {...photoSet(image, sizes ?? DEFAULT_SIZES[variant])}
         alt={`${entry.name} (${entry.scientificName})`}
         loading={variant === 'hero' ? 'eager' : 'lazy'}
         decoding="async"

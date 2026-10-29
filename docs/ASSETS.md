@@ -40,7 +40,8 @@ Fuentes consultadas: [Pexels API](https://www.pexels.com/api/documentation/), [P
 
 ## 4. Cómo se muestran
 
-- **Hotlink:** la carta usa `imageUrl`, una miniatura de 1280 px servida por el proveedor. No descargamos ni redistribuimos archivos.
+- **Hotlink:** la aplicación enlaza las miniaturas que sirve el proveedor. No descargamos ni redistribuimos archivos.
+- **Varias resoluciones (Fase 10b):** cada foto se ofrece en los anchos estándar del proveedor (Commons: 330, 500, 960, 1280 y 1920 px; iNaturalist: 500, 1024 y original) con `srcset`/`sizes`, y el navegador elige según el tamaño en pantalla y la densidad del dispositivo. Así las fotos se ven nítidas en celulares sin descargar de más en pantallas pequeñas.
 - **Recorte por CSS:** `object-fit: cover` más `object-position` según `focalPoint`. No generamos archivos recortados, así que una imagen CC BY-SA no produce obras derivadas distribuidas.
 - **Atribución visible (Fase 5, ✅):** debajo de la foto en la ficha de cada animal (autor, licencia y enlace al original), en la portada para la foto de fondo y en la pantalla **Créditos** con todas las imágenes. Las cartas de la cuadrícula no llevan crédito propio porque son botones o enlaces y no pueden contener otros. Las cartas de combate (Fase 6) lo mostrarán con un icono ⓘ.
 
@@ -99,3 +100,16 @@ npm run curate -- approve <animal|all>
 - El **Guepardo** (St. Louis), el **Oso** (Ähtäri) y el **Rinoceronte** están en parques zoológicos. El resto son fotos en libertad.
 - El **Oso** sostiene un pez pequeño: no es sangriento, pero vale la pena revisarlo.
 - En **Elefante** se descartó una candidata porque su campo de autor incluía el correo personal del fotógrafo y una petición de contacto previo para uso comercial. Ahora la herramienta avisa de estos casos ("autoría con texto largo").
+
+## 8. Fotos de hábitat (`habitats.json`, Fase 10b)
+
+Los hábitats se eligen con una foto real a sangre (decisión #039), con las mismas reglas de licencia y atribución que los animales. Se buscan entre las *Quality images* de Commons con `npm run curate -- habitats` (galería en `tools/curator/out/habitats.html`) y se eligen con `npm run curate -- habitat <hábitat> <número>`. Criterio: paisaje amplio, sin animales ni personas que compitan con las cartas.
+
+| Hábitat | Foto | Autor | Licencia |
+|---|---|---|---|
+| Aire | Small sun dog in cumulus | W.carter | CC0 |
+| Agua | Waves at La Corniche | Christian Ferrer | CC BY 4.0 |
+| Tierra | Árbol solitario en un brezal abierto (Delleboersterheide, Países Bajos) | Dominicus Johannes Bergsma | CC BY-SA 4.0 |
+| Árboles | Beech Forest, Great Otway National Park | Dietmar Rabich | CC BY-SA 4.0 |
+
+Se descartó una primera foto de Agua (*Les otaries du Cap*) porque mostraba lobos marinos. Los créditos completos están en la pantalla **Créditos**. Estado: `proposed` hasta que el usuario las revise en el celular.

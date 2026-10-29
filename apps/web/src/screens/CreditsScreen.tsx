@@ -1,5 +1,7 @@
+import { HABITAT_IMAGES, type AnimalImage, type HabitatImage } from '@atacknimal/content';
 import { Screen } from '../components/Screen.tsx';
 import { CATALOG } from '../content/catalog.ts';
+import { HABITAT } from '../i18n/es.ts';
 import styles from './CreditsScreen.module.css';
 
 const SOFTWARE: readonly { name: string; license: string; url: string }[] = [
@@ -21,6 +23,39 @@ const SOFTWARE: readonly { name: string; license: string; url: string }[] = [
   { name: 'Iconos Lucide', license: 'ISC', url: 'https://lucide.dev/license' },
 ];
 
+/** Crédito obligatorio de una foto: autor, licencia y enlace a la fuente. */
+function CreditItem({ name, image }: { name: string; image: AnimalImage | HabitatImage }) {
+  return (
+    <li className={styles.item}>
+      <img src={image.thumbnailUrl} alt="" loading="lazy" className={styles.thumb} />
+      <div>
+        <p className={styles.animal}>{name}</p>
+        <p className={styles.meta}>
+          {image.authorUrl === undefined ? (
+            image.author
+          ) : (
+            <a href={image.authorUrl} target="_blank" rel="noreferrer">
+              {image.author}
+            </a>
+          )}
+          {' · '}
+          {image.licenseUrl === undefined ? (
+            image.license
+          ) : (
+            <a href={image.licenseUrl} target="_blank" rel="noreferrer">
+              {image.license}
+            </a>
+          )}
+          {' · '}
+          <a href={image.sourceUrl} target="_blank" rel="noreferrer">
+            {image.provider === 'inaturalist' ? 'iNaturalist' : 'Wikimedia Commons'}
+          </a>
+        </p>
+      </div>
+    </li>
+  );
+}
+
 export function CreditsScreen() {
   return (
     <Screen title="Créditos" eyebrow="Fotos, datos y recursos" back="/">
@@ -35,40 +70,16 @@ export function CreditsScreen() {
         <ul className={styles.list}>
           {CATALOG.map((entry) =>
             entry.image === undefined ? null : (
-              <li key={entry.id} className={styles.item}>
-                <img
-                  src={entry.image.thumbnailUrl}
-                  alt=""
-                  loading="lazy"
-                  className={styles.thumb}
-                />
-                <div>
-                  <p className={styles.animal}>{entry.name}</p>
-                  <p className={styles.meta}>
-                    {entry.image.authorUrl === undefined ? (
-                      entry.image.author
-                    ) : (
-                      <a href={entry.image.authorUrl} target="_blank" rel="noreferrer">
-                        {entry.image.author}
-                      </a>
-                    )}
-                    {' · '}
-                    {entry.image.licenseUrl === undefined ? (
-                      entry.image.license
-                    ) : (
-                      <a href={entry.image.licenseUrl} target="_blank" rel="noreferrer">
-                        {entry.image.license}
-                      </a>
-                    )}
-                    {' · '}
-                    <a href={entry.image.sourceUrl} target="_blank" rel="noreferrer">
-                      {entry.image.provider === 'inaturalist' ? 'iNaturalist' : 'Wikimedia Commons'}
-                    </a>
-                  </p>
-                </div>
-              </li>
+              <CreditItem key={entry.id} name={entry.name} image={entry.image} />
             ),
           )}
+          {HABITAT_IMAGES.filter((image) => image.status !== 'retired').map((image) => (
+            <CreditItem
+              key={image.habitat}
+              name={`Hábitat: ${HABITAT[image.habitat].label}`}
+              image={image}
+            />
+          ))}
         </ul>
       </section>
 

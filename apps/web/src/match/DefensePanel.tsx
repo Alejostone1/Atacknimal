@@ -2,6 +2,7 @@ import { computeValue, getDefenseOptions, type PlayerView } from '@atacknimal/en
 import { ShieldAlert } from 'lucide-react';
 import { useState } from 'react';
 import { findEntry } from '../content/catalog.ts';
+import { photoSet } from '../content/photo.ts';
 import { useMatch } from '../game/matchStore.ts';
 import { ATTRIBUTE, HABITAT } from '../i18n/es.ts';
 import styles from './Match.module.css';
@@ -54,7 +55,9 @@ export function DefensePanel({ view }: { view: PlayerView }) {
                 setCardId(id);
               }}
             >
-              {entry?.image !== undefined && <img src={entry.image.thumbnailUrl} alt="" />}
+              {entry?.image !== undefined && (
+                <img {...photoSet(entry.image, '(min-width: 720px) 160px, 25vw')} alt="" />
+              )}
               <span>{entry?.name}</span>
               <span className="mono">
                 {ATTRIBUTE[attribute].label} {valueOf(id)}

@@ -1,3 +1,4 @@
+import { HABITATS } from '@atacknimal/engine';
 import { z } from 'zod';
 
 /**
@@ -73,6 +74,15 @@ export const animalFactsSchema = z.strictObject({
   retrievedAt: z.iso.date(),
 });
 
+/**
+ * Foto que representa un hábitat en la interfaz (cielo, océano, sabana, selva). Mismas reglas de
+ * licencia y atribución que las fotos de animales (docs/ASSETS.md).
+ */
+export const habitatImageSchema = animalImageSchema
+  .omit({ animalId: true })
+  .extend({ habitat: z.enum(HABITATS) });
+
 export type AnimalImage = z.infer<typeof animalImageSchema>;
+export type HabitatImage = z.infer<typeof habitatImageSchema>;
 export type AnimalFacts = z.infer<typeof animalFactsSchema>;
 export type ImageStatus = (typeof IMAGE_STATUSES)[number];

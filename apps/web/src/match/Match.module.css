@@ -503,3 +503,21 @@
   font-size: 13px;
   color: var(--c-lichen);
 }
+
+/* Selector de hábitat con fotos: 2 × 2 en el celular, una fila en pantallas anchas. */
+.habitatGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--s-2);
+}
+
+@media (min-width: 720px) {
+  .habitatGrid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+/* Con un hábitat elegido, los demás pasan a segundo plano. */
+.habitatGrid:has([aria-pressed='true']) > button:not([aria-pressed='true']):not(:disabled) {
+  opacity: 0.6;
+}

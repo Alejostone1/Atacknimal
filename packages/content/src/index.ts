@@ -3,12 +3,15 @@ import animalsData from '../data/animals.json' with { type: 'json' };
 import balance010 from '../data/balance/0.1.0.json' with { type: 'json' };
 import balance020 from '../data/balance/0.2.0.json' with { type: 'json' };
 import factsData from '../data/facts.json' with { type: 'json' };
+import habitatsData from '../data/habitats.json' with { type: 'json' };
 import imagesData from '../data/images.json' with { type: 'json' };
 import {
   animalFactsSchema,
   animalImageSchema,
+  habitatImageSchema,
   type AnimalFacts,
   type AnimalImage,
+  type HabitatImage,
 } from './media.ts';
 import {
   animalSchema,
@@ -23,12 +26,20 @@ export type { Animal, Budget, Target, Targets } from './schema.ts';
 export {
   animalFactsSchema,
   animalImageSchema,
+  habitatImageSchema,
   IMAGE_PROVIDERS,
   IMAGE_STATUSES,
   IUCN_CATEGORIES,
   LICENSE_IDS,
 } from './media.ts';
-export type { AnimalFacts, AnimalImage, ImageStatus, IucnCategory, LicenseId } from './media.ts';
+export type {
+  AnimalFacts,
+  AnimalImage,
+  HabitatImage,
+  ImageStatus,
+  IucnCategory,
+  LicenseId,
+} from './media.ts';
 
 /** Versión de balance lista para jugar o simular. */
 export interface BalanceSet {
@@ -58,6 +69,15 @@ for (const id of animalIds) {
   if (IMAGES.filter((i) => i.animalId === id && i.status !== 'retired').length > 1) {
     throw new ContentError(`${id} tiene más de una imagen activa.`);
   }
+}
+
+export const HABITAT_IMAGES: readonly HabitatImage[] = habitatImageSchema
+  .array()
+  .parse(habitatsData);
+
+/** Foto activa de un hábitat, o `undefined` si aún no tiene (la interfaz usa su icono). */
+export function getHabitatImage(habitat: HabitatImage['habitat']): HabitatImage | undefined {
+  return HABITAT_IMAGES.find((image) => image.habitat === habitat && image.status !== 'retired');
 }
 
 /** Imagen activa (aprobada o propuesta) de un animal, o `undefined` si aún no tiene. */

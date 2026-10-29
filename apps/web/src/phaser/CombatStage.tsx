@@ -1,8 +1,11 @@
 import Phaser from 'phaser';
 import { useEffect, useRef } from 'react';
-import { DuelScene, type PresentRequest } from './DuelScene.ts';
+import { DuelScene, PIXEL_RATIO_KEY, type PresentRequest } from './DuelScene.ts';
 import type { DuelPresentation } from './presentation.ts';
 import styles from './CombatStage.module.css';
+
+/** Más de 3× apenas se nota y multiplica la memoria del lienzo en celulares de gama alta. */
+const MAX_PIXEL_RATIO = 3;
 
 interface CombatStageProps {
   presentation: DuelPresentation;
@@ -23,7 +26,11 @@ export function CombatStage({ presentation, onComplete }: CombatStageProps) {
   }, [onComplete]);
 
   useEffect(() => {
-    if (host.current === null) return;
+    const element = host.current;
+    if (element === null) return;
+    // Nitidez en celulares: el lienzo se dibuja a la densidad real de la pantalla (2–3 píxeles
+    // físicos por píxel CSS) y se muestra reducido con el zoom. La escena sigue en píxeles CSS.
+    const dpr = Math.min(Math.max(window.devicePixelRatio, 1), MAX_PIXEL_RATIO);
     const instance = new Phaser.Game({
       type: Phaser.AUTO,
       parent: host.current,
@@ -31,11 +38,28 @@ export function CombatStage({ presentation, onComplete }: CombatStageProps) {
       banner: false,
       // Sin sonido todavía: evita crear (y cerrar en cada duelo) un AudioContext.
       audio: { noAudio: true },
-      scale: { mode: Phaser.Scale.RESIZE, width: '100%', height: '100%' },
+      scale: {
+        mode: Phaser.Scale.NONE,
+        width: Math.max(1, element.clientWidth * dpr),
+        height: Math.max(1, element.clientHeight * dpr),
+        zoom: 1 / dpr,
+      },
+      callbacks: {
+        preBoot: (booting) => {
+          booting.registry.set(PIXEL_RATIO_KEY, dpr);
+        },
+      },
       scene: [DuelScene],
     });
     game.current = instance;
+    const observer = new ResizeObserver(([entry]) => {
+      if (entry === undefined) return;
+      const { width, height } = entry.contentRect;
+      instance.scale.resize(Math.max(1, width * dpr), Math.max(1, height * dpr));
+    });
+    observer.observe(element);
     return () => {
+      observer.disconnect();
       game.current = null;
       instance.destroy(true);
     };

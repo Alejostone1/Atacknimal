@@ -26,7 +26,11 @@ export function TeamSlots({ team, size, onRemove }: TeamSlotsProps) {
         }
         return (
           <li key={entry.id} className={styles.slot}>
-            <AnimalPhoto entry={entry} className={styles.photo} />
+            <AnimalPhoto
+              entry={entry}
+              className={styles.photo}
+              sizes="(min-width: 720px) 240px, 45vw"
+            />
             <span className={styles.name}>{entry.name}</span>
             {onRemove !== undefined && (
               <button

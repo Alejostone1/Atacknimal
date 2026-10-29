@@ -1,6 +1,9 @@
 import Phaser from 'phaser';
 import type { DuelPresentation, DuelRole, DuelSide } from './presentation.ts';
 
+/** Clave del registro con la densidad de píxeles del lienzo (la fija CombatStage). */
+export const PIXEL_RATIO_KEY = 'pixelRatio';
+
 /** Paleta del sistema visual (styles/global.css), en formato de Phaser. */
 const C = {
   night: 0x0e1411,
@@ -42,7 +45,28 @@ export class DuelScene extends Phaser.Scene {
     super('duel');
   }
 
+  /** Densidad del lienzo: la escena trabaja en píxeles CSS y la cámara amplía a píxeles reales. */
+  private get dpr(): number {
+    return (this.registry.get(PIXEL_RATIO_KEY) as number | undefined) ?? 1;
+  }
+
+  /** Tamaño visible en píxeles CSS. */
+  private get viewSize(): { width: number; height: number } {
+    return { width: this.scale.width / this.dpr, height: this.scale.height / this.dpr };
+  }
+
+  /** Texto rasterizado a la densidad real: nítido en celulares. */
+  private text(
+    x: number,
+    y: number,
+    content: string,
+    style: Phaser.Types.GameObjects.Text.TextStyle,
+  ): Phaser.GameObjects.Text {
+    return this.add.text(x, y, content, { ...style, resolution: this.dpr });
+  }
+
   create(): void {
+    this.cameras.main.setOrigin(0, 0).setZoom(this.dpr);
     this.registry.events.on('setdata', this.onData, this);
     this.registry.events.on('changedata', this.onData, this);
     this.scale.on('resize', this.redraw, this);
@@ -89,26 +113,22 @@ export class DuelScene extends Phaser.Scene {
   }
 
   private build(data: DuelPresentation, onDone: () => void): void {
-    const { width: W, height: H } = this.scale;
+    const { width: W, height: H } = this.viewSize;
     const cardW = Math.min(W * 0.4, 240);
     const left = this.card(data.attacker, cardW, W * 0.27, H * 0.52, 'attacker');
     const right = this.card(data.defender, cardW, W * 0.73, H * 0.52, 'defender');
-    const caption = this.add
-      .text(W / 2, Math.max(18, H * 0.06), data.caption.toUpperCase(), {
-        fontFamily: DISPLAY,
-        fontSize: `${String(Math.round(Math.min(W, 640) * 0.05))}px`,
-        fontStyle: '800',
-        color: C.amber,
-      })
-      .setOrigin(0.5, 0);
-    const vs = this.add
-      .text(W / 2, H * 0.48, 'VS', {
-        fontFamily: DISPLAY,
-        fontSize: `${String(Math.round(cardW * 0.32))}px`,
-        fontStyle: '900 italic',
-        color: C.bone,
-      })
-      .setOrigin(0.5);
+    const caption = this.text(W / 2, Math.max(18, H * 0.06), data.caption.toUpperCase(), {
+      fontFamily: DISPLAY,
+      fontSize: `${String(Math.round(Math.min(W, 640) * 0.05))}px`,
+      fontStyle: '800',
+      color: C.amber,
+    }).setOrigin(0.5, 0);
+    const vs = this.text(W / 2, H * 0.48, 'VS', {
+      fontFamily: DISPLAY,
+      fontSize: `${String(Math.round(cardW * 0.32))}px`,
+      fontStyle: '900 italic',
+      color: C.bone,
+    }).setOrigin(0.5);
 
     const finish = (): void => {
       this.showOutcome(data, left, right);
@@ -182,38 +202,30 @@ export class DuelScene extends Phaser.Scene {
       container.add(image);
     }
 
-    const owner = this.add
-      .text(-w / 2 + 8, top + 8, side.owner.toUpperCase(), {
-        fontFamily: MONO,
-        fontSize: '11px',
-        color: C.bone,
-        backgroundColor: '#0e1411cc',
-        padding: { x: 5, y: 2 },
-      })
-      .setOrigin(0, 0);
-    const name = this.add
-      .text(-w / 2 + 10, top + photoH + 8, side.name.toUpperCase(), {
-        fontFamily: DISPLAY,
-        fontSize: `${String(Math.round(w * 0.12))}px`,
-        fontStyle: '800',
-        color: C.bone,
-      })
-      .setOrigin(0, 0);
-    const value = this.add
-      .text(-w / 2 + 10, top + photoH + w * 0.22, '0', {
-        fontFamily: DISPLAY,
-        fontSize: `${String(Math.round(w * 0.26))}px`,
-        fontStyle: '900',
-        color: C.amber,
-      })
-      .setOrigin(0, 0);
-    const detail = this.add
-      .text(-w / 2 + 10, top + photoH + w * 0.5, side.detail, {
-        fontFamily: MONO,
-        fontSize: `${String(Math.max(10, Math.round(w * 0.05)))}px`,
-        color: C.lichen,
-      })
-      .setOrigin(0, 0);
+    const owner = this.text(-w / 2 + 8, top + 8, side.owner.toUpperCase(), {
+      fontFamily: MONO,
+      fontSize: '11px',
+      color: C.bone,
+      backgroundColor: '#0e1411cc',
+      padding: { x: 5, y: 2 },
+    }).setOrigin(0, 0);
+    const name = this.text(-w / 2 + 10, top + photoH + 8, side.name.toUpperCase(), {
+      fontFamily: DISPLAY,
+      fontSize: `${String(Math.round(w * 0.12))}px`,
+      fontStyle: '800',
+      color: C.bone,
+    }).setOrigin(0, 0);
+    const value = this.text(-w / 2 + 10, top + photoH + w * 0.22, '0', {
+      fontFamily: DISPLAY,
+      fontSize: `${String(Math.round(w * 0.26))}px`,
+      fontStyle: '900',
+      color: C.amber,
+    }).setOrigin(0, 0);
+    const detail = this.text(-w / 2 + 10, top + photoH + w * 0.5, side.detail, {
+      fontFamily: MONO,
+      fontSize: `${String(Math.max(10, Math.round(w * 0.05)))}px`,
+      color: C.lichen,
+    }).setOrigin(0, 0);
 
     const barW = w - 20;
     const barY = h / 2 - 28;
@@ -221,13 +233,16 @@ export class DuelScene extends Phaser.Scene {
     const hpFill = this.add
       .rectangle(-w / 2 + 10, barY, barW * (side.hpBefore / side.maxHp), 8, C.life)
       .setOrigin(0, 0.5);
-    const hpText = this.add
-      .text(w / 2 - 10, barY + 8, `${String(side.hpBefore)}/${String(side.maxHp)}`, {
+    const hpText = this.text(
+      w / 2 - 10,
+      barY + 8,
+      `${String(side.hpBefore)}/${String(side.maxHp)}`,
+      {
         fontFamily: MONO,
         fontSize: '11px',
         color: C.lichen,
-      })
-      .setOrigin(1, 0);
+      },
+    ).setOrigin(1, 0);
 
     container.add([owner, name, value, detail, hpBack, hpFill, hpText]);
     return { container, value, hpFill, hpText, width: w, height: h };
@@ -263,21 +278,19 @@ export class DuelScene extends Phaser.Scene {
 
     if (data.damage !== null) {
       const target = views[data.damage.target];
-      const dmg = this.add
-        .text(
-          target.container.x,
-          target.container.y - target.height * 0.2,
-          `−${String(data.damage.amount)}`,
-          {
-            fontFamily: DISPLAY,
-            fontSize: `${String(Math.round(target.width * 0.3))}px`,
-            fontStyle: '900',
-            color: C.slashText,
-            stroke: '#0e1411',
-            strokeThickness: 6,
-          },
-        )
-        .setOrigin(0.5);
+      const dmg = this.text(
+        target.container.x,
+        target.container.y - target.height * 0.2,
+        `−${String(data.damage.amount)}`,
+        {
+          fontFamily: DISPLAY,
+          fontSize: `${String(Math.round(target.width * 0.3))}px`,
+          fontStyle: '900',
+          color: C.slashText,
+          stroke: '#0e1411',
+          strokeThickness: 6,
+        },
+      ).setOrigin(0.5);
       if (animate) {
         this.tweens.add({
           targets: dmg,
@@ -288,30 +301,27 @@ export class DuelScene extends Phaser.Scene {
       }
     }
 
-    const { width: W, height: H } = this.scale;
+    const { width: W, height: H } = this.viewSize;
     const label =
       data.winner === 'tie' ? 'EMPATE' : `GANA ${sides[data.winner].name.toUpperCase()}`;
-    this.add
-      .text(W / 2, H - Math.max(16, H * 0.05), label, {
-        fontFamily: DISPLAY,
-        fontSize: `${String(Math.round(Math.min(W, 640) * 0.06))}px`,
-        fontStyle: '900',
-        color: data.winner === 'tie' ? C.bone : C.amber,
-      })
-      .setOrigin(0.5, 1);
+    this.text(W / 2, H - Math.max(16, H * 0.05), label, {
+      fontFamily: DISPLAY,
+      fontSize: `${String(Math.round(Math.min(W, 640) * 0.06))}px`,
+      fontStyle: '900',
+      color: data.winner === 'tie' ? C.bone : C.amber,
+    }).setOrigin(0.5, 1);
 
     if (data.eliminated !== null) {
       const out = views[data.eliminated];
       out.container.setAlpha(0.4);
-      this.add
-        .text(out.container.x, out.container.y, 'ELIMINADO', {
-          fontFamily: DISPLAY,
-          fontSize: `${String(Math.round(out.width * 0.17))}px`,
-          fontStyle: '900',
-          color: C.slashText,
-          stroke: '#0e1411',
-          strokeThickness: 6,
-        })
+      this.text(out.container.x, out.container.y, 'ELIMINADO', {
+        fontFamily: DISPLAY,
+        fontSize: `${String(Math.round(out.width * 0.17))}px`,
+        fontStyle: '900',
+        color: C.slashText,
+        stroke: '#0e1411',
+        strokeThickness: 6,
+      })
         .setOrigin(0.5)
         .setAngle(-12);
     }

@@ -10,9 +10,11 @@ import {
 } from '@atacknimal/engine';
 import { Lock } from 'lucide-react';
 import { useState } from 'react';
+import { HabitatTile } from '../components/HabitatTile.tsx';
 import { findEntry } from '../content/catalog.ts';
+import { photoSet } from '../content/photo.ts';
 import { useMatch } from '../game/matchStore.ts';
-import { ATTRIBUTE, HABITAT } from '../i18n/es.ts';
+import { ATTRIBUTE } from '../i18n/es.ts';
 import styles from './Match.module.css';
 
 /**
@@ -64,23 +66,21 @@ export function AttackPanel({ view }: { view: PlayerView }) {
 
       <fieldset className={styles.step}>
         <legend className={styles.stepLabel}>1 · Hábitat</legend>
-        <div className={styles.choices}>
+        <div className={styles.habitatGrid}>
           {HABITATS.map((h) => {
-            const Icon = HABITAT[h].icon;
+            const allowed = isLegal(h, null, null);
             return (
-              <button
+              <HabitatTile
                 key={h}
-                type="button"
-                className="chip"
-                aria-pressed={habitat === h}
-                disabled={!isLegal(h, null, null)}
-                onClick={() => {
+                habitat={h}
+                pressed={habitat === h}
+                disabled={!allowed}
+                note={allowed ? undefined : 'No disponible en este turno'}
+                onSelect={() => {
                   setHabitat(h);
+                  if (cardId !== null && !isLegal(h, cardId, null)) setCardId(null);
                 }}
-              >
-                <Icon size={16} aria-hidden="true" />
-                {HABITAT[h].label}
-              </button>
+              />
             );
           })}
         </div>
@@ -105,7 +105,9 @@ export function AttackPanel({ view }: { view: PlayerView }) {
                     setAttribute(null);
                 }}
               >
-                {entry?.image !== undefined && <img src={entry.image.thumbnailUrl} alt="" />}
+                {entry?.image !== undefined && (
+                  <img {...photoSet(entry.image, '(min-width: 720px) 160px, 25vw')} alt="" />
+                )}
                 <span>{entry?.name}</span>
                 <span className="mono">
                   {card.hp}/{card.maxHp}

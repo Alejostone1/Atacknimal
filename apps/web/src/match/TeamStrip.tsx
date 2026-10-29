@@ -1,6 +1,7 @@
 import { isActive, type PlayerView } from '@atacknimal/engine';
 import { Lock } from 'lucide-react';
 import { findEntry } from '../content/catalog.ts';
+import { photoSet } from '../content/photo.ts';
 import { ATTRIBUTE } from '../i18n/es.ts';
 import { cx } from '../ui/cx.ts';
 import styles from './Match.module.css';
@@ -33,7 +34,7 @@ export function TeamStrip({
           return (
             <li key={card.id} className={cx(styles.mini, out && styles.out)}>
               {entry?.image !== undefined && (
-                <img src={entry.image.thumbnailUrl} alt="" className={styles.miniPhoto} />
+                <img {...photoSet(entry.image, '120px')} alt="" className={styles.miniPhoto} />
               )}
               <span className={styles.miniName}>{entry?.name ?? card.animalId}</span>
               <span

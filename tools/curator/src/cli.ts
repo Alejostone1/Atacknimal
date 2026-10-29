@@ -6,12 +6,21 @@
  *   npm run curate -- pick <animal> <#>     Elige otra candidata (número de la galería)
  *   npm run curate -- focus <animal> <x> <y> Punto que debe verse al recortar (0–1)
  *   npm run curate -- approve <animal|all>  Marca como aprobada tras revisarla una persona
+ *   npm run curate -- habitats              Busca fotos de los 4 hábitats (galería en out/)
+ *   npm run curate -- habitat <hábitat> <#> Elige la foto de un hábitat (queda propuesta)
  */
-import { ANIMALS, animalImageSchema, type AnimalImage } from '@atacknimal/content';
+import {
+  ANIMALS,
+  animalImageSchema,
+  habitatImageSchema,
+  type AnimalImage,
+  type HabitatImage,
+} from '@atacknimal/content';
+import { HABITATS, isHabitat } from '@atacknimal/engine';
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { rank, type Candidate } from './candidates.ts';
-import { commonsCandidates } from './commons.ts';
+import { commonsCandidates, search as commonsSearch } from './commons.ts';
 import { renderGallery } from './gallery.ts';
 import { inaturalistCandidates } from './inaturalist.ts';
 import { findTaxon, taxonFacts } from './wikidata.ts';
@@ -22,6 +31,20 @@ const FACTS_FILE = join(ROOT, 'packages', 'content', 'data', 'facts.json');
 const OUT_DIR = join(import.meta.dirname, '..', 'out');
 const CANDIDATES_FILE = join(OUT_DIR, 'candidates.json');
 const GALLERY_FILE = join(OUT_DIR, 'gallery.html');
+const HABITATS_FILE = join(ROOT, 'packages', 'content', 'data', 'habitats.json');
+const HABITAT_CANDIDATES_FILE = join(OUT_DIR, 'habitat-candidates.json');
+const HABITAT_GALLERY_FILE = join(OUT_DIR, 'habitats.html');
+
+/**
+ * Búsquedas en Commons por hábitat: primero lo que la foto representa (P180) y luego texto.
+ * Solo "Quality images": paisajes amplios y bien expuestos para usarlos a sangre en la interfaz.
+ */
+const HABITAT_QUERIES = {
+  air: ['haswbstatement:P180=Q527', 'cumulus clouds sky'],
+  water: ['haswbstatement:P180=Q9430', 'ocean waves open sea'],
+  land: ['haswbstatement:P180=Q42320', 'savanna landscape'],
+  trees: ['rainforest canopy', 'tropical rainforest'],
+} as const;
 
 const today = new Date().toISOString().slice(0, 10);
 const [command, ...args] = process.argv.slice(2);
@@ -151,6 +174,72 @@ switch (command) {
         .map((i) => i.animalId)
         .join(', ')}`,
     );
+    break;
+  }
+
+  case 'habitats': {
+    mkdirSync(OUT_DIR, { recursive: true });
+    const all: Record<string, Candidate[]> = {};
+    for (const habitat of HABITATS) {
+      const found: Candidate[] = [];
+      for (const text of HABITAT_QUERIES[habitat]) {
+        const page = await commonsSearch(
+          `${text} incategory:Quality_images filetype:bitmap`,
+          true,
+          today,
+        );
+        for (const candidate of page) {
+          if (!found.some((c) => c.image.sourceId === candidate.image.sourceId))
+            found.push(candidate);
+        }
+      }
+      // Paisaje: la interfaz las recorta en tiras anchas.
+      all[habitat] = rank(found.filter((c) => c.image.width > c.image.height));
+      log(`${habitat}: ${String(all[habitat].length)} candidatas apaisadas con licencia abierta`);
+    }
+    writeJson(HABITAT_CANDIDATES_FILE, all);
+    writeFileSync(
+      HABITAT_GALLERY_FILE,
+      `<!doctype html><meta charset="utf-8"><title>Hábitats</title><body style="font:14px sans-serif;background:#111;color:#eee">${HABITATS.map(
+        (h) =>
+          `<h2>${h}</h2><div style="display:flex;flex-wrap:wrap;gap:8px">${(all[h] ?? [])
+            .slice(0, 12)
+            .map(
+              (c, i) =>
+                `<figure style="margin:0;width:240px"><img src="${c.image.thumbnailUrl}" style="width:240px;height:135px;object-fit:cover"><figcaption>#${String(i)} · ${c.image.license}</figcaption></figure>`,
+            )
+            .join('')}</div>`,
+      ).join('')}</body>`,
+    );
+    log(`Galería: ${HABITAT_GALLERY_FILE}`);
+    break;
+  }
+
+  case 'habitat': {
+    const [habitat, index] = args;
+    const all = JSON.parse(readFileSync(HABITAT_CANDIDATES_FILE, 'utf8')) as Record<
+      string,
+      Candidate[]
+    >;
+    const candidate = habitat === undefined ? undefined : all[habitat]?.[Number(index)];
+    if (habitat === undefined || !isHabitat(habitat) || candidate === undefined) {
+      throw new Error(
+        'Uso: npm run curate -- habitat <air|water|land|trees> <número de la galería>',
+      );
+    }
+    const current = habitatImageSchema
+      .array()
+      .parse(JSON.parse(readFileSync(HABITATS_FILE, 'utf8')))
+      .filter((i) => i.habitat !== habitat);
+    // La candidata viene del buscador de animales: se valida sin su campo animalId.
+    const chosen: HabitatImage = habitatImageSchema.parse({
+      ...Object.fromEntries(Object.entries(candidate.image).filter(([key]) => key !== 'animalId')),
+      habitat,
+      focalPoint: { x: 0.5, y: 0.5 },
+      status: 'proposed',
+    });
+    writeJson(HABITATS_FILE, habitatImageSchema.array().parse([...current, chosen]));
+    log(`${habitat}: elegida ${candidate.image.sourceId}`);
     break;
   }
 
