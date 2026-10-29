@@ -20,7 +20,7 @@
 | 8 · Servidor y 1 vs 1 online | ✅ Cerrada | [`apps/server`](apps/server/src) · [`packages/protocol`](packages/protocol/src) · [`docs/API.md`](docs/API.md) · [`docs/DATABASE.md`](docs/DATABASE.md) |
 | 8b · Despliegue (Vercel + Render) | ✅ En línea | **https://atacknimal.vercel.app** · [`docs/DEPLOY.md`](docs/DEPLOY.md) |
 | 9 · 2 vs 2 | ✅ Cerrada | Salas de 4, marcadores entre compañeros · [`docs/API.md`](docs/API.md) §4.3–4.4 |
-| 10 · Enlace y QR | ✅ Código listo · falta escanear con un celular real | QR y Compartir en la sala · decisión #038 |
+| 10 · Enlace y QR | ✅ Cerrada (probada con un celular real) | QR y Compartir en la sala · decisión #038 |
 | 11 · QA | ⏳ Siguiente | — |
 
 Hoja de ruta completa: [`docs/ROADMAP.md`](docs/ROADMAP.md).
