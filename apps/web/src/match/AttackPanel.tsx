@@ -9,13 +9,16 @@ import {
   type PlayerView,
 } from '@atacknimal/engine';
 import { Lock } from 'lucide-react';
-import { useState } from 'react';
+import { useState, type CSSProperties } from 'react';
 import { HabitatTile } from '../components/HabitatTile.tsx';
 import { findEntry } from '../content/catalog.ts';
-import { photoSet } from '../content/photo.ts';
 import { useMatch } from '../game/matchStore.ts';
 import { ATTRIBUTE } from '../i18n/es.ts';
+import { CardChoice } from './CardChoice.tsx';
 import styles from './Match.module.css';
+
+/** Valor que llena del todo la barra de un atributo (los valores efectivos rondan 20–115). */
+const VALUE_SCALE = 120;
 
 /**
  * Declaración del ataque en tres pasos: hábitat → carta → atributo.
@@ -92,27 +95,19 @@ export function AttackPanel({ view }: { view: PlayerView }) {
           {myCards.map((card) => {
             const entry = findEntry(card.animalId);
             return (
-              <button
+              <CardChoice
                 key={card.id}
-                type="button"
-                className={styles.cardChoice}
-                aria-pressed={cardId === card.id}
-                aria-label={`${entry?.name ?? 'Carta'}, vitalidad ${String(card.hp)} de ${String(card.maxHp)}`}
+                entry={entry}
+                card={card}
+                pressed={cardId === card.id}
                 disabled={!isLegal(habitat, card.id, null)}
-                onClick={() => {
+                label={`${entry?.name ?? 'Carta'}, vitalidad ${String(card.hp)} de ${String(card.maxHp)}`}
+                onSelect={() => {
                   setCardId(card.id);
                   if (attribute !== null && !isLegal(habitat, card.id, attribute))
                     setAttribute(null);
                 }}
-              >
-                {entry?.image !== undefined && (
-                  <img {...photoSet(entry.image, '(min-width: 720px) 160px, 25vw')} alt="" />
-                )}
-                <span>{entry?.name}</span>
-                <span className="mono">
-                  {card.hp}/{card.maxHp}
-                </span>
-              </button>
+              />
             );
           })}
         </div>
@@ -131,6 +126,11 @@ export function AttackPanel({ view }: { view: PlayerView }) {
                 key={at}
                 type="button"
                 className={styles.attribute}
+                style={
+                  {
+                    '--fill': `${String(Math.min(100, ((value ?? 0) / VALUE_SCALE) * 100))}%`,
+                  } as CSSProperties
+                }
                 aria-pressed={attribute === at}
                 aria-label={`${ATTRIBUTE[at].label}${!allowed && cardId !== null ? ', bloqueado' : value === null ? '' : ` ${String(value)}`}`}
                 disabled={!allowed}

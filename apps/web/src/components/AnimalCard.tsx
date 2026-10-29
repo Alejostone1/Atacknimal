@@ -2,6 +2,7 @@ import { Link } from 'react-router';
 import { peaks, type AnimalEntry } from '../content/catalog.ts';
 import { ATTRIBUTE } from '../i18n/es.ts';
 import { cx } from '../ui/cx.ts';
+import { tiltHandlers } from '../ui/tilt.ts';
 import { AnimalPhoto } from './AnimalPhoto.tsx';
 import { ClawMark } from './Brand.tsx';
 import { HabitatDots } from './Habitats.tsx';
@@ -19,19 +20,37 @@ interface AnimalCardProps {
   blocked?: boolean;
 }
 
+/**
+ * Carta de animal al estilo de un juego de cartas: foto vertical a sangre con el nombre encima,
+ * picos y afinidades debajo. Se inclina bajo el ratón; al elegirla se eleva y recibe el zarpazo.
+ */
 export function AnimalCard({ entry, to, onToggle, slot, blocked = false }: AnimalCardProps) {
+  const chosen = slot !== undefined;
   const body = (
     <>
-      <AnimalPhoto entry={entry} />
-      {slot !== undefined && (
-        <span className={styles.slot} aria-hidden="true">
-          <ClawMark className={styles.claw} />
-          <span className="mono">{slot}</span>
-        </span>
-      )}
+      <div className={styles.art}>
+        <AnimalPhoto
+          entry={entry}
+          className={styles.photo}
+          sizes="(min-width: 720px) 360px, 75vw"
+        />
+        <span className={styles.shine} aria-hidden="true" />
+        <div className={styles.title}>
+          <h3 className={styles.name}>{entry.name}</h3>
+          <p className={cx('binomial', styles.binomial)}>{entry.scientificName}</p>
+        </div>
+        {chosen && (
+          <>
+            <span className={styles.slash} aria-hidden="true">
+              <ClawMark />
+            </span>
+            <span className={styles.slot} aria-hidden="true">
+              <span className="mono">{slot}</span>
+            </span>
+          </>
+        )}
+      </div>
       <div className={styles.info}>
-        <h3 className={styles.name}>{entry.name}</h3>
-        <p className={cx('binomial', styles.binomial)}>{entry.scientificName}</p>
         <ul className={styles.peaks} aria-label="Atributos pico">
           {peaks(entry.profile).map((attribute) => {
             const Icon = ATTRIBUTE[attribute].icon;
@@ -49,28 +68,25 @@ export function AnimalCard({ entry, to, onToggle, slot, blocked = false }: Anima
     </>
   );
 
-  const className = cx(
-    styles.card,
-    slot !== undefined && styles.selected,
-    blocked && styles.blocked,
-  );
+  const className = cx(styles.card, chosen && styles.selected, blocked && styles.blocked);
 
   if (onToggle !== undefined) {
     return (
       <button
         type="button"
         className={className}
-        aria-pressed={slot !== undefined}
+        aria-pressed={chosen}
         aria-disabled={blocked}
-        aria-label={`${entry.name}${slot !== undefined ? `, en tu equipo (puesto ${String(slot)})` : ''}`}
+        aria-label={`${entry.name}${chosen ? `, en tu equipo (puesto ${String(slot)})` : ''}`}
         onClick={blocked ? undefined : onToggle}
+        {...tiltHandlers}
       >
         {body}
       </button>
     );
   }
   return (
-    <Link to={to ?? `/coleccion/${entry.id}`} className={className}>
+    <Link to={to ?? `/coleccion/${entry.id}`} className={className} {...tiltHandlers}>
       {body}
     </Link>
   );

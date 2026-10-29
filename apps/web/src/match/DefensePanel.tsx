@@ -1,10 +1,12 @@
 import { computeValue, getDefenseOptions, type PlayerView } from '@atacknimal/engine';
 import { ShieldAlert } from 'lucide-react';
 import { useState } from 'react';
+import { getHabitatImage } from '@atacknimal/content';
 import { findEntry } from '../content/catalog.ts';
 import { photoSet } from '../content/photo.ts';
 import { useMatch } from '../game/matchStore.ts';
 import { ATTRIBUTE, HABITAT } from '../i18n/es.ts';
+import { CardChoice } from './CardChoice.tsx';
 import styles from './Match.module.css';
 
 /** Defensa: el jugador conoce hábitat y atributo, nunca la carta atacante (GAME_RULES §4). */
@@ -15,6 +17,7 @@ export function DefensePanel({ view }: { view: PlayerView }) {
   if (declaration === null) return null;
 
   const { habitat, attribute } = declaration;
+  const habitatImage = getHabitatImage(habitat);
   const options = getDefenseOptions(view, view.viewerId, attribute);
   const valueOf = (id: string): number => {
     const card = view.cards[id];
@@ -27,10 +30,19 @@ export function DefensePanel({ view }: { view: PlayerView }) {
 
   return (
     <div className={styles.panel}>
-      <p className={styles.panelTitle}>Te atacan</p>
-      <p className={styles.declared}>
-        {HABITAT[habitat].label} · {ATTRIBUTE[attribute].label}
-      </p>
+      <div className={styles.declaredBanner}>
+        {habitatImage !== undefined && (
+          <img
+            {...photoSet(habitatImage, '(min-width: 720px) 640px, 100vw')}
+            alt=""
+            className={styles.bannerPhoto}
+          />
+        )}
+        <p className={styles.panelTitle}>Te atacan</p>
+        <p className={styles.declared}>
+          {HABITAT[habitat].label} · {ATTRIBUTE[attribute].label}
+        </p>
+      </div>
       <p className={styles.panelHint}>No sabes con qué animal. Elige quién defiende.</p>
       {options.forced && (
         <p className={styles.forced} role="alert">
@@ -45,27 +57,19 @@ export function DefensePanel({ view }: { view: PlayerView }) {
           const card = view.cards[id];
           const entry = findEntry(card?.animalId);
           return (
-            <button
-              key={id}
-              type="button"
-              className={styles.cardChoice}
-              aria-pressed={cardId === id}
-              aria-label={`${entry?.name ?? 'Carta'}: ${ATTRIBUTE[attribute].label} ${String(valueOf(id))}, vitalidad ${String(card?.hp ?? 0)} de ${String(card?.maxHp ?? 0)}`}
-              onClick={() => {
-                setCardId(id);
-              }}
-            >
-              {entry?.image !== undefined && (
-                <img {...photoSet(entry.image, '(min-width: 720px) 160px, 25vw')} alt="" />
-              )}
-              <span>{entry?.name}</span>
-              <span className="mono">
-                {ATTRIBUTE[attribute].label} {valueOf(id)}
-              </span>
-              <span className="mono">
-                {card?.hp}/{card?.maxHp}
-              </span>
-            </button>
+            card !== undefined && (
+              <CardChoice
+                key={id}
+                entry={entry}
+                card={card}
+                pressed={cardId === id}
+                detail={`${ATTRIBUTE[attribute].label} ${String(valueOf(id))}`}
+                label={`${entry?.name ?? 'Carta'}: ${ATTRIBUTE[attribute].label} ${String(valueOf(id))}, vitalidad ${String(card.hp)} de ${String(card.maxHp)}`}
+                onSelect={() => {
+                  setCardId(id);
+                }}
+              />
+            )
           );
         })}
       </div>

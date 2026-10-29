@@ -11,9 +11,15 @@
   position: relative;
   aspect-ratio: 3 / 4;
   overflow: hidden;
-  border: 2px solid var(--c-slash);
+  border: 2px solid var(--c-amber);
   border-radius: var(--radius);
   background: var(--c-moss);
+  box-shadow: 0 6px 16px rgb(0 0 0 / 35%);
+}
+
+/* Un animal recién elegido entra con un pequeño rebote. */
+.filled {
+  animation: slot-in 360ms cubic-bezier(0.3, 1.5, 0.5, 1) both;
 }
 
 .empty {
@@ -22,6 +28,33 @@
   border: 2px dashed var(--c-moss-hi);
   color: var(--c-moss-hi);
   font-size: 22px;
+  box-shadow: none;
+}
+
+/* El siguiente puesto libre late suavemente: ahí irá el próximo animal. */
+.next {
+  border-color: var(--c-lichen);
+  color: var(--c-lichen);
+  animation: next-pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes slot-in {
+  from {
+    transform: scale(0.6) translateY(12px);
+    opacity: 0;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+
+@keyframes next-pulse {
+  50% {
+    border-color: var(--c-amber);
+    color: var(--c-amber);
+    background: color-mix(in srgb, var(--c-amber) 8%, transparent);
+  }
 }
 
 .slot .photo {

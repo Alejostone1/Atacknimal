@@ -1,4 +1,9 @@
+/*
+ * Carta de animal. La inclinación (--rx, --ry) y el brillo (--mx, --my) los escribe
+ * ui/tilt.ts bajo el ratón; sin ratón valen 0 y la carta queda plana.
+ */
 .card {
+  --lift: 0px;
   position: relative;
   display: flex;
   flex-direction: column;
@@ -6,58 +11,114 @@
   padding: 0;
   overflow: hidden;
   border: 2px solid var(--c-moss-hi);
-  border-radius: var(--radius);
+  border-radius: calc(var(--radius) + 4px);
   background: var(--c-moss);
   color: inherit;
   text-align: left;
   text-decoration: none;
   cursor: pointer;
+  transform: perspective(800px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg))
+    translateY(var(--lift));
+  transform-style: preserve-3d;
   transition:
-    transform 180ms var(--ease),
-    border-color 180ms var(--ease),
-    opacity 180ms var(--ease);
+    transform 220ms var(--ease),
+    border-color 200ms var(--ease),
+    box-shadow 220ms var(--ease),
+    opacity 200ms var(--ease),
+    filter 200ms var(--ease);
+  will-change: transform;
 }
 
-.card:hover {
-  border-color: var(--c-lichen);
-  transform: translateY(-2px);
+@media (hover: hover) {
+  .card:hover {
+    --lift: -4px;
+    border-color: var(--c-lichen);
+    box-shadow: 0 12px 28px rgb(0 0 0 / 45%);
+    /* Al seguir al ratón la inclinación debe ser inmediata, no animada. */
+    transition:
+      transform 60ms linear,
+      border-color 200ms var(--ease),
+      box-shadow 220ms var(--ease);
+  }
 }
 
-.selected,
-.selected:hover {
-  border-color: var(--c-slash);
+.card:active:not(.blocked) {
+  --lift: 1px;
+  transform: perspective(800px) scale(0.97);
 }
 
-.blocked {
-  opacity: 0.4;
-  cursor: not-allowed;
+/* ---------- Ilustración: foto vertical a sangre ---------- */
+
+.art {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
 }
 
-.blocked:hover {
-  border-color: var(--c-moss-hi);
-  transform: none;
+.art .photo {
+  position: absolute;
+  inset: 0;
+  aspect-ratio: auto;
+  transition: transform 500ms var(--ease);
 }
+
+.card:hover .photo,
+.selected .photo {
+  transform: scale(1.06);
+}
+
+.title {
+  position: absolute;
+  inset: auto 0 0;
+  padding: var(--s-6) var(--s-3) var(--s-2);
+  background: linear-gradient(to top, rgb(14 20 17 / 95%) 15%, rgb(14 20 17 / 0%));
+}
+
+.name {
+  font-size: clamp(20px, 5.5vw, 26px);
+  line-height: 0.95;
+  text-shadow: 0 2px 8px rgb(0 0 0 / 60%);
+}
+
+.binomial {
+  margin-top: 2px;
+  font-size: 12px;
+  line-height: 1.2;
+  opacity: 0.85;
+}
+
+/* Brillo que sigue al ratón (efecto de carta plastificada). */
+.shine {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(
+    circle at var(--mx, 50%) var(--my, 50%),
+    rgb(255 255 255 / 22%),
+    transparent 55%
+  );
+  mix-blend-mode: soft-light;
+  transition: opacity 200ms var(--ease);
+}
+
+.card:hover .shine {
+  opacity: 1;
+}
+
+/* ---------- Pie: picos y afinidades ---------- */
 
 .info {
   display: grid;
   gap: 6px;
-  padding: var(--s-3);
-}
-
-.name {
-  font-size: 24px;
-}
-
-.binomial {
-  font-size: 13px;
-  line-height: 1.2;
+  padding: var(--s-2) var(--s-3) var(--s-3);
 }
 
 .peaks {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
-  margin: 2px 0 4px;
+  margin: 0;
   padding: 0;
   list-style: none;
 }
@@ -73,31 +134,80 @@
   font-size: 13px;
 }
 
-/* El zarpazo marca la carta elegida y su puesto en el equipo */
+/* ---------- Elegida: se eleva, brilla y recibe el zarpazo ---------- */
+
+.selected,
+.selected:hover {
+  --lift: -6px;
+  border-color: var(--c-amber);
+  box-shadow:
+    0 0 0 3px rgb(232 163 61 / 28%),
+    0 14px 30px rgb(0 0 0 / 50%);
+}
+
+.slash {
+  position: absolute;
+  inset: 12% 10% 30%;
+  pointer-events: none;
+  animation: slash 420ms var(--ease) both;
+}
+
+.slash svg {
+  width: 100%;
+  height: 100%;
+  fill: var(--c-slash);
+  opacity: 0.4;
+  filter: drop-shadow(0 2px 6px rgb(0 0 0 / 50%));
+}
+
 .slot {
   position: absolute;
   top: var(--s-2);
   right: var(--s-2);
   display: grid;
   place-items: center;
-  width: 44px;
-  height: 44px;
+  width: 40px;
+  height: 40px;
+  border: 2px solid var(--c-night);
   border-radius: 50%;
-  background: var(--c-night);
+  background: var(--c-amber);
+  color: var(--c-amber-ink);
   font-size: 18px;
-  font-weight: 500;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgb(0 0 0 / 45%);
+  animation: badge 380ms cubic-bezier(0.3, 1.6, 0.5, 1) both;
 }
 
-.slot > span {
-  position: relative;
-  text-shadow: 0 1px 3px var(--c-night);
+/* ---------- Bloqueada: el equipo ya está completo ---------- */
+
+.blocked {
+  opacity: 0.45;
+  filter: grayscale(0.8);
+  cursor: not-allowed;
 }
 
-.claw {
-  position: absolute;
-  inset: 6px 8px;
-  width: auto;
-  height: auto;
-  fill: var(--c-slash);
-  opacity: 0.6;
+.blocked:hover {
+  --lift: 0px;
+  border-color: var(--c-moss-hi);
+  box-shadow: none;
+}
+
+@keyframes slash {
+  from {
+    clip-path: inset(0 100% 100% 0);
+    opacity: 1;
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+    opacity: 1;
+  }
+}
+
+@keyframes badge {
+  from {
+    transform: scale(0) rotate(-30deg);
+  }
+  to {
+    transform: scale(1) rotate(0);
+  }
 }

@@ -184,3 +184,11 @@ El usuario pidió una mejora completa de diseño, animación, efectos, selecció
 - **Orden:** primero lo visual y después los animales. Cada bloque se publica al terminarlo.
 
 **Causa de las fotos borrosas en el celular (diagnóstico):** la escena de combate se dibujaba a 1 píxel por píxel CSS (los celulares tienen 2–3) y las cartas usaban siempre la miniatura de 500 px recortada a formato vertical.
+
+### #040 Bloque 2: cartas y selección sin librerías de animación
+
+- **Animaciones con CSS y funciones nativas**, sin añadir dependencias (se descartó Framer Motion): transiciones, `@keyframes` y variables CSS. Todas respetan "reducir movimiento" (ajuste de la app o del sistema).
+- **Carta de animal** al estilo de un juego de cartas: foto vertical a sangre, nombre encima, picos y afinidades en el pie. Bajo el ratón se inclina en 3D con un brillo que lo sigue (`ui/tilt.ts` escribe variables CSS sin volver a renderizar React); en pantallas táctiles responde a la pulsación. Al elegirla se eleva, recibe el zarpazo y el número de puesto.
+- **Ranuras del equipo:** el animal entra con un rebote y el siguiente hueco libre late.
+- **Ataque y defensa:** cartas con foto, valor y barra de vida (`CardChoice`); los atributos muestran una barra proporcional al valor de tu carta en el hábitat elegido; la defensa muestra la foto del hábitat donde te atacan.
+- **Transición entre pantallas:** fundido y deslizamiento al entrar. Se descartó la opción `viewTransition` de React Router 8 porque está marcada como obsoleta.

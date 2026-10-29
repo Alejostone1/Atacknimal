@@ -19,13 +19,16 @@ export function TeamSlots({ team, size, onRemove }: TeamSlotsProps) {
         const entry = findEntry(team[index]);
         if (entry === undefined) {
           return (
-            <li key={`empty-${String(index)}`} className={cx(styles.slot, styles.empty)}>
+            <li
+              key={`empty-${String(index)}`}
+              className={cx(styles.slot, styles.empty, index === team.length && styles.next)}
+            >
               <span className="mono">{index + 1}</span>
             </li>
           );
         }
         return (
-          <li key={entry.id} className={styles.slot}>
+          <li key={entry.id} className={cx(styles.slot, styles.filled)}>
             <AnimalPhoto
               entry={entry}
               className={styles.photo}
