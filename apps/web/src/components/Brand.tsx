@@ -1,3 +1,4 @@
+import { m } from 'motion/react';
 import { cx } from '../ui/cx.ts';
 import styles from './Brand.module.css';
 
@@ -20,6 +21,48 @@ export function Wordmark({ size = 'md' }: { size?: 'md' | 'xl' }) {
         NIMAL
         <ClawMark className={styles.claw} />
       </span>
+    </span>
+  );
+}
+
+/**
+ * Logotipo de la portada: "ATACK" entra por la izquierda, "NIMAL" por la derecha y el zarpazo
+ * se dibuja de arriba abajo con un destello. Con "reducir movimiento" aparece directamente.
+ */
+export function AnimatedWordmark() {
+  return (
+    <span className={cx(styles.wordmark, styles.xl)} role="img" aria-label="ATACKNIMAL">
+      <m.span
+        aria-hidden="true"
+        initial={{ x: -80, opacity: 0 }}
+        animate={{ x: 0, opacity: 1 }}
+        transition={{ type: 'spring', stiffness: 220, damping: 18, delay: 0.1 }}
+      >
+        ATACK
+      </m.span>
+      <m.span
+        className={styles.nimal}
+        aria-hidden="true"
+        initial={{ x: 80, opacity: 0 }}
+        animate={{ x: 0, opacity: 1 }}
+        transition={{ type: 'spring', stiffness: 220, damping: 18, delay: 0.25 }}
+      >
+        NIMAL
+        <m.span
+          className={styles.clawWrap}
+          initial={{ clipPath: 'inset(0 0 100% 0)' }}
+          animate={{ clipPath: 'inset(0 0 0% 0)' }}
+          transition={{ duration: 0.28, ease: 'easeOut', delay: 0.75 }}
+        >
+          <ClawMark className={styles.claw} />
+        </m.span>
+        <m.span
+          className={styles.flash}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: [0, 0.9, 0] }}
+          transition={{ duration: 0.5, delay: 0.9 }}
+        />
+      </m.span>
     </span>
   );
 }

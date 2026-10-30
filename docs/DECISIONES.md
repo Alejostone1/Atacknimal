@@ -213,3 +213,14 @@ Con "reducir movimiento" (o al redimensionar) se dibuja directamente el estado f
 - **Ventaja defensiva +6** (era +5): con 20 animales la ventaja del primer jugador subió a ~55 %; +6 la baja a ~54 %. Subir a +7 no aportó nada más.
 - **Ajustes tras simular:** Halcón (demasiado fuerte: sin hábitat hostil y velocidad 100 imbatible en Aire → Agua hostil, Árboles neutral, velocidad 96), León (débil → más agilidad, velocidad y percepción, Agua neutral) y Oso polar (débil → nativo del Agua, como mamífero marino).
 - **Fotos** elegidas a mano entre las candidatas del curador (ASSETS §9), en estado `proposed` hasta la aprobación del usuario.
+
+## Fase 10c · Juego más vivo y más estratégico (2026-10-30)
+
+### ✅ #043 Peticiones del usuario y decisiones
+
+El usuario pidió: una portada que parezca un juego, con más movimiento y la firma "by alejostone"; una sala con QR mejor centrada y animada; efectos más elaborados en cartas, salas y partidas; al menos 6 animales por hábitat; y animales **especializados** ("fuertes en algo, como una ardilla en percepción y agilidad"), porque un juego donde todo está igualado pierde interés.
+
+- **Animales:** mínimo 6 por hábitat → 26 en total. Nuevos de Aire: Murciélago, Cóndor andino y Colibrí; de Árboles: Ardilla, Orangután y Perezoso. No se quita ninguno.
+- **Estrategia:** especialistas marcados. Cada animal con 2 picos de 95–100 y valles profundos (10–25), con la misma suma total para que sigan siendo justos; el hábitat pesa más (nativo +15, hostil −15). La justicia se sigue midiendo con simulación (victorias por animal), no igualando atributos.
+- **Animación:** Motion (antes Framer Motion, MIT, v14.3.0) para la interfaz React; Phaser para el combate. Se descartaron GSAP (más pesado y menos integrado con React) y tsParticles (carga extra en celulares modestos).
+- **Orden:** A) portada, B) sala y QR, C) efectos en cartas y partidas, D) animales y balance 0.4.0. Cada bloque se publica al terminarlo.

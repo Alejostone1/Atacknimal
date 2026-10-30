@@ -1,3 +1,4 @@
+import { domAnimation, LazyMotion, MotionConfig } from 'motion/react';
 import { lazy, Suspense, useEffect, type ReactNode } from 'react';
 import { createBrowserRouter, Outlet, RouterProvider, ScrollRestoration } from 'react-router';
 import { AnimalScreen } from '../screens/AnimalScreen.tsx';
@@ -41,11 +42,16 @@ function Root() {
       });
     }
   }, []);
+  // Motion (decisión #043) en su versión ligera; respeta el ajuste de la app o el del sistema.
   return (
-    <>
-      <ScrollRestoration />
-      <Outlet />
-    </>
+    <LazyMotion features={domAnimation} strict>
+      <MotionConfig
+        reducedMotion={motion === 'reduce' ? 'always' : motion === 'full' ? 'never' : 'user'}
+      >
+        <ScrollRestoration />
+        <Outlet />
+      </MotionConfig>
+    </LazyMotion>
   );
 }
 
