@@ -16,9 +16,9 @@ import {
 } from './index.ts';
 
 describe('animales', () => {
-  it('hay 20 animales: los 11 del documento maestro y los 9 de la Fase 10b', () => {
-    expect(ANIMALS).toHaveLength(20);
-    expect(new Set(ANIMALS.map((a) => a.id)).size).toBe(20);
+  it('hay 26 animales: 11 del documento maestro, 9 de la Fase 10b y 6 de la Fase 10c', () => {
+    expect(ANIMALS).toHaveLength(26);
+    expect(new Set(ANIMALS.map((a) => a.id)).size).toBe(26);
   });
 
   it('busca por id y falla con ids desconocidos', () => {
@@ -108,12 +108,23 @@ describe('validación de presupuesto', () => {
       ...base,
       stats: Object.fromEntries(ATTRIBUTES.map((a) => [a, 70])) as typeof base.stats,
     };
-    expect(checkProfileBudget(flat, set.budget)).toEqual(['0 picos (≥ 88)', '0 valles (≤ 50)']);
+    const { peak, valley } = set.budget;
+    expect(checkProfileBudget(flat, set.budget)).toEqual([
+      ...(70 * ATTRIBUTES.length < set.budget.sum.min || 70 * ATTRIBUTES.length > set.budget.sum.max
+        ? [
+            `suma ${String(70 * ATTRIBUTES.length)} fuera de ${String(set.budget.sum.min)}–${String(set.budget.sum.max)}`,
+          ]
+        : []),
+      `0 picos (≥ ${String(peak)})`,
+      `0 valles (≤ ${String(valley)})`,
+    ]);
   });
 
   it('detecta atributos sin cobertura', () => {
     const noSpeed = set.roster.map((p) => ({ ...p, stats: { ...p.stats, speed: 60 } }));
-    expect(checkRosterCoverage(noSpeed, set.budget)).toContain('speed: 0 especialistas (≥ 85)');
+    expect(checkRosterCoverage(noSpeed, set.budget)).toContain(
+      `speed: 0 especialistas (≥ ${String(set.budget.specialist)})`,
+    );
   });
 
   it('falla con versiones desconocidas', () => {

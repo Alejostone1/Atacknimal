@@ -8,7 +8,7 @@
       "value": "VU",
       "source": "https://www.wikidata.org/wiki/Q23907"
     },
-    "retrievedAt": "2026-10-29"
+    "retrievedAt": "2026-10-30"
   },
   {
     "animalId": "golden-eagle",
@@ -19,7 +19,7 @@
       "value": "LC",
       "source": "https://www.wikidata.org/wiki/Q41181"
     },
-    "retrievedAt": "2026-10-29"
+    "retrievedAt": "2026-10-30"
   },
   {
     "animalId": "brown-bear",
@@ -30,7 +30,7 @@
       "value": "LC",
       "source": "https://www.wikidata.org/wiki/Q36341"
     },
-    "retrievedAt": "2026-10-29"
+    "retrievedAt": "2026-10-30"
   },
   {
     "animalId": "great-white-shark",
@@ -41,7 +41,7 @@
       "value": "VU",
       "source": "https://www.wikidata.org/wiki/Q129026"
     },
-    "retrievedAt": "2026-10-29"
+    "retrievedAt": "2026-10-30"
   },
   {
     "animalId": "wolf",
@@ -52,7 +52,7 @@
       "value": "LC",
       "source": "https://www.wikidata.org/wiki/Q18498"
     },
-    "retrievedAt": "2026-10-29"
+    "retrievedAt": "2026-10-30"
   },
   {
     "animalId": "elephant",
@@ -63,7 +63,7 @@
       "value": "EN",
       "source": "https://www.wikidata.org/wiki/Q36557"
     },
-    "retrievedAt": "2026-10-29"
+    "retrievedAt": "2026-10-30"
   },
   {
     "animalId": "rhinoceros",
@@ -74,7 +74,7 @@
       "value": "NT",
       "source": "https://www.wikidata.org/wiki/Q159918"
     },
-    "retrievedAt": "2026-10-29"
+    "retrievedAt": "2026-10-30"
   },
   {
     "animalId": "crocodile",
@@ -85,7 +85,7 @@
       "value": "LC",
       "source": "https://www.wikidata.org/wiki/Q168745"
     },
-    "retrievedAt": "2026-10-29"
+    "retrievedAt": "2026-10-30"
   },
   {
     "animalId": "tiger",
@@ -96,7 +96,7 @@
       "value": "EN",
       "source": "https://www.wikidata.org/wiki/Q19939"
     },
-    "retrievedAt": "2026-10-29"
+    "retrievedAt": "2026-10-30"
   },
   {
     "animalId": "penguin",
@@ -107,7 +107,7 @@
       "value": "NT",
       "source": "https://www.wikidata.org/wiki/Q161829"
     },
-    "retrievedAt": "2026-10-29"
+    "retrievedAt": "2026-10-30"
   },
   {
     "animalId": "blue-whale",
@@ -118,7 +118,7 @@
       "value": "EN",
       "source": "https://www.wikidata.org/wiki/Q42196"
     },
-    "retrievedAt": "2026-10-29"
+    "retrievedAt": "2026-10-30"
   },
   {
     "animalId": "lion",
@@ -129,7 +129,7 @@
       "value": "VU",
       "source": "https://www.wikidata.org/wiki/Q140"
     },
-    "retrievedAt": "2026-10-29"
+    "retrievedAt": "2026-10-30"
   },
   {
     "animalId": "gorilla",
@@ -140,7 +140,7 @@
       "value": "CR",
       "source": "https://www.wikidata.org/wiki/Q737838"
     },
-    "retrievedAt": "2026-10-29"
+    "retrievedAt": "2026-10-30"
   },
   {
     "animalId": "jaguar",
@@ -151,7 +151,7 @@
       "value": "NT",
       "source": "https://www.wikidata.org/wiki/Q35694"
     },
-    "retrievedAt": "2026-10-29"
+    "retrievedAt": "2026-10-30"
   },
   {
     "animalId": "orca",
@@ -162,7 +162,7 @@
       "value": "DD",
       "source": "https://www.wikidata.org/wiki/Q26843"
     },
-    "retrievedAt": "2026-10-29"
+    "retrievedAt": "2026-10-30"
   },
   {
     "animalId": "peregrine-falcon",
@@ -173,7 +173,7 @@
       "value": "LC",
       "source": "https://www.wikidata.org/wiki/Q30535"
     },
-    "retrievedAt": "2026-10-29"
+    "retrievedAt": "2026-10-30"
   },
   {
     "animalId": "hippopotamus",
@@ -184,7 +184,7 @@
       "value": "VU",
       "source": "https://www.wikidata.org/wiki/Q34505"
     },
-    "retrievedAt": "2026-10-29"
+    "retrievedAt": "2026-10-30"
   },
   {
     "animalId": "python",
@@ -195,7 +195,7 @@
       "value": "LC",
       "source": "https://www.wikidata.org/wiki/Q216136"
     },
-    "retrievedAt": "2026-10-29"
+    "retrievedAt": "2026-10-30"
   },
   {
     "animalId": "polar-bear",
@@ -206,7 +206,7 @@
       "value": "VU",
       "source": "https://www.wikidata.org/wiki/Q33609"
     },
-    "retrievedAt": "2026-10-29"
+    "retrievedAt": "2026-10-30"
   },
   {
     "animalId": "eagle-owl",
@@ -217,6 +217,71 @@
       "value": "LC",
       "source": "https://www.wikidata.org/wiki/Q130933"
     },
-    "retrievedAt": "2026-10-29"
+    "retrievedAt": "2026-10-30"
+  },
+  {
+    "animalId": "flying-fox",
+    "wikidataId": "Q285810",
+    "wikidataUrl": "https://www.wikidata.org/wiki/Q285810",
+    "conservationStatus": {
+      "value": "LC",
+      "source": "https://www.wikidata.org/wiki/Q285810"
+    },
+    "retrievedAt": "2026-10-30"
+  },
+  {
+    "animalId": "andean-condor",
+    "wikidataId": "Q170598",
+    "wikidataUrl": "https://www.wikidata.org/wiki/Q170598",
+    "wikipediaUrl": "https://es.wikipedia.org/wiki/Vultur_gryphus",
+    "conservationStatus": {
+      "value": "VU",
+      "source": "https://www.wikidata.org/wiki/Q170598"
+    },
+    "retrievedAt": "2026-10-30"
+  },
+  {
+    "animalId": "hummingbird",
+    "wikidataId": "Q564265",
+    "wikidataUrl": "https://www.wikidata.org/wiki/Q564265",
+    "wikipediaUrl": "https://es.wikipedia.org/wiki/Calypte_anna",
+    "conservationStatus": {
+      "value": "LC",
+      "source": "https://www.wikidata.org/wiki/Q564265"
+    },
+    "retrievedAt": "2026-10-30"
+  },
+  {
+    "animalId": "red-squirrel",
+    "wikidataId": "Q4388",
+    "wikidataUrl": "https://www.wikidata.org/wiki/Q4388",
+    "wikipediaUrl": "https://es.wikipedia.org/wiki/Sciurus_vulgaris",
+    "conservationStatus": {
+      "value": "LC",
+      "source": "https://www.wikidata.org/wiki/Q4388"
+    },
+    "retrievedAt": "2026-10-30"
+  },
+  {
+    "animalId": "orangutan",
+    "wikidataId": "Q599672",
+    "wikidataUrl": "https://www.wikidata.org/wiki/Q599672",
+    "wikipediaUrl": "https://es.wikipedia.org/wiki/Pongo_pygmaeus",
+    "conservationStatus": {
+      "value": "CR",
+      "source": "https://www.wikidata.org/wiki/Q599672"
+    },
+    "retrievedAt": "2026-10-30"
+  },
+  {
+    "animalId": "sloth",
+    "wikidataId": "Q148752",
+    "wikidataUrl": "https://www.wikidata.org/wiki/Q148752",
+    "wikipediaUrl": "https://es.wikipedia.org/wiki/Bradypus_variegatus",
+    "conservationStatus": {
+      "value": "LC",
+      "source": "https://www.wikidata.org/wiki/Q148752"
+    },
+    "retrievedAt": "2026-10-30"
   }
 ]

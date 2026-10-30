@@ -11,8 +11,8 @@ import {
 } from './catalog.ts';
 
 describe('catálogo de la interfaz', () => {
-  it('muestra los 20 animales con perfil de la versión de balance vigente y foto', () => {
-    expect(CATALOG).toHaveLength(20);
+  it('muestra los 26 animales con perfil de la versión de balance vigente y foto', () => {
+    expect(CATALOG).toHaveLength(26);
     for (const entry of CATALOG) {
       expect(entry.profile).toBe(BALANCE.roster.find((p) => p.id === entry.id));
       // "proposed": elegida y revisada en la curación, pendiente de la aprobación del usuario.

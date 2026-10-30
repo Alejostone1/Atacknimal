@@ -457,5 +457,143 @@
     },
     "retrievedAt": "2026-10-29",
     "status": "proposed"
+  },
+  {
+    "animalId": "flying-fox",
+    "provider": "wikimedia-commons",
+    "sourceId": "File:046 Indian flying fox in Keoladeo National Park Photo by Giles Laurent.jpg",
+    "title": "046 Indian flying fox in Keoladeo National Park Photo by Giles Laurent",
+    "imageUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b1/046_Indian_flying_fox_in_Keoladeo_National_Park_Photo_by_Giles_Laurent.jpg/1280px-046_Indian_flying_fox_in_Keoladeo_National_Park_Photo_by_Giles_Laurent.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "thumbnailUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b1/046_Indian_flying_fox_in_Keoladeo_National_Park_Photo_by_Giles_Laurent.jpg/500px-046_Indian_flying_fox_in_Keoladeo_National_Park_Photo_by_Giles_Laurent.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "width": 7850,
+    "height": 5233,
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:046_Indian_flying_fox_in_Keoladeo_National_Park_Photo_by_Giles_Laurent.jpg",
+    "author": "Giles Laurent",
+    "authorUrl": "https://commons.wikimedia.org/wiki/User:Giles_Laurent",
+    "licenseId": "cc-by-sa",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "attribution": "Giles Laurent · CC BY-SA 4.0 · Wikimedia Commons",
+    "focalPoint": {
+      "x": 0.5,
+      "y": 0.4
+    },
+    "retrievedAt": "2026-10-30",
+    "status": "proposed"
+  },
+  {
+    "animalId": "andean-condor",
+    "provider": "wikimedia-commons",
+    "sourceId": "File:Andean condor (Vultur gryphus) at Colca Canyon.jpg",
+    "title": "Andean condor (Vultur gryphus) at Colca Canyon",
+    "imageUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0f/Andean_condor_%28Vultur_gryphus%29_at_Colca_Canyon.jpg/1280px-Andean_condor_%28Vultur_gryphus%29_at_Colca_Canyon.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "thumbnailUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0f/Andean_condor_%28Vultur_gryphus%29_at_Colca_Canyon.jpg/500px-Andean_condor_%28Vultur_gryphus%29_at_Colca_Canyon.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "width": 3976,
+    "height": 2651,
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Andean_condor_(Vultur_gryphus)_at_Colca_Canyon.jpg",
+    "author": "Thomas Fuhrmann",
+    "authorUrl": "https://commons.wikimedia.org/wiki/User:Snowmanstudios",
+    "licenseId": "cc-by-sa",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "attribution": "Thomas Fuhrmann · CC BY-SA 4.0 · Wikimedia Commons",
+    "focalPoint": {
+      "x": 0.5,
+      "y": 0.5
+    },
+    "retrievedAt": "2026-10-30",
+    "status": "proposed"
+  },
+  {
+    "animalId": "orangutan",
+    "provider": "wikimedia-commons",
+    "sourceId": "File:Orangutan Kalimantan.jpg",
+    "title": "Orangutan Kalimantan",
+    "imageUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ad/Orangutan_Kalimantan.jpg/1280px-Orangutan_Kalimantan.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "thumbnailUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ad/Orangutan_Kalimantan.jpg/500px-Orangutan_Kalimantan.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "width": 2400,
+    "height": 1590,
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Orangutan_Kalimantan.jpg",
+    "author": "Ridwan0810",
+    "authorUrl": "https://commons.wikimedia.org/w/index.php?title=User:Ridwan0810&amp;action=edit&amp;redlink=1",
+    "licenseId": "cc-by-sa",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "attribution": "Ridwan0810 · CC BY-SA 4.0 · Wikimedia Commons",
+    "focalPoint": {
+      "x": 0.35,
+      "y": 0.45
+    },
+    "retrievedAt": "2026-10-30",
+    "status": "proposed"
+  },
+  {
+    "animalId": "sloth",
+    "provider": "wikimedia-commons",
+    "sourceId": "File:Bradypus variegatus 423905618.jpg",
+    "title": "Bradypus variegatus 423905618",
+    "imageUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/6e/Bradypus_variegatus_423905618.jpg/1280px-Bradypus_variegatus_423905618.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "thumbnailUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/6e/Bradypus_variegatus_423905618.jpg/500px-Bradypus_variegatus_423905618.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "width": 2048,
+    "height": 1365,
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Bradypus_variegatus_423905618.jpg",
+    "author": "Anthony Batista",
+    "authorUrl": "https://www.inaturalist.org/users/4376205",
+    "licenseId": "cc-by",
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+    "attribution": "Anthony Batista · CC BY 4.0 · Wikimedia Commons",
+    "focalPoint": {
+      "x": 0.5,
+      "y": 0.5
+    },
+    "retrievedAt": "2026-10-30",
+    "status": "proposed"
+  },
+  {
+    "animalId": "red-squirrel",
+    "provider": "wikimedia-commons",
+    "sourceId": "File:Wiewiórka w Parku Bednarskiego w Krakowie, 20241117 0903 2741.jpg",
+    "title": "Wiewiórka w Parku Bednarskiego w Krakowie, 20241117 0903 2741",
+    "imageUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d2/Wiewi%C3%B3rka_w_Parku_Bednarskiego_w_Krakowie%2C_20241117_0903_2741.jpg/1280px-Wiewi%C3%B3rka_w_Parku_Bednarskiego_w_Krakowie%2C_20241117_0903_2741.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "thumbnailUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d2/Wiewi%C3%B3rka_w_Parku_Bednarskiego_w_Krakowie%2C_20241117_0903_2741.jpg/500px-Wiewi%C3%B3rka_w_Parku_Bednarskiego_w_Krakowie%2C_20241117_0903_2741.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "width": 4540,
+    "height": 3320,
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Wiewi%C3%B3rka_w_Parku_Bednarskiego_w_Krakowie,_20241117_0903_2741.jpg",
+    "author": "Jakub Hałun",
+    "authorUrl": "https://commons.wikimedia.org/wiki/User:Jakubhal",
+    "licenseId": "cc-by",
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+    "attribution": "Jakub Hałun · CC BY 4.0 · Wikimedia Commons",
+    "focalPoint": {
+      "x": 0.5,
+      "y": 0.5
+    },
+    "retrievedAt": "2026-10-30",
+    "status": "proposed"
+  },
+  {
+    "animalId": "hummingbird",
+    "provider": "inaturalist",
+    "sourceId": "447453303",
+    "title": "Calypte anna (iNaturalist 447453303)",
+    "imageUrl": "https://inaturalist-open-data.s3.amazonaws.com/photos/447453303/large.jpg",
+    "thumbnailUrl": "https://inaturalist-open-data.s3.amazonaws.com/photos/447453303/medium.jpg",
+    "width": 2026,
+    "height": 1351,
+    "sourceUrl": "https://www.inaturalist.org/photos/447453303",
+    "author": "William Walker",
+    "authorUrl": "https://www.inaturalist.org/people/decoyhedgehog",
+    "licenseId": "cc-by",
+    "license": "CC BY",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+    "attribution": "William Walker · CC BY · iNaturalist",
+    "focalPoint": {
+      "x": 0.5,
+      "y": 0.5
+    },
+    "retrievedAt": "2026-10-30",
+    "status": "proposed"
   }
 ]

@@ -118,5 +118,41 @@
     "name": "Búho real",
     "scientificName": "Bubo bubo",
     "role": "Cazador nocturno"
+  },
+  {
+    "id": "flying-fox",
+    "name": "Murciélago",
+    "scientificName": "Pteropus giganteus",
+    "role": "Zorro volador nocturno"
+  },
+  {
+    "id": "andean-condor",
+    "name": "Cóndor andino",
+    "scientificName": "Vultur gryphus",
+    "role": "Planeador de los Andes"
+  },
+  {
+    "id": "hummingbird",
+    "name": "Colibrí",
+    "scientificName": "Calypte anna",
+    "role": "Acróbata del aire"
+  },
+  {
+    "id": "red-squirrel",
+    "name": "Ardilla",
+    "scientificName": "Sciurus vulgaris",
+    "role": "Exploradora de las copas"
+  },
+  {
+    "id": "orangutan",
+    "name": "Orangután",
+    "scientificName": "Pongo pygmaeus",
+    "role": "Fuerza de la selva"
+  },
+  {
+    "id": "sloth",
+    "name": "Perezoso",
+    "scientificName": "Bradypus variegatus",
+    "role": "Resistencia de las copas"
   }
 ]

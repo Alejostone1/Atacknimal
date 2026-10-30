@@ -382,3 +382,201 @@ Con ±20 la curva queda escalonada: cada nivel gana aproximadamente dos de cada 
 **Cambio en el simulador:** la política `greedy` de los informes es ahora la IA Normal del motor. A diferencia del bot de la Fase 4, incluye la ventaja del defensor al estimar la defensa rival. Los informes anteriores de 0.2.0 se generaron con el bot antiguo; las diferencias esperadas son pequeñas.
 
 **Pendiente:** volver a medir el balance de animales con `--policy hard`, como se previó en §13.3.
+
+## 15. Versión de balance 0.3.0: 20 animales (vigente, Fase 10b)
+
+Decisión #042. Mismas reglas que 0.2.0 salvo la **ventaja defensiva +6** (era +5), y cobertura por atributo escalada a **4–6 especialistas** (con 20 animales, 2–3 era imposible).
+
+### 15.1 Perfiles nuevos
+
+| Animal | Peso | Fuerza | Agilidad | Ataque | Resistencia | Velocidad | Defensa | Percepción | Suma | Aire / Agua / Tierra / Árboles |
+|---|---|---|---|---|---|---|---|---|---|---|
+| lion | 66 | 90 | 76 | 92 | 50 | 78 | 48 | 74 | 574 | neutral / neutral / native / neutral |
+| gorilla | 76 | 96 | 70 | 66 | 50 | 45 | 88 | 72 | 563 | neutral / hostile / adapted / native |
+| jaguar | 50 | 80 | 88 | 90 | 62 | 72 | 46 | 78 | 566 | neutral / adapted / adapted / native |
+| orca | 72 | 84 | 30 | 84 | 88 | 88 | 50 | 78 | 574 | neutral / native / hostile / hostile |
+| peregrine-falcon | 10 | 48 | 76 | 76 | 82 | 96 | 70 | 88 | 546 | native / hostile / neutral / neutral |
+| hippopotamus | 92 | 84 | 25 | 84 | 80 | 45 | 88 | 50 | 548 | neutral / native / adapted / hostile |
+| python | 50 | 92 | 70 | 80 | 88 | 25 | 74 | 76 | 555 | neutral / adapted / adapted / native |
+| polar-bear | 88 | 90 | 50 | 80 | 78 | 48 | 66 | 74 | 574 | neutral / native / native / hostile |
+| eagle-owl | 15 | 50 | 88 | 82 | 76 | 72 | 66 | 100 | 549 | native / hostile / neutral / adapted |
+
+### 15.2 Proceso
+
+1. Diseño con el presupuesto de §2 y simulación de 100 000 partidas: 17 de 20 animales en objetivo; Halcón 60,7 % (demasiado fuerte), León 40,6 % y Oso polar 43,8 % (débiles); primer jugador 55 %.
+2. Ajustes (detalle en #042) y simulaciones de 40 000 partidas hasta tener los 20 animales en 45–55 %.
+3. Simulación final de 100 000 partidas (abajo). Con 4 845 equipos posibles no se enfrentan todos contra todos: es una muestra aleatoria de emparejamientos.
+
+### 15.3 Resultado
+
+> 100.000 partidas 1v1 · 2.598.152 duelos · muestra de 100000 emparejamientos · semilla 1 · 588 s
+
+**Alertas**
+
+- 🔴 Win rate del primer jugador: 54.0 %
+- ⚠️ Duelos por partida (media): 26.0
+- ⚠️ Tigre: presente en el 60.0 % de los 20 mejores equipos
+- ⚠️ Atributo Ataque: uso 5.4 %
+
+**Partida**
+
+| Métrica | Valor | Estado |
+|---|---|---|
+| Win rate del primer jugador | 54.0 % | 🔴 |
+| Duelos por partida (media) | 26.0 | ⚠️ |
+| Partidas que llegan al límite de duelos | 3.7 % | ✅ |
+| Partidas empatadas | 0.1 % | — |
+| Win rate del atacante por duelo | 93.4 % | ✅ |
+| Duelos empatados | 1.0 % | ✅ |
+| Defensas forzadas por partida | 1.2 | ✅ |
+| Daño medio por duelo | 31.8 | — |
+
+**Animales**
+
+| Animal | Win rate | Estado | En los 20 mejores equipos | % de ataques | Win rate atacando |
+|---|---|---|---|---|---|
+| Ballena | 54.4 % | ✅ | 30.0 % | 5.9 % | 94.0 % |
+| Tigre | 53.4 % | ✅ | 60.0 % | 4.6 % | 92.9 % |
+| Gorila | 53.3 % | ✅ | 30.0 % | 6.6 % | 94.0 % |
+| Halcón peregrino | 53.3 % | ✅ | 40.0 % | 5.7 % | 93.9 % |
+| Guepardo | 52.1 % | ✅ | 25.0 % | 5.7 % | 94.2 % |
+| Elefante | 52.0 % | ✅ | 45.0 % | 5.5 % | 93.1 % |
+| Pingüino | 51.8 % | ✅ | 25.0 % | 4.7 % | 94.7 % |
+| Rinoceronte | 51.2 % | ✅ | 40.0 % | 5.7 % | 92.2 % |
+| Águila real | 51.1 % | ✅ | 10.0 % | 4.9 % | 95.4 % |
+| Búho real | 50.6 % | ✅ | 15.0 % | 6.3 % | 95.4 % |
+| Jaguar | 49.7 % | ✅ | 20.0 % | 4.8 % | 91.2 % |
+| Pitón reticulada | 49.3 % | ✅ | 0.0 % | 5.4 % | 95.2 % |
+| Oso pardo | 48.9 % | ✅ | 10.0 % | 3.9 % | 94.0 % |
+| León | 48.6 % | ✅ | 5.0 % | 3.8 % | 93.9 % |
+| Tiburón blanco | 48.0 % | ✅ | 15.0 % | 5.5 % | 92.8 % |
+| Hipopótamo | 47.6 % | ✅ | 5.0 % | 4.4 % | 88.6 % |
+| Orca | 47.1 % | ✅ | 20.0 % | 4.3 % | 92.0 % |
+| Lobo | 47.1 % | ✅ | 5.0 % | 4.5 % | 96.1 % |
+| Oso polar | 45.4 % | ✅ | 0.0 % | 3.4 % | 93.6 % |
+| Cocodrilo | 45.3 % | ✅ | 0.0 % | 4.5 % | 88.7 % |
+
+### 15.4 Pendiente (Fase 12)
+
+- **Ventaja del primer jugador** por encima del objetivo (48–52 %) con 20 animales. Subir la ventaja defensiva a +7 no la movió; hay que estudiar otras palancas (orden de turnos, compensación del segundo jugador de §7.3).
+- **Duración media** de unos 26 duelos (objetivo 16–24), heredada de 0.2.0.
+- **Uso del atributo Ataque** algo por debajo del 6 %.
+- Re-medir con la IA Difícil además de los bots `greedy`.
+
+## 16. Versión de balance 0.4.0: 26 animales y especialistas marcados (vigente, Fase 10c)
+
+Decisiones #043 y #044. El usuario pidió que cada animal sea **fuerte en algo** y no todo tan igualado.
+
+| Regla | 0.3.0 | 0.4.0 |
+|---|---|---|
+| Suma de los 8 atributos | 545–575 | **470–490** (la misma para todos, más baja para que quepan valles profundos) |
+| Picos | 2–3 (≥ 88) | **exactamente 2 (≥ 95)** |
+| Valles | ≥ 2 (≤ 50) | **≥ 2 (≤ 25)** |
+| Franja prohibida | 85–87 | **86–94** |
+| Especialistas por atributo | 4–6 (≥ 85) | **5–8 (≥ 95)** |
+| Valor 100 por atributo | 1 | **2** |
+| Hábitat (nativo / adaptado / hostil) | +10 / +4 / −10 | **+15 / +6 / −15** |
+| Ventaja defensiva | +6 | **+18** |
+
+### 16.1 Perfiles
+
+Picos en **negrita**, valles en *cursiva*. Hábitats en el orden Aire Agua Tierra Árboles: **N** nativo, **A** adaptado, **·** neutral, **H** hostil.
+
+| Animal | PE | FU | AG | AT | RE | VE | DE | PC | Hábitats |
+|---|---|---|---|---|---|---|---|---|---|
+| Guepardo | *20* | 46 | **96** | 70 | 46 | **100** | *22* | 80 | · H N · |
+| Águila real | *12* | 50 | 72 | 73 | 60 | **95** | *20* | **98** | N · · · |
+| Oso pardo | 60 | **98** | *22* | 60 | 60 | *25* | **95** | 60 | · A N · |
+| Tiburón blanco | 67 | 68 | *25* | **100** | 50 | **95** | *20* | 55 | · N H H |
+| Lobo | *25* | 50 | 62 | 63 | **98** | 63 | *22* | **97** | · A N A |
+| Elefante | **100** | **97** | *12* | 60 | 70 | *20* | 71 | 50 | · A N H |
+| Rinoceronte | **95** | 75 | *15* | 75 | 65 | 40 | **100** | *15* | · · N H |
+| Cocodrilo | 73 | 73 | *25* | **98** | 45 | *15* | **96** | 55 | · N A H |
+| Tigre | 55 | 63 | **95** | **97** | *22* | 63 | *25* | 60 | · A N A |
+| Pingüino | *25* | *20* | **95** | *15* | **95** | 75 | 75 | 80 | · N · H |
+| Ballena | **100** | 74 | *10* | *15* | **96** | 55 | 70 | 60 | · N H H |
+| León | 55 | **98** | 60 | **100** | *20* | 61 | *25* | 61 | · · N A |
+| Gorila | 66 | **97** | 60 | 50 | *25* | *20* | **95** | 67 | · H A N |
+| Jaguar | 45 | 66 | **96** | **99** | *22* | 60 | *25* | 67 | · A A N |
+| Orca | 60 | 60 | *20* | **97** | 61 | **96** | *25* | 61 | · N H H |
+| Halcón peregrino | *10* | *15* | **96** | 74 | 60 | **100** | 50 | 75 | N H · · |
+| Hipopótamo | **97** | 79 | *15* | **95** | 60 | *25* | 79 | 30 | · N A H |
+| Pitón reticulada | 55 | **95** | 60 | 70 | 75 | *10* | **95** | *20* | · · · N |
+| Oso polar | **96** | **97** | *20* | 63 | 64 | *25* | 60 | 55 | · N N H |
+| Búho real | *15* | *20* | 72 | **98** | 60 | 55 | 60 | **100** | N H A N |
+| Murciélago | *15* | *15* | **98** | 78 | 78 | 78 | *20* | **98** | N · · A |
+| Cóndor andino | 67 | 60 | *18* | *20* | **100** | 67 | 50 | **98** | N · A · |
+| Colibrí | *10* | *10* | **100** | 52 | 70 | **98** | 60 | 80 | N H · A |
+| Ardilla | *12* | *18* | **100** | 57 | 60 | 80 | 57 | **96** | · H A N |
+| Orangután | 62 | **99** | 62 | *22* | **95** | *18* | 60 | 62 | · H A N |
+| Perezoso | 63 | 70 | 63 | *20* | **97** | *10* | **95** | 62 | · · H N |
+
+### 16.2 Proceso
+
+1. Primer diseño y 30 000 partidas: **primer jugador 62,5 %** y atacante 94 % (con picos tan altos el duelo lo decide quien ataca). Perezoso 61,7 % y Pingüino 60,3 % demasiado fuertes; Búho real 40,8 % débil.
+2. Experimento `reports/experiments/044.md` (ventaja defensiva +6/+12/+18/+24 × hábitat ±15/±10): se elige **+18 con ±15**.
+3. Tres rondas de ajustes de 30 000 partidas (detalle en #044) hasta tener los 26 animales sin alerta.
+4. Simulación de comprobación (abajo; el encabezado indica cuántas partidas). Con 14 950 equipos posibles es una muestra aleatoria de emparejamientos.
+
+### 16.3 Resultado
+
+> 30.000 partidas 1v1 · 729.350 duelos · muestra de 30000 emparejamientos · semilla 1 · 203 s
+
+**Alertas**
+
+- ⚠️ Win rate del primer jugador: 52.5 %
+- ⚠️ Duelos por partida (media): 24.3
+- ⚠️ Pitón reticulada: win rate 55.5 %
+- ⚠️ Búho real: win rate 44.2 %
+- 🔴 Ballena: presente en el 100.0 % de los 20 mejores equipos
+- 🔴 Cóndor andino: presente en el 100.0 % de los 20 mejores equipos
+
+**Partida**
+
+| Métrica | Valor | Estado |
+|---|---|---|
+| Win rate del primer jugador | 52.5 % | ⚠️ |
+| Duelos por partida (media) | 24.3 | ⚠️ |
+| Partidas que llegan al límite de duelos | 1.0 % | ✅ |
+| Partidas empatadas | 0.0 % | — |
+| Win rate del atacante por duelo | 88.2 % | ✅ |
+| Duelos empatados | 0.4 % | ✅ |
+| Defensas forzadas por partida | 0.7 | ✅ |
+| Daño medio por duelo | 33.7 | — |
+
+**Animales**
+
+| Animal | Win rate | Estado | En los 20 mejores equipos | % de ataques | Win rate atacando |
+|---|---|---|---|---|---|
+| Pitón reticulada | 55.5 % | ⚠️ | 10.0 % | 4.2 % | 89.0 % |
+| Hipopótamo | 54.4 % | ✅ | 10.0 % | 3.9 % | 91.6 % |
+| Colibrí | 53.6 % | ✅ | 5.0 % | 4.0 % | 88.9 % |
+| Rinoceronte | 53.5 % | ✅ | 0.0 % | 4.4 % | 85.4 % |
+| Pingüino | 53.1 % | ✅ | 0.0 % | 4.4 % | 88.7 % |
+| Oso pardo | 52.9 % | ✅ | 15.0 % | 3.2 % | 91.9 % |
+| Oso polar | 52.8 % | ✅ | 0.0 % | 3.8 % | 90.2 % |
+| Gorila | 52.8 % | ✅ | 15.0 % | 4.3 % | 88.0 % |
+| Elefante | 52.7 % | ✅ | 15.0 % | 4.5 % | 82.7 % |
+| Perezoso | 51.5 % | ✅ | 10.0 % | 4.4 % | 89.4 % |
+| Murciélago | 50.7 % | ✅ | 35.0 % | 3.6 % | 88.5 % |
+| Ballena | 50.1 % | ✅ | 100.0 % | 4.6 % | 87.9 % |
+| Halcón peregrino | 50.0 % | ✅ | 10.0 % | 3.8 % | 88.2 % |
+| Tigre | 49.9 % | ✅ | 5.0 % | 3.0 % | 91.5 % |
+| Águila real | 49.7 % | ✅ | 0.0 % | 3.4 % | 88.2 % |
+| Cóndor andino | 49.7 % | ✅ | 100.0 % | 3.5 % | 90.3 % |
+| Cocodrilo | 49.0 % | ✅ | 5.0 % | 3.7 % | 86.0 % |
+| Jaguar | 47.8 % | ✅ | 5.0 % | 3.6 % | 87.4 % |
+| Tiburón blanco | 47.7 % | ✅ | 0.0 % | 4.0 % | 87.9 % |
+| Orca | 47.5 % | ✅ | 5.0 % | 4.1 % | 86.2 % |
+| Guepardo | 47.1 % | ✅ | 20.0 % | 4.3 % | 83.5 % |
+| Ardilla | 46.5 % | ✅ | 10.0 % | 3.4 % | 87.8 % |
+| Orangután | 46.2 % | ✅ | 5.0 % | 3.6 % | 89.5 % |
+| León | 45.7 % | ✅ | 10.0 % | 3.3 % | 90.6 % |
+| Lobo | 45.0 % | ✅ | 5.0 % | 3.7 % | 88.9 % |
+| Búho real | 44.2 % | ⚠️ | 5.0 % | 3.3 % | 89.5 % |
+
+### 16.4 Pendiente (Fase 12)
+
+- **Primer jugador** algo por encima del objetivo (48–52 %), aunque mejor que en 0.3.0.
+- **"Los 20 mejores equipos"** no es fiable con 26 animales: cada equipo juega unas pocas partidas en la muestra, muchos empatan al 100 % y el orden decide la lista. Hay que exigir un mínimo de partidas por equipo.
+- Re-medir con la IA Difícil además de los bots `greedy`.

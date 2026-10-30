@@ -131,3 +131,18 @@ Buscadas con `npm run curate -- search` y revisadas una a una en la galería. Se
 | Búho real | Bubo bubo.003 - Betanzos | Fernando Losada Rodríguez | CC BY-SA 4.0 | Commons |
 
 Pendientes de la aprobación del usuario (`npm run curate -- approve all`).
+
+## 10. Fotos de los 6 animales nuevos (Fase 10c, estado `proposed`)
+
+Buscadas con `npm run curate -- search` y revisadas una a una. Se descartó la propuesta automática del Perezoso, que era un **dibujo a lápiz** de un archivo histórico (no es una foto), y se cambiaron la Ardilla y el Colibrí por fotos más nítidas y con más color (ardilla roja con penachos; colibrí macho con la cabeza magenta). Al Orangután y al Murciélago se les ajustó el punto focal.
+
+| Animal | Foto | Autor | Licencia | Fuente |
+|---|---|---|---|---|
+| Murciélago (zorro volador) | 046 Indian flying fox in Keoladeo National Park Photo by Giles Laurent | Giles Laurent | CC BY-SA 4.0 | Commons |
+| Cóndor andino | Andean condor (Vultur gryphus) at Colca Canyon | Thomas Fuhrmann | CC BY-SA 4.0 | Commons |
+| Colibrí de Anna | Calypte anna (iNaturalist 447453303) | William Walker | CC BY | iNaturalist |
+| Ardilla roja | Wiewiórka w Parku Bednarskiego w Krakowie, 20241117 0903 2741 | Jakub Hałun | CC BY 4.0 | Commons |
+| Orangután | Orangutan Kalimantan | Ridwan0810 | CC BY-SA 4.0 | Commons |
+| Perezoso de tres dedos | Bradypus variegatus 423905618 | Anthony Batista | CC BY 4.0 | Commons |
+
+Pendientes de la aprobación del usuario (`npm run curate -- approve all`).
