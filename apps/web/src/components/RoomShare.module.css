@@ -1,0 +1,156 @@
+.card {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: var(--s-3);
+  padding: var(--s-5) var(--s-4);
+  overflow: hidden;
+  border: 1px solid var(--c-moss-hi);
+  border-radius: calc(var(--radius) * 1.6);
+  background:
+    radial-gradient(ellipse 80% 55% at 50% 0%, rgb(232 163 61 / 0.16), transparent 70%),
+    var(--c-moss);
+  box-shadow: 0 18px 40px rgb(0 0 0 / 0.35);
+  text-align: center;
+}
+
+.label {
+  font: 800 16px/1 var(--f-display);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--c-lichen);
+}
+
+.code {
+  display: flex;
+  justify-content: center;
+  gap: 0.06em;
+  perspective: 400px;
+  font: 600 clamp(44px, 13vw, 68px) / 1 var(--f-mono);
+  color: var(--c-amber);
+  text-shadow: 0 0 22px rgb(232 163 61 / 0.45);
+}
+
+.code span {
+  display: inline-block;
+}
+
+/* QR con ondas de radar detrás */
+.qrZone {
+  position: relative;
+  display: grid;
+  place-items: center;
+  margin: var(--s-4) 0;
+}
+
+.radar {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 100%;
+  aspect-ratio: 1;
+  border: 2px solid rgb(232 163 61 / 0.55);
+  border-radius: 24px;
+  opacity: 0;
+  animation: radar 3s ease-out infinite;
+}
+
+.radar:nth-child(2) {
+  animation-delay: 1s;
+}
+
+.radar:nth-child(3) {
+  animation-delay: 2s;
+}
+
+/* Fondo blanco siempre: lo lee cualquier cámara */
+.qr {
+  position: relative;
+  width: min(232px, 64vw);
+  padding: var(--s-3);
+  overflow: hidden;
+  border-radius: 18px;
+  background: #ffffff;
+  box-shadow:
+    0 0 0 4px rgb(232 163 61 / 0.9),
+    0 0 36px rgb(232 163 61 / 0.5);
+}
+
+/* Línea de escaneo que recorre el código */
+.scan {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 18%;
+  background: linear-gradient(to bottom, transparent, rgb(232 163 61 / 0.35), transparent);
+  animation: scan 2.6s ease-in-out infinite;
+  pointer-events: none;
+}
+
+/* Esquinas de visor */
+.corners {
+  position: absolute;
+  inset: 4px;
+  pointer-events: none;
+  background:
+    linear-gradient(var(--c-slash), var(--c-slash)) top left / 18px 3px,
+    linear-gradient(var(--c-slash), var(--c-slash)) top left / 3px 18px,
+    linear-gradient(var(--c-slash), var(--c-slash)) top right / 18px 3px,
+    linear-gradient(var(--c-slash), var(--c-slash)) top right / 3px 18px,
+    linear-gradient(var(--c-slash), var(--c-slash)) bottom left / 18px 3px,
+    linear-gradient(var(--c-slash), var(--c-slash)) bottom left / 3px 18px,
+    linear-gradient(var(--c-slash), var(--c-slash)) bottom right / 18px 3px,
+    linear-gradient(var(--c-slash), var(--c-slash)) bottom right / 3px 18px;
+  background-repeat: no-repeat;
+}
+
+.hint {
+  font-weight: 600;
+  color: var(--c-bone);
+}
+
+.buttons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--s-2);
+}
+
+.icon {
+  display: inline-flex;
+}
+
+@keyframes radar {
+  0% {
+    opacity: 0.8;
+    transform: scale(0.9);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.45);
+  }
+}
+
+@keyframes scan {
+  0%,
+  100% {
+    transform: translateY(-20%);
+  }
+  50% {
+    transform: translateY(470%);
+  }
+}
+
+/* Sin movimiento: fuera las ondas y la línea de escaneo */
+@media (prefers-reduced-motion: reduce) {
+  :root:not([data-motion='full']) .radar,
+  :root:not([data-motion='full']) .scan {
+    display: none;
+  }
+}
+
+:root[data-motion='reduce'] .radar,
+:root[data-motion='reduce'] .scan {
+  display: none;
+}

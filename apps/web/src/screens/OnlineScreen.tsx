@@ -6,20 +6,11 @@ import {
   type RoomPlayer,
   type RoomState,
 } from '@atacknimal/protocol';
-import {
-  ArrowLeftRight,
-  Check,
-  Copy,
-  EyeOff,
-  Hourglass,
-  Share2,
-  TriangleAlert,
-  Wifi,
-  WifiOff,
-} from 'lucide-react';
+import { ArrowLeftRight, EyeOff, Hourglass, TriangleAlert, Wifi, WifiOff } from 'lucide-react';
+import { AnimatePresence, m } from 'motion/react';
 import { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router';
-import { RoomQr } from '../components/RoomQr.tsx';
+import { RoomShare } from '../components/RoomShare.tsx';
 import { Screen } from '../components/Screen.tsx';
 import { TeamSlots } from '../components/TeamSlots.tsx';
 import { BALANCE, findEntry } from '../content/catalog.ts';
@@ -281,7 +272,14 @@ function RoomEntry({ initialMode, initialCode }: { initialMode: EntryMode; initi
 
 function PlayerRow({ player, status }: { player: RoomPlayer; status: RoomState['status'] }) {
   return (
-    <li className={styles.player}>
+    <m.li
+      layout
+      className={cx(styles.player, styles.joined)}
+      initial={{ opacity: 0, x: -40, scale: 0.95 }}
+      animate={{ opacity: 1, x: 0, scale: 1 }}
+      exit={{ opacity: 0, x: 40 }}
+      transition={{ type: 'spring', stiffness: 320, damping: 24 }}
+    >
       {player.connected ? (
         <Wifi size={18} aria-label="Conectado" />
       ) : (
@@ -298,7 +296,7 @@ function PlayerRow({ player, status }: { player: RoomPlayer; status: RoomState['
             ? 'Equipo listo'
             : 'Eligiendo equipo'}
       </span>
-    </li>
+    </m.li>
   );
 }
 
@@ -307,7 +305,6 @@ function RoomLobby({ room }: { room: RoomState }) {
   const { team, duo } = useMatchSetup();
   const view = useMatch((s) => s.view);
   const navigate = useNavigate();
-  const [copied, setCopied] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const duoMode = room.mode === '2v2';
@@ -338,7 +335,6 @@ function RoomLobby({ room }: { room: RoomState }) {
   const waitingFor = others.filter((p) => !p.teamConfirmed).map((p) => p.nickname);
   const link = roomLink(room.code);
   const localOnly = linkIsLocalOnly(room.code);
-  const canShare = typeof navigator.share === 'function';
 
   return (
     <Screen
@@ -372,175 +368,146 @@ function RoomLobby({ room }: { room: RoomState }) {
         </div>
       }
     >
-      {room.status === 'closed' ? (
-        <p className={styles.notice} role="status">
-          La sala se cerró: {CLOSE_REASON[room.closeReason ?? 'abandoned']}
-        </p>
-      ) : (
-        <>
-          <section className={styles.share} aria-labelledby="share-title">
-            <h2 id="share-title" className={styles.label}>
-              Código
-            </h2>
-            <p className={styles.code}>{room.code}</p>
-            {room.status === 'waiting' && (
-              <div className={styles.qr}>
-                <RoomQr url={link} label={`Código QR para entrar en la sala ${room.code}`} />
+      <div className={styles.lobby}>
+        {room.status === 'closed' ? (
+          <p className={styles.notice} role="status">
+            La sala se cerró: {CLOSE_REASON[room.closeReason ?? 'abandoned']}
+          </p>
+        ) : (
+          <>
+            <RoomShare
+              code={room.code}
+              mode={room.mode}
+              link={link}
+              waiting={room.status === 'waiting'}
+            >
+              {localOnly && (
+                <p className={styles.help}>
+                  <TriangleAlert size={16} aria-hidden="true" />
+                  Este enlace apunta a este equipo (localhost) y no funcionará en otro dispositivo.
+                  Para probar con el celular, abre la web con la IP de tu PC o define
+                  VITE_PUBLIC_APP_URL.
+                </p>
+              )}
+              {room.phaseEndsInMs !== null && (
+                <p className={styles.help}>
+                  <Hourglass size={16} aria-hidden="true" />
+                  {room.status === 'waiting' ? 'La sala caduca en ' : 'Quedan '}
+                  <Countdown
+                    key={`${room.status}-${String(room.phaseEndsInMs)}`}
+                    ms={room.phaseEndsInMs}
+                  />
+                  {room.status === 'waiting' ? ' si no se llena.' : ' para confirmar los equipos.'}
+                </p>
+              )}
+            </RoomShare>
+
+            <section aria-labelledby="players-title">
+              <h2 id="players-title" className={styles.label}>
+                Jugadores · {room.players.length}/{capacity}
+              </h2>
+              <div className={duoMode ? styles.teams : undefined}>
+                {(['A', 'B'] as const).map((teamId) => {
+                  const members = room.players.filter((p) => p.team === teamId);
+                  const empty = perTeam - members.length;
+                  return (
+                    <div key={teamId}>
+                      {duoMode && (
+                        <h3 className={styles.teamName}>
+                          Equipo {teamId}
+                          {me?.team === teamId && <span className={styles.you}> (el tuyo)</span>}
+                        </h3>
+                      )}
+                      <ul className={styles.players}>
+                        <AnimatePresence initial={false}>
+                          {members.map((player) => (
+                            <PlayerRow key={player.playerId} player={player} status={room.status} />
+                          ))}
+                        </AnimatePresence>
+                        {Array.from({ length: empty }, (_, i) => (
+                          <li
+                            key={`libre-${String(i)}`}
+                            className={cx(styles.player, styles.empty)}
+                          >
+                            {duoMode ? 'Asiento libre' : 'Esperando rival'}
+                            <span className={styles.dots} aria-hidden="true">
+                              <span />
+                              <span />
+                              <span />
+                            </span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  );
+                })}
               </div>
-            )}
-            <div className={styles.shareButtons}>
-              <button
-                type="button"
-                className="btn btn--ghost"
-                onClick={() => {
-                  void navigator.clipboard.writeText(link).then(() => {
-                    setCopied(true);
-                  });
-                }}
-              >
-                {copied ? (
-                  <Check size={18} aria-hidden="true" />
-                ) : (
-                  <Copy size={18} aria-hidden="true" />
-                )}
-                {copied ? 'Enlace copiado' : 'Copiar enlace'}
-              </button>
-              {canShare && (
+              {duoMode && room.status === 'waiting' && (
                 <button
                   type="button"
                   className="btn btn--ghost"
                   onClick={() => {
-                    void navigator
-                      .share({
-                        title: 'ATACKNIMAL',
-                        text: `Únete a mi sala ${MODE_LABEL[room.mode]} de ATACKNIMAL: ${room.code}`,
-                        url: link,
-                      })
-                      .catch(() => {
-                        // Compartir cancelado por el usuario: no es un error.
-                      });
+                    void switchTeam().then((response) => {
+                      setError(response.ok ? null : response.error.message);
+                    });
                   }}
                 >
-                  <Share2 size={18} aria-hidden="true" /> Compartir
+                  <ArrowLeftRight size={18} aria-hidden="true" /> Cambiar de equipo
                 </button>
               )}
-            </div>
-            {localOnly && (
-              <p className={styles.help}>
-                <TriangleAlert size={16} aria-hidden="true" />
-                Este enlace apunta a este equipo (localhost) y no funcionará en otro dispositivo.
-                Para probar con el celular, abre la web con la IP de tu PC o define
-                VITE_PUBLIC_APP_URL.
-              </p>
-            )}
-            {room.phaseEndsInMs !== null && (
-              <p className={styles.help}>
-                <Hourglass size={16} aria-hidden="true" />
-                {room.status === 'waiting' ? 'La sala caduca en ' : 'Quedan '}
-                <Countdown
-                  key={`${room.status}-${String(room.phaseEndsInMs)}`}
-                  ms={room.phaseEndsInMs}
-                />
-                {room.status === 'waiting' ? ' si no se llena.' : ' para confirmar los equipos.'}
-              </p>
-            )}
-          </section>
-
-          <section aria-labelledby="players-title">
-            <h2 id="players-title" className={styles.label}>
-              Jugadores · {room.players.length}/{capacity}
-            </h2>
-            <div className={duoMode ? styles.teams : undefined}>
-              {(['A', 'B'] as const).map((teamId) => {
-                const members = room.players.filter((p) => p.team === teamId);
-                const empty = perTeam - members.length;
-                return (
-                  <div key={teamId}>
-                    {duoMode && (
-                      <h3 className={styles.teamName}>
-                        Equipo {teamId}
-                        {me?.team === teamId && <span className={styles.you}> (el tuyo)</span>}
-                      </h3>
-                    )}
-                    <ul className={styles.players}>
-                      {members.map((player) => (
-                        <PlayerRow key={player.playerId} player={player} status={room.status} />
-                      ))}
-                      {Array.from({ length: empty }, (_, i) => (
-                        <li key={`libre-${String(i)}`} className={cx(styles.player, styles.empty)}>
-                          {duoMode ? 'Asiento libre' : 'Esperando rival…'}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                );
-              })}
-            </div>
-            {duoMode && room.status === 'waiting' && (
-              <button
-                type="button"
-                className="btn btn--ghost"
-                onClick={() => {
-                  void switchTeam().then((response) => {
-                    setError(response.ok ? null : response.error.message);
-                  });
-                }}
-              >
-                <ArrowLeftRight size={18} aria-hidden="true" /> Cambiar de equipo
-              </button>
-            )}
-          </section>
-
-          {room.status === 'team-select' && (
-            <section className={styles.team} aria-labelledby="team-title">
-              <div className={styles.row}>
-                <h2 id="team-title" className={styles.label}>
-                  {duoMode ? 'Tus 2 animales' : 'Tu equipo'}
-                </h2>
-                {me?.teamConfirmed !== true && (
-                  <Link
-                    to={`/jugar/equipo?volver=${duoMode ? 'sala2' : 'sala'}`}
-                    className={styles.edit}
-                  >
-                    {picks.length > 0 ? 'Cambiar' : 'Elegir'}
-                  </Link>
-                )}
-              </div>
-              <TeamSlots team={picks} size={size} />
-              {duoMode && partner !== undefined && (
-                <p className={styles.help}>
-                  {partnerAnimals.length > 0
-                    ? `${partner.nickname} lleva: ${partnerAnimals.map((id) => findEntry(id)?.name ?? id).join(' y ')}.`
-                    : `${partner.nickname} aún no ha confirmado sus animales.`}
-                </p>
-              )}
-              {clash.length > 0 && (
-                <p className={styles.error} role="alert">
-                  Tu compañero ya lleva {clash.map((id) => findEntry(id)?.name ?? id).join(' y ')}.
-                  Un equipo no puede repetir animales: cámbialo.
-                </p>
-              )}
-              <p className={styles.help}>
-                <EyeOff size={16} aria-hidden="true" />
-                {me?.teamConfirmed === true
-                  ? `Confirmado. Esperando a ${waitingFor.join(', ') || 'los demás'}…`
-                  : 'Los rivales no verán tus animales hasta que entren en combate.'}
-              </p>
             </section>
-          )}
-        </>
-      )}
 
-      {connection === 'offline' && (
-        <p className={styles.error} role="alert">
-          Sin conexión con el servidor. Reconectando…
-        </p>
-      )}
-      {error !== null && (
-        <p className={styles.error} role="alert">
-          {error}
-        </p>
-      )}
+            {room.status === 'team-select' && (
+              <section className={styles.team} aria-labelledby="team-title">
+                <div className={styles.row}>
+                  <h2 id="team-title" className={styles.label}>
+                    {duoMode ? 'Tus 2 animales' : 'Tu equipo'}
+                  </h2>
+                  {me?.teamConfirmed !== true && (
+                    <Link
+                      to={`/jugar/equipo?volver=${duoMode ? 'sala2' : 'sala'}`}
+                      className={styles.edit}
+                    >
+                      {picks.length > 0 ? 'Cambiar' : 'Elegir'}
+                    </Link>
+                  )}
+                </div>
+                <TeamSlots team={picks} size={size} />
+                {duoMode && partner !== undefined && (
+                  <p className={styles.help}>
+                    {partnerAnimals.length > 0
+                      ? `${partner.nickname} lleva: ${partnerAnimals.map((id) => findEntry(id)?.name ?? id).join(' y ')}.`
+                      : `${partner.nickname} aún no ha confirmado sus animales.`}
+                  </p>
+                )}
+                {clash.length > 0 && (
+                  <p className={styles.error} role="alert">
+                    Tu compañero ya lleva {clash.map((id) => findEntry(id)?.name ?? id).join(' y ')}
+                    . Un equipo no puede repetir animales: cámbialo.
+                  </p>
+                )}
+                <p className={styles.help}>
+                  <EyeOff size={16} aria-hidden="true" />
+                  {me?.teamConfirmed === true
+                    ? `Confirmado. Esperando a ${waitingFor.join(', ') || 'los demás'}…`
+                    : 'Los rivales no verán tus animales hasta que entren en combate.'}
+                </p>
+              </section>
+            )}
+          </>
+        )}
+
+        {connection === 'offline' && (
+          <p className={styles.error} role="alert">
+            Sin conexión con el servidor. Reconectando…
+          </p>
+        )}
+        {error !== null && (
+          <p className={styles.error} role="alert">
+            {error}
+          </p>
+        )}
+      </div>
     </Screen>
   );
 }
