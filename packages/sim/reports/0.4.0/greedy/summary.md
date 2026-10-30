@@ -1,23 +1,22 @@
 # Informe de balance · ruleset 0.4.0 · política `greedy`
 
-> 30.000 partidas 1v1 · 729.350 duelos · muestra de 30000 emparejamientos · semilla 1 · 203 s
+> 100.000 partidas 1v1 · 2.431.526 duelos · muestra de 100000 emparejamientos · semilla 1 · 714 s
 > Objetivos y umbrales: `packages/content/data/balance/0.4.0.json` (docs/BALANCE.md §7.2).
 > Leyenda: ✅ dentro del objetivo · ⚠️ fuera del objetivo · 🔴 fuera del umbral de alerta.
 
 ## Alertas
 
-- ⚠️ Win rate del primer jugador: 52.5 %
+- ⚠️ Win rate del primer jugador: 52.6 %
 - ⚠️ Duelos por partida (media): 24.3
-- ⚠️ Pitón reticulada: win rate 55.5 %
+- ⚠️ Pitón reticulada: win rate 55.6 %
 - ⚠️ Búho real: win rate 44.2 %
-- 🔴 Ballena: presente en el 100.0 % de los 20 mejores equipos
-- 🔴 Cóndor andino: presente en el 100.0 % de los 20 mejores equipos
+- ⚠️ Cóndor andino: presente en el 55.0 % de los 20 mejores equipos
 
 ## Partida
 
 | Métrica | Valor | Estado |
 |---|---|---|
-| Win rate del primer jugador | 52.5 % | ⚠️ |
+| Win rate del primer jugador | 52.6 % | ⚠️ |
 | Duelos por partida (media) | 24.3 | ⚠️ |
 | Partidas que llegan al límite de duelos | 1.0 % | ✅ |
 | Partidas empatadas | 0.0 % | — |
@@ -30,54 +29,54 @@
 
 | Animal | Win rate | Estado | En los 20 mejores equipos | % de ataques | Win rate atacando |
 |---|---|---|---|---|---|
-| Pitón reticulada | 55.5 % | ⚠️ | 10.0 % | 4.2 % | 89.0 % |
-| Hipopótamo | 54.4 % | ✅ | 10.0 % | 3.9 % | 91.6 % |
-| Colibrí | 53.6 % | ✅ | 5.0 % | 4.0 % | 88.9 % |
-| Rinoceronte | 53.5 % | ✅ | 0.0 % | 4.4 % | 85.4 % |
-| Pingüino | 53.1 % | ✅ | 0.0 % | 4.4 % | 88.7 % |
-| Oso pardo | 52.9 % | ✅ | 15.0 % | 3.2 % | 91.9 % |
-| Oso polar | 52.8 % | ✅ | 0.0 % | 3.8 % | 90.2 % |
-| Gorila | 52.8 % | ✅ | 15.0 % | 4.3 % | 88.0 % |
-| Elefante | 52.7 % | ✅ | 15.0 % | 4.5 % | 82.7 % |
-| Perezoso | 51.5 % | ✅ | 10.0 % | 4.4 % | 89.4 % |
-| Murciélago | 50.7 % | ✅ | 35.0 % | 3.6 % | 88.5 % |
-| Ballena | 50.1 % | ✅ | 100.0 % | 4.6 % | 87.9 % |
-| Halcón peregrino | 50.0 % | ✅ | 10.0 % | 3.8 % | 88.2 % |
-| Tigre | 49.9 % | ✅ | 5.0 % | 3.0 % | 91.5 % |
-| Águila real | 49.7 % | ✅ | 0.0 % | 3.4 % | 88.2 % |
-| Cóndor andino | 49.7 % | ✅ | 100.0 % | 3.5 % | 90.3 % |
-| Cocodrilo | 49.0 % | ✅ | 5.0 % | 3.7 % | 86.0 % |
-| Jaguar | 47.8 % | ✅ | 5.0 % | 3.6 % | 87.4 % |
-| Tiburón blanco | 47.7 % | ✅ | 0.0 % | 4.0 % | 87.9 % |
-| Orca | 47.5 % | ✅ | 5.0 % | 4.1 % | 86.2 % |
-| Guepardo | 47.1 % | ✅ | 20.0 % | 4.3 % | 83.5 % |
-| Ardilla | 46.5 % | ✅ | 10.0 % | 3.4 % | 87.8 % |
-| Orangután | 46.2 % | ✅ | 5.0 % | 3.6 % | 89.5 % |
-| León | 45.7 % | ✅ | 10.0 % | 3.3 % | 90.6 % |
-| Lobo | 45.0 % | ✅ | 5.0 % | 3.7 % | 88.9 % |
-| Búho real | 44.2 % | ⚠️ | 5.0 % | 3.3 % | 89.5 % |
+| Pitón reticulada | 55.6 % | ⚠️ | 30.0 % | 4.2 % | 89.0 % |
+| Hipopótamo | 54.9 % | ✅ | 30.0 % | 3.9 % | 91.5 % |
+| Rinoceronte | 53.7 % | ✅ | 10.0 % | 4.4 % | 85.7 % |
+| Pingüino | 53.6 % | ✅ | 20.0 % | 4.4 % | 88.4 % |
+| Colibrí | 53.4 % | ✅ | 5.0 % | 4.0 % | 88.5 % |
+| Oso pardo | 53.2 % | ✅ | 30.0 % | 3.1 % | 92.1 % |
+| Oso polar | 52.9 % | ✅ | 15.0 % | 3.8 % | 90.5 % |
+| Perezoso | 52.8 % | ✅ | 10.0 % | 4.4 % | 89.3 % |
+| Elefante | 52.6 % | ✅ | 5.0 % | 4.4 % | 83.0 % |
+| Gorila | 52.4 % | ✅ | 15.0 % | 4.3 % | 87.9 % |
+| Murciélago | 51.1 % | ✅ | 20.0 % | 3.6 % | 88.5 % |
+| Águila real | 50.0 % | ✅ | 10.0 % | 3.4 % | 88.2 % |
+| Halcón peregrino | 49.7 % | ✅ | 10.0 % | 3.8 % | 88.0 % |
+| Ballena | 49.5 % | ✅ | 30.0 % | 4.5 % | 87.7 % |
+| Tigre | 49.2 % | ✅ | 10.0 % | 3.1 % | 91.2 % |
+| Cóndor andino | 48.9 % | ✅ | 55.0 % | 3.5 % | 90.0 % |
+| Jaguar | 48.2 % | ✅ | 20.0 % | 3.6 % | 87.5 % |
+| Cocodrilo | 47.9 % | ✅ | 20.0 % | 3.7 % | 86.1 % |
+| Orca | 47.8 % | ✅ | 0.0 % | 4.2 % | 86.0 % |
+| Tiburón blanco | 47.2 % | ✅ | 10.0 % | 4.0 % | 87.7 % |
+| Guepardo | 47.2 % | ✅ | 15.0 % | 4.2 % | 83.4 % |
+| Ardilla | 46.4 % | ✅ | 0.0 % | 3.4 % | 88.0 % |
+| Orangután | 46.0 % | ✅ | 15.0 % | 3.7 % | 89.4 % |
+| León | 46.0 % | ✅ | 5.0 % | 3.3 % | 90.4 % |
+| Lobo | 45.4 % | ✅ | 0.0 % | 3.6 % | 88.9 % |
+| Búho real | 44.2 % | ⚠️ | 10.0 % | 3.3 % | 89.5 % |
 
 ## Atributos (elegidos por el atacante)
 
 | | Uso | Estado | Win rate del atacante |
 |---|---|---|---|
-| Peso | 15.4 % | ✅ | 89.0 % |
-| Fuerza | 9.7 % | ✅ | 88.9 % |
-| Agilidad | 14.0 % | ✅ | 87.5 % |
-| Ataque | 9.7 % | ✅ | 88.7 % |
-| Resistencia | 10.5 % | ✅ | 88.1 % |
+| Peso | 15.4 % | ✅ | 89.1 % |
+| Fuerza | 9.7 % | ✅ | 88.7 % |
+| Agilidad | 14.0 % | ✅ | 87.4 % |
+| Ataque | 9.8 % | ✅ | 88.7 % |
+| Resistencia | 10.5 % | ✅ | 87.8 % |
 | Velocidad | 17.4 % | ✅ | 89.1 % |
 | Defensa | 17.0 % | ✅ | 87.4 % |
-| Percepción | 6.4 % | ✅ | 86.5 % |
+| Percepción | 6.4 % | ✅ | 86.7 % |
 
 ## Hábitats (elegidos por el atacante)
 
 | | Uso | Estado | Win rate del atacante |
 |---|---|---|---|
-| Aire | 15.8 % | ✅ | 88.0 % |
-| Agua | 32.1 % | ✅ | 89.3 % |
-| Tierra | 22.4 % | ✅ | 85.2 % |
-| Árboles | 29.7 % | ✅ | 89.5 % |
+| Aire | 15.8 % | ✅ | 87.8 % |
+| Agua | 32.1 % | ✅ | 89.1 % |
+| Tierra | 22.3 % | ✅ | 85.4 % |
+| Árboles | 29.8 % | ✅ | 89.5 % |
 
 ## Hábitat elegido por cada animal al atacar
 
@@ -85,32 +84,32 @@ Cada celda: % de los ataques de ese animal en ese hábitat (win rate atacando ah
 
 | Animal | Aire | Agua | Tierra | Árboles |
 |---|---|---|---|---|
-| Pitón reticulada | 1.3 % (77.5 %) | 11.3 % (92.2 %) | 1.6 % (67.3 %) | 85.7 % (89.2 %) |
-| Hipopótamo | 1.8 % (75.3 %) | 83.7 % (92.1 %) | 13.8 % (92.2 %) | 0.7 % (53.6 %) |
-| Colibrí | 68.4 % (89.7 %) | 1.1 % (47.6 %) | 1.8 % (82.1 %) | 28.8 % (88.9 %) |
-| Rinoceronte | 4.3 % (80.9 %) | 12.9 % (97.0 %) | 81.9 % (84.1 %) | 0.9 % (60.3 %) |
-| Pingüino | 3.2 % (92.2 %) | 90.3 % (88.5 %) | 4.7 % (89.5 %) | 1.8 % (88.7 %) |
-| Oso pardo | 2.1 % (86.7 %) | 26.5 % (96.0 %) | 55.3 % (91.2 %) | 16.0 % (88.2 %) |
-| Oso polar | 0.3 % (38.6 %) | 53.7 % (90.5 %) | 45.8 % (90.6 %) | 0.2 % (0.0 %) |
-| Gorila | 1.7 % (69.9 %) | 1.2 % (80.6 %) | 5.9 % (77.2 %) | 91.2 % (89.2 %) |
-| Elefante | 2.7 % (67.1 %) | 21.7 % (94.2 %) | 74.4 % (81.2 %) | 1.2 % (7.0 %) |
-| Perezoso | 1.6 % (82.4 %) | 11.5 % (90.2 %) | 0.3 % (0.0 %) | 86.6 % (89.7 %) |
-| Murciélago | 55.4 % (85.7 %) | 13.7 % (85.8 %) | 1.2 % (71.4 %) | 29.7 % (95.9 %) |
-| Ballena | 3.5 % (84.5 %) | 94.2 % (88.6 %) | 0.6 % (52.1 %) | 1.7 % (68.5 %) |
-| Halcón peregrino | 83.1 % (88.9 %) | 1.7 % (52.4 %) | 5.0 % (80.9 %) | 10.2 % (92.3 %) |
-| Tigre | 1.4 % (80.5 %) | 27.9 % (92.6 %) | 43.9 % (88.3 %) | 26.9 % (96.2 %) |
-| Águila real | 71.1 % (90.7 %) | 14.5 % (78.3 %) | 3.6 % (64.7 %) | 10.9 % (92.7 %) |
-| Cóndor andino | 73.0 % (87.9 %) | 8.9 % (96.1 %) | 12.6 % (97.3 %) | 5.5 % (95.9 %) |
-| Cocodrilo | 2.0 % (61.0 %) | 85.3 % (86.7 %) | 11.9 % (88.7 %) | 0.9 % (39.7 %) |
-| Jaguar | 0.5 % (35.5 %) | 23.4 % (92.0 %) | 3.8 % (88.2 %) | 72.3 % (86.3 %) |
-| Tiburón blanco | 3.6 % (75.3 %) | 94.0 % (89.1 %) | 0.6 % (41.0 %) | 1.9 % (67.4 %) |
-| Orca | 3.5 % (79.2 %) | 94.1 % (87.1 %) | 0.6 % (33.7 %) | 1.8 % (74.1 %) |
-| Guepardo | 4.3 % (91.1 %) | 0.2 % (0.0 %) | 83.0 % (81.5 %) | 12.5 % (95.7 %) |
-| Ardilla | 3.1 % (89.6 %) | 1.4 % (64.9 %) | 8.3 % (91.2 %) | 87.2 % (87.7 %) |
-| Orangután | 1.5 % (75.2 %) | 0.8 % (73.8 %) | 7.3 % (89.7 %) | 90.4 % (89.8 %) |
-| León | 1.7 % (76.3 %) | 11.4 % (84.8 %) | 53.8 % (89.5 %) | 33.2 % (94.9 %) |
-| Lobo | 1.0 % (70.2 %) | 16.8 % (95.2 %) | 58.2 % (83.6 %) | 24.0 % (98.0 %) |
-| Búho real | 34.2 % (93.2 %) | 0.2 % (0.0 %) | 1.9 % (84.6 %) | 63.7 % (87.9 %) |
+| Pitón reticulada | 1.4 % (79.5 %) | 11.5 % (91.8 %) | 1.6 % (67.0 %) | 85.5 % (89.2 %) |
+| Hipopótamo | 1.9 % (75.1 %) | 84.2 % (92.1 %) | 13.2 % (92.0 %) | 0.7 % (51.9 %) |
+| Rinoceronte | 4.3 % (81.3 %) | 12.8 % (96.9 %) | 82.0 % (84.4 %) | 0.9 % (60.6 %) |
+| Pingüino | 3.1 % (90.2 %) | 90.5 % (88.2 %) | 4.8 % (90.1 %) | 1.7 % (89.0 %) |
+| Colibrí | 68.5 % (89.5 %) | 1.3 % (45.0 %) | 1.8 % (80.7 %) | 28.4 % (88.5 %) |
+| Oso pardo | 2.1 % (88.8 %) | 25.8 % (95.9 %) | 55.3 % (91.6 %) | 16.8 % (88.2 %) |
+| Oso polar | 0.4 % (42.0 %) | 53.9 % (90.7 %) | 45.5 % (90.9 %) | 0.2 % (0.0 %) |
+| Perezoso | 1.5 % (82.0 %) | 11.2 % (90.0 %) | 0.3 % (0.0 %) | 87.0 % (89.6 %) |
+| Elefante | 2.6 % (67.8 %) | 22.0 % (93.5 %) | 74.3 % (81.6 %) | 1.1 % (6.6 %) |
+| Gorila | 1.7 % (68.5 %) | 1.1 % (81.3 %) | 6.1 % (75.9 %) | 91.1 % (89.2 %) |
+| Murciélago | 55.6 % (85.6 %) | 13.7 % (86.2 %) | 1.2 % (70.4 %) | 29.5 % (95.7 %) |
+| Águila real | 70.5 % (90.8 %) | 15.0 % (78.4 %) | 3.7 % (66.9 %) | 10.8 % (92.3 %) |
+| Halcón peregrino | 83.2 % (88.6 %) | 1.8 % (51.0 %) | 4.7 % (82.0 %) | 10.2 % (92.5 %) |
+| Ballena | 3.4 % (84.7 %) | 94.2 % (88.5 %) | 0.6 % (50.0 %) | 1.8 % (64.4 %) |
+| Tigre | 1.3 % (75.7 %) | 28.1 % (92.3 %) | 44.1 % (87.8 %) | 26.5 % (96.4 %) |
+| Cóndor andino | 72.7 % (87.5 %) | 8.9 % (96.3 %) | 13.0 % (97.2 %) | 5.4 % (95.8 %) |
+| Jaguar | 0.5 % (41.2 %) | 23.4 % (92.2 %) | 3.7 % (88.9 %) | 72.4 % (86.3 %) |
+| Cocodrilo | 1.9 % (61.3 %) | 85.3 % (86.7 %) | 11.9 % (89.1 %) | 0.9 % (46.5 %) |
+| Orca | 3.4 % (78.0 %) | 94.2 % (86.9 %) | 0.6 % (35.6 %) | 1.8 % (72.7 %) |
+| Tiburón blanco | 3.6 % (76.2 %) | 93.9 % (88.9 %) | 0.6 % (35.4 %) | 1.9 % (66.6 %) |
+| Guepardo | 4.4 % (89.5 %) | 0.3 % (0.0 %) | 83.1 % (81.6 %) | 12.2 % (95.5 %) |
+| Ardilla | 3.1 % (89.8 %) | 1.4 % (68.4 %) | 8.2 % (91.3 %) | 87.3 % (87.9 %) |
+| Orangután | 1.5 % (76.2 %) | 0.8 % (72.9 %) | 7.3 % (88.3 %) | 90.4 % (89.9 %) |
+| León | 1.9 % (71.7 %) | 11.8 % (85.6 %) | 53.6 % (89.5 %) | 32.7 % (94.8 %) |
+| Lobo | 1.0 % (71.9 %) | 17.0 % (95.1 %) | 58.3 % (83.7 %) | 23.7 % (97.9 %) |
+| Búho real | 33.9 % (92.9 %) | 0.2 % (0.0 %) | 1.9 % (87.1 %) | 64.0 % (88.0 %) |
 
 ## Márgenes de los duelos
 
@@ -119,35 +118,35 @@ simulación (sin que los bots se adapten). Sirve para dimensionar cambios de reg
 
 | Ventaja del defensor | Gana el atacante | Empate | Gana el defensor |
 |---|---|---|---|
-| +0 | 88.2 % | 0.4 % | 11.3 % |
-| +5 | 85.2 % | 0.3 % | 14.6 % |
-| +10 | 81.3 % | 1.0 % | 17.8 % |
-| +15 | 74.1 % | 1.8 % | 24.1 % |
-| +20 | 65.7 % | 1.5 % | 32.8 % |
-| +25 | 58.4 % | 1.1 % | 40.4 % |
-| +30 | 50.5 % | 1.1 % | 48.5 % |
+| +0 | 88.2 % | 0.4 % | 11.4 % |
+| +5 | 85.1 % | 0.3 % | 14.6 % |
+| +10 | 81.2 % | 1.0 % | 17.8 % |
+| +15 | 74.0 % | 1.8 % | 24.2 % |
+| +20 | 65.6 % | 1.5 % | 32.9 % |
+| +25 | 58.3 % | 1.1 % | 40.6 % |
+| +30 | 50.4 % | 1.0 % | 48.6 % |
 
 ## Los 20 mejores equipos
 
 | # | Equipo | Win rate |
 |---|---|---|
-| 1 | Cóndor andino, Ballena, Oso pardo, Guepardo | 100.0 % |
-| 2 | Cóndor andino, Ballena, Oso pardo, Murciélago | 100.0 % |
-| 3 | Cóndor andino, Ballena, Oso pardo, Ardilla | 100.0 % |
-| 4 | Cóndor andino, Ballena, Guepardo, Gorila | 100.0 % |
-| 5 | Cóndor andino, Ballena, Guepardo, León | 100.0 % |
-| 6 | Cóndor andino, Ballena, Guepardo, Perezoso | 100.0 % |
-| 7 | Cóndor andino, Ballena, Cocodrilo, León | 100.0 % |
-| 8 | Cóndor andino, Ballena, Búho real, Halcón peregrino | 100.0 % |
-| 9 | Cóndor andino, Ballena, Elefante, Halcón peregrino | 100.0 % |
-| 10 | Cóndor andino, Ballena, Elefante, Tigre | 100.0 % |
-| 11 | Cóndor andino, Ballena, Elefante, Lobo | 100.0 % |
-| 12 | Cóndor andino, Ballena, Murciélago, Hipopótamo | 100.0 % |
-| 13 | Cóndor andino, Ballena, Murciélago, Colibrí | 100.0 % |
-| 14 | Cóndor andino, Ballena, Murciélago, Jaguar | 100.0 % |
-| 15 | Cóndor andino, Ballena, Murciélago, Orangután | 100.0 % |
-| 16 | Cóndor andino, Ballena, Murciélago, Pitón reticulada | 100.0 % |
-| 17 | Cóndor andino, Ballena, Murciélago, Perezoso | 100.0 % |
-| 18 | Cóndor andino, Ballena, Gorila, Orca | 100.0 % |
-| 19 | Cóndor andino, Ballena, Gorila, Ardilla | 100.0 % |
-| 20 | Cóndor andino, Ballena, Hipopótamo, Pitón reticulada | 100.0 % |
+| 1 | Cóndor andino, Oso pardo, Búho real, Elefante | 100.0 % |
+| 2 | Cóndor andino, Oso pardo, Águila real, Jaguar | 100.0 % |
+| 3 | Cóndor andino, Guepardo, Pingüino, Rinoceronte | 100.0 % |
+| 4 | Cóndor andino, Cocodrilo, Gorila, Colibrí | 100.0 % |
+| 5 | Cóndor andino, Cocodrilo, Pitón reticulada, Tigre | 100.0 % |
+| 6 | Cóndor andino, Búho real, Jaguar, Perezoso | 100.0 % |
+| 7 | Cóndor andino, Murciélago, Hipopótamo, Pitón reticulada | 100.0 % |
+| 8 | Cóndor andino, Águila real, Orangután, Pitón reticulada | 100.0 % |
+| 9 | Cóndor andino, Hipopótamo, León, Pingüino | 100.0 % |
+| 10 | Cóndor andino, Pingüino, Pitón reticulada, Tigre | 100.0 % |
+| 11 | Cóndor andino, Halcón peregrino, Pitón reticulada, Rinoceronte | 100.0 % |
+| 12 | Ballena, Oso pardo, Cocodrilo, Murciélago | 100.0 % |
+| 13 | Ballena, Guepardo, Gorila, Oso polar | 100.0 % |
+| 14 | Ballena, Guepardo, Tiburón blanco, Orangután | 100.0 % |
+| 15 | Ballena, Cocodrilo, Jaguar, Oso polar | 100.0 % |
+| 16 | Ballena, Murciélago, Hipopótamo, Perezoso | 100.0 % |
+| 17 | Ballena, Gorila, Oso polar, Pitón reticulada | 100.0 % |
+| 18 | Oso pardo, Murciélago, Tiburón blanco, Hipopótamo | 100.0 % |
+| 19 | Oso pardo, Hipopótamo, Jaguar, Orangután | 100.0 % |
+| 20 | Oso pardo, Hipopótamo, Pingüino, Halcón peregrino | 100.0 % |

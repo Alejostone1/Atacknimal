@@ -516,26 +516,25 @@ Picos en **negrita**, valles en *cursiva*. Hábitats en el orden Aire Agua Tierr
 1. Primer diseño y 30 000 partidas: **primer jugador 62,5 %** y atacante 94 % (con picos tan altos el duelo lo decide quien ataca). Perezoso 61,7 % y Pingüino 60,3 % demasiado fuertes; Búho real 40,8 % débil.
 2. Experimento `reports/experiments/044.md` (ventaja defensiva +6/+12/+18/+24 × hábitat ±15/±10): se elige **+18 con ±15**.
 3. Tres rondas de ajustes de 30 000 partidas (detalle en #044) hasta tener los 26 animales sin alerta.
-4. Simulación de comprobación (abajo; el encabezado indica cuántas partidas). Con 14 950 equipos posibles es una muestra aleatoria de emparejamientos.
+4. Simulación final de 100 000 partidas (abajo). Con 14 950 equipos posibles es una muestra aleatoria de emparejamientos.
 
 ### 16.3 Resultado
 
-> 30.000 partidas 1v1 · 729.350 duelos · muestra de 30000 emparejamientos · semilla 1 · 203 s
+> 100.000 partidas 1v1 · 2.431.526 duelos · muestra de 100000 emparejamientos · semilla 1 · 714 s
 
 **Alertas**
 
-- ⚠️ Win rate del primer jugador: 52.5 %
+- ⚠️ Win rate del primer jugador: 52.6 %
 - ⚠️ Duelos por partida (media): 24.3
-- ⚠️ Pitón reticulada: win rate 55.5 %
+- ⚠️ Pitón reticulada: win rate 55.6 %
 - ⚠️ Búho real: win rate 44.2 %
-- 🔴 Ballena: presente en el 100.0 % de los 20 mejores equipos
-- 🔴 Cóndor andino: presente en el 100.0 % de los 20 mejores equipos
+- ⚠️ Cóndor andino: presente en el 55.0 % de los 20 mejores equipos
 
 **Partida**
 
 | Métrica | Valor | Estado |
 |---|---|---|
-| Win rate del primer jugador | 52.5 % | ⚠️ |
+| Win rate del primer jugador | 52.6 % | ⚠️ |
 | Duelos por partida (media) | 24.3 | ⚠️ |
 | Partidas que llegan al límite de duelos | 1.0 % | ✅ |
 | Partidas empatadas | 0.0 % | — |
@@ -548,32 +547,32 @@ Picos en **negrita**, valles en *cursiva*. Hábitats en el orden Aire Agua Tierr
 
 | Animal | Win rate | Estado | En los 20 mejores equipos | % de ataques | Win rate atacando |
 |---|---|---|---|---|---|
-| Pitón reticulada | 55.5 % | ⚠️ | 10.0 % | 4.2 % | 89.0 % |
-| Hipopótamo | 54.4 % | ✅ | 10.0 % | 3.9 % | 91.6 % |
-| Colibrí | 53.6 % | ✅ | 5.0 % | 4.0 % | 88.9 % |
-| Rinoceronte | 53.5 % | ✅ | 0.0 % | 4.4 % | 85.4 % |
-| Pingüino | 53.1 % | ✅ | 0.0 % | 4.4 % | 88.7 % |
-| Oso pardo | 52.9 % | ✅ | 15.0 % | 3.2 % | 91.9 % |
-| Oso polar | 52.8 % | ✅ | 0.0 % | 3.8 % | 90.2 % |
-| Gorila | 52.8 % | ✅ | 15.0 % | 4.3 % | 88.0 % |
-| Elefante | 52.7 % | ✅ | 15.0 % | 4.5 % | 82.7 % |
-| Perezoso | 51.5 % | ✅ | 10.0 % | 4.4 % | 89.4 % |
-| Murciélago | 50.7 % | ✅ | 35.0 % | 3.6 % | 88.5 % |
-| Ballena | 50.1 % | ✅ | 100.0 % | 4.6 % | 87.9 % |
-| Halcón peregrino | 50.0 % | ✅ | 10.0 % | 3.8 % | 88.2 % |
-| Tigre | 49.9 % | ✅ | 5.0 % | 3.0 % | 91.5 % |
-| Águila real | 49.7 % | ✅ | 0.0 % | 3.4 % | 88.2 % |
-| Cóndor andino | 49.7 % | ✅ | 100.0 % | 3.5 % | 90.3 % |
-| Cocodrilo | 49.0 % | ✅ | 5.0 % | 3.7 % | 86.0 % |
-| Jaguar | 47.8 % | ✅ | 5.0 % | 3.6 % | 87.4 % |
-| Tiburón blanco | 47.7 % | ✅ | 0.0 % | 4.0 % | 87.9 % |
-| Orca | 47.5 % | ✅ | 5.0 % | 4.1 % | 86.2 % |
-| Guepardo | 47.1 % | ✅ | 20.0 % | 4.3 % | 83.5 % |
-| Ardilla | 46.5 % | ✅ | 10.0 % | 3.4 % | 87.8 % |
-| Orangután | 46.2 % | ✅ | 5.0 % | 3.6 % | 89.5 % |
-| León | 45.7 % | ✅ | 10.0 % | 3.3 % | 90.6 % |
-| Lobo | 45.0 % | ✅ | 5.0 % | 3.7 % | 88.9 % |
-| Búho real | 44.2 % | ⚠️ | 5.0 % | 3.3 % | 89.5 % |
+| Pitón reticulada | 55.6 % | ⚠️ | 30.0 % | 4.2 % | 89.0 % |
+| Hipopótamo | 54.9 % | ✅ | 30.0 % | 3.9 % | 91.5 % |
+| Rinoceronte | 53.7 % | ✅ | 10.0 % | 4.4 % | 85.7 % |
+| Pingüino | 53.6 % | ✅ | 20.0 % | 4.4 % | 88.4 % |
+| Colibrí | 53.4 % | ✅ | 5.0 % | 4.0 % | 88.5 % |
+| Oso pardo | 53.2 % | ✅ | 30.0 % | 3.1 % | 92.1 % |
+| Oso polar | 52.9 % | ✅ | 15.0 % | 3.8 % | 90.5 % |
+| Perezoso | 52.8 % | ✅ | 10.0 % | 4.4 % | 89.3 % |
+| Elefante | 52.6 % | ✅ | 5.0 % | 4.4 % | 83.0 % |
+| Gorila | 52.4 % | ✅ | 15.0 % | 4.3 % | 87.9 % |
+| Murciélago | 51.1 % | ✅ | 20.0 % | 3.6 % | 88.5 % |
+| Águila real | 50.0 % | ✅ | 10.0 % | 3.4 % | 88.2 % |
+| Halcón peregrino | 49.7 % | ✅ | 10.0 % | 3.8 % | 88.0 % |
+| Ballena | 49.5 % | ✅ | 30.0 % | 4.5 % | 87.7 % |
+| Tigre | 49.2 % | ✅ | 10.0 % | 3.1 % | 91.2 % |
+| Cóndor andino | 48.9 % | ✅ | 55.0 % | 3.5 % | 90.0 % |
+| Jaguar | 48.2 % | ✅ | 20.0 % | 3.6 % | 87.5 % |
+| Cocodrilo | 47.9 % | ✅ | 20.0 % | 3.7 % | 86.1 % |
+| Orca | 47.8 % | ✅ | 0.0 % | 4.2 % | 86.0 % |
+| Tiburón blanco | 47.2 % | ✅ | 10.0 % | 4.0 % | 87.7 % |
+| Guepardo | 47.2 % | ✅ | 15.0 % | 4.2 % | 83.4 % |
+| Ardilla | 46.4 % | ✅ | 0.0 % | 3.4 % | 88.0 % |
+| Orangután | 46.0 % | ✅ | 15.0 % | 3.7 % | 89.4 % |
+| León | 46.0 % | ✅ | 5.0 % | 3.3 % | 90.4 % |
+| Lobo | 45.4 % | ✅ | 0.0 % | 3.6 % | 88.9 % |
+| Búho real | 44.2 % | ⚠️ | 10.0 % | 3.3 % | 89.5 % |
 
 ### 16.4 Pendiente (Fase 12)
 
