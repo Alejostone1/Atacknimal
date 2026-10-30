@@ -674,3 +674,57 @@
     transform: none;
   }
 }
+
+/* Confeti de la victoria */
+.end {
+  position: relative;
+}
+
+.confetti {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.end > :not(.confetti) {
+  position: relative;
+  z-index: 1;
+}
+
+.confetti span {
+  position: absolute;
+  top: -16px;
+  left: var(--x);
+  width: 8px;
+  height: 14px;
+  border-radius: 2px;
+  background: var(--color);
+  opacity: 0;
+  animation: confetti var(--dur) cubic-bezier(0.3, 0.6, 0.5, 1) var(--delay) 2 both;
+}
+
+@keyframes confetti {
+  0% {
+    opacity: 1;
+    transform: translateY(0) rotate(0);
+  }
+  85% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(105dvh) rotate(var(--spin));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root:not([data-motion='full']) .confetti {
+    display: none;
+  }
+}
+
+:root[data-motion='reduce'] .confetti {
+  display: none;
+}

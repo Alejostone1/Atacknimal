@@ -1,4 +1,5 @@
 import type { PlayerView } from '@atacknimal/engine';
+import { m } from 'motion/react';
 import { useMemo, useState } from 'react';
 import { useMatch, type PresentedDuel } from '../game/matchStore.ts';
 import { describeDuel, toPresentation } from '../game/present.ts';
@@ -37,13 +38,16 @@ export function DuelResult({
       <p className={styles.resultText} role="status" aria-live="polite">
         {describeDuel(view, duel)}
       </p>
-      <button
+      <m.button
         type="button"
         className={animated ? 'btn btn--primary btn--block' : 'btn btn--ghost btn--block'}
         onClick={acknowledge}
+        animate={animated ? { scale: [1, 1.06, 1] } : { scale: 1 }}
+        transition={{ duration: 0.35 }}
+        whileTap={{ scale: 0.96 }}
       >
         {view.result === null ? 'Continuar' : 'Ver resultado'}
-      </button>
+      </m.button>
     </div>
   );
 }

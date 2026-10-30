@@ -26,6 +26,12 @@ const MONO = '"IBM Plex Mono", monospace';
 /** Texturas generadas una vez por juego para los efectos. */
 const SPARK = 'fx-spark';
 const SHARD = 'fx-shard';
+const GLOW = 'fx-glow';
+
+/** Pausa de impacto: el golpe "se siente" congelando la escena un instante. */
+const HIT_STOP_MS = 70;
+/** Encendido y apagado del aura que se carga antes del choque. */
+const AURA_FADE_MS = 300;
 
 /**
  * Coreografía del duelo (ms desde el inicio). Separada del código para poder ajustar el ritmo
@@ -121,6 +127,28 @@ export class DuelScene extends Phaser.Scene {
       g.fillStyle(C.white, 1).fillCircle(6, 6, 6);
       g.generateTexture(SPARK, 12, 12);
       g.destroy();
+    }
+    if (!this.textures.exists(GLOW)) {
+      // Resplandor radial suave, blanco para teñirlo (aura y brillo del ganador).
+      const size = 128;
+      const canvas = this.textures.createCanvas(GLOW, size, size);
+      const ctx = canvas?.getContext();
+      if (canvas !== null && ctx !== undefined) {
+        const gradient = ctx.createRadialGradient(
+          size / 2,
+          size / 2,
+          0,
+          size / 2,
+          size / 2,
+          size / 2,
+        );
+        gradient.addColorStop(0, 'rgba(255,255,255,1)');
+        gradient.addColorStop(0.45, 'rgba(255,255,255,0.45)');
+        gradient.addColorStop(1, 'rgba(255,255,255,0)');
+        ctx.fillStyle = gradient;
+        ctx.fillRect(0, 0, size, size);
+        canvas.refresh();
+      }
     }
     if (!this.textures.exists(SHARD)) {
       const g = this.make.graphics({}, false);
@@ -251,6 +279,8 @@ export class DuelScene extends Phaser.Scene {
 
     // 3 · Los valores cuentan y aparece el VS.
     this.time.delayedCall(T.count, () => {
+      this.aura(left, C.amber);
+      this.aura(right, C.white);
       this.countUp(left.value, data.attacker.effective);
       this.countUp(right.value, data.defender.effective);
       this.tweens.add({ targets: vs, scale: 1, alpha: 1, duration: 320, ease: 'Back.Out' });
@@ -482,13 +512,16 @@ export class DuelScene extends Phaser.Scene {
     }
     this.time.delayedCall(T.dash, () => {
       this.cameras.main.shake(160, 0.006);
+      this.shockwave(W / 2, left.homeY, C.white, left.width * 0.8);
       this.sparks(W / 2, left.homeY, 0, C.bone);
     });
   }
 
   private impact(target: CardView, contactX: number, towards: number): void {
     const { width: W, height: H } = this.viewSize;
+    this.hitStop();
     this.cameras.main.shake(220, 0.012);
+    this.shockwave(contactX, target.homeY - target.height * 0.1, C.amber, target.width);
     const flash = this.add.rectangle(0, 0, W, H, C.white, 0.3).setOrigin(0, 0);
     this.tweens.add({
       targets: flash,
@@ -583,6 +616,79 @@ export class DuelScene extends Phaser.Scene {
     });
   }
 
+  /** Congela las animaciones un instante para dar peso al golpe. */
+  private hitStop(): void {
+    this.tweens.pauseAll();
+    this.time.delayedCall(HIT_STOP_MS, () => {
+      this.tweens.resumeAll();
+    });
+  }
+
+  /** Dos anillos que se expanden desde el punto de choque. */
+  private shockwave(x: number, y: number, color: number, size: number): void {
+    for (const [i, width] of [6, 3].entries()) {
+      const ring = this.add.circle(x, y, size * 0.25).setStrokeStyle(width, color, 1);
+      ring.setFillStyle();
+      ring.setScale(0.2).setBlendMode(Phaser.BlendModes.ADD);
+      this.tweens.add({
+        targets: ring,
+        scale: 2.6 + i,
+        alpha: 0,
+        delay: i * 90,
+        duration: 520,
+        ease: 'Cubic.Out',
+        onComplete: () => {
+          ring.destroy();
+        },
+      });
+    }
+  }
+
+  /** Resplandor teñido detrás de una carta (aditivo: ilumina sin tapar). */
+  private glowBehind(view: CardView, tint: number, spread: number): Phaser.GameObjects.Image {
+    const glow = this.add
+      .image(view.homeX, view.homeY, GLOW)
+      .setDisplaySize(view.width * spread, view.height * spread)
+      .setTint(tint)
+      .setBlendMode(Phaser.BlendModes.ADD);
+    this.children.moveBelow(glow, view.container);
+    return glow;
+  }
+
+  /** Energía que se carga mientras cuentan los valores: aura y chispas que suben. */
+  private aura(view: CardView, tint: number): void {
+    const glow = this.glowBehind(view, tint, 1.45).setAlpha(0);
+    this.tweens.add({
+      targets: glow,
+      alpha: 0.5,
+      duration: AURA_FADE_MS,
+      yoyo: true,
+      // Se mantiene encendida hasta el choque y se apaga con él.
+      hold: T.clash - T.count - AURA_FADE_MS,
+      onComplete: () => {
+        glow.destroy();
+      },
+    });
+    const motes = this.add.particles(0, 0, SPARK, {
+      x: { min: view.homeX - view.width / 2, max: view.homeX + view.width / 2 },
+      y: view.homeY + view.height / 2,
+      speedY: { min: -160, max: -60 },
+      speedX: { min: -12, max: 12 },
+      scale: { start: 0.45, end: 0 },
+      lifespan: { min: 500, max: 900 },
+      frequency: 40,
+      tint,
+      blendMode: Phaser.BlendModes.ADD,
+    });
+    this.children.moveBelow(motes, view.container);
+    this.time.delayedCall(T.clash - T.count, () => {
+      motes.stop();
+    });
+    this.time.delayedCall(T.clash - T.count + 1000, () => {
+      motes.destroy();
+    });
+  }
+
   /* ---------- Resultado ---------- */
 
   private outcome(data: DuelPresentation, left: CardView, right: CardView, animate: boolean): void {
@@ -618,8 +724,20 @@ export class DuelScene extends Phaser.Scene {
     if (data.winner !== 'tie') {
       const winner = views[data.winner];
       winner.frame.setStrokeStyle(4, C.amber);
+      const glow = this.glowBehind(winner, C.amber, 1.7);
       if (animate) {
         this.tweens.add({ targets: winner.container, scale: 1.05, duration: 180, yoyo: true });
+        glow.setAlpha(0);
+        this.tweens.add({
+          targets: glow,
+          alpha: { from: 0.9, to: 0.45 },
+          duration: 900,
+          ease: 'Sine.InOut',
+          yoyo: true,
+          repeat: -1,
+        });
+      } else {
+        glow.setAlpha(0.55);
       }
     }
 
